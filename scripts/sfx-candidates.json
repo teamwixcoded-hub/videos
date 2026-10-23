@@ -1,0 +1,724 @@
+{
+  "phone_pickup": {
+    "why": "Red lifts the phone off the bed",
+    "query": "phone handling",
+    "results": [
+      {
+        "file": "phone_pickup-1.mp3",
+        "id": 863320,
+        "name": "Moving door (SoundAction 342)",
+        "user": "alexarje",
+        "license": "CC BY 4.0",
+        "duration": 6,
+        "downloads": 11,
+        "url": "https://freesound.org/people/alexarje/sounds/863320/"
+      },
+      {
+        "file": "phone_pickup-2.mp3",
+        "id": 863097,
+        "name": "Touching balloons (SoundAction 119)",
+        "user": "alexarje",
+        "license": "CC BY 4.0",
+        "duration": 5,
+        "downloads": 0,
+        "url": "https://freesound.org/people/alexarje/sounds/863097/"
+      }
+    ]
+  },
+  "phone_swipe": {
+    "why": "each swipe in the phone inset",
+    "query": "swipe",
+    "results": [
+      {
+        "file": "phone_swipe-1.mp3",
+        "id": 160500,
+        "name": "Whoosh_01.wav",
+        "user": "timmy_h123",
+        "license": "CC BY 4.0",
+        "duration": 0.1,
+        "downloads": 9094,
+        "url": "https://freesound.org/people/timmy_h123/sounds/160500/"
+      },
+      {
+        "file": "phone_swipe-2.mp3",
+        "id": 219005,
+        "name": "WeaponSwipe03.mp3",
+        "user": "Yap_Audio_Production",
+        "license": "CC BY 4.0",
+        "duration": 0.3,
+        "downloads": 6092,
+        "url": "https://freesound.org/people/Yap_Audio_Production/sounds/219005/"
+      }
+    ]
+  },
+  "notification": {
+    "why": "the red notification badge pulses",
+    "query": "notification",
+    "results": [
+      {
+        "file": "notification-1.mp3",
+        "id": 400697,
+        "name": "Messenger Notification Sound Imitation.wav",
+        "user": "Daphne_in_Wonderland",
+        "license": "CC BY 4.0",
+        "duration": 1.7,
+        "downloads": 18106,
+        "url": "https://freesound.org/people/Daphne_in_Wonderland/sounds/400697/"
+      },
+      {
+        "file": "notification-2.mp3",
+        "id": 320655,
+        "name": "Level Up 01",
+        "user": "rhodesmas",
+        "license": "CC BY 4.0",
+        "duration": 1.1,
+        "downloads": 11274,
+        "url": "https://freesound.org/people/rhodesmas/sounds/320655/"
+      },
+      {
+        "file": "notification-3.mp3",
+        "id": 191678,
+        "name": "Waterdrop",
+        "user": "Porphyr",
+        "license": "CC BY 4.0",
+        "duration": 0.6,
+        "downloads": 10948,
+        "url": "https://freesound.org/people/Porphyr/sounds/191678/"
+      }
+    ]
+  },
+  "pop": {
+    "why": "hearts and sparkles popping up",
+    "query": "bubble pop",
+    "results": [
+      {
+        "file": "pop-1.mp3",
+        "id": 463395,
+        "name": "VS Pop_5.mp3",
+        "user": "Vilkas_Sound",
+        "license": "CC BY 4.0",
+        "duration": 0.4,
+        "downloads": 5041,
+        "url": "https://freesound.org/people/Vilkas_Sound/sounds/463395/"
+      },
+      {
+        "file": "pop-2.mp3",
+        "id": 463388,
+        "name": "VS Pop_4.mp3",
+        "user": "Vilkas_Sound",
+        "license": "CC BY 4.0",
+        "duration": 0.5,
+        "downloads": 5020,
+        "url": "https://freesound.org/people/Vilkas_Sound/sounds/463388/"
+      },
+      {
+        "file": "pop-3.mp3",
+        "id": 463394,
+        "name": "VS Pop_6.mp3",
+        "user": "Vilkas_Sound",
+        "license": "CC BY 4.0",
+        "duration": 0.6,
+        "downloads": 4895,
+        "url": "https://freesound.org/people/Vilkas_Sound/sounds/463394/"
+      }
+    ]
+  },
+  "sparkle": {
+    "why": "sparkle reaction icons",
+    "query": "sparkle magic chime",
+    "results": [
+      {
+        "file": "sparkle-1.mp3",
+        "id": 810753,
+        "name": "Level Up 01",
+        "user": "mokasza",
+        "license": "CC BY 4.0",
+        "duration": 1.6,
+        "downloads": 2470,
+        "url": "https://freesound.org/people/mokasza/sounds/810753/"
+      },
+      {
+        "file": "sparkle-2.mp3",
+        "id": 810755,
+        "name": "Level Up 03",
+        "user": "mokasza",
+        "license": "CC BY 4.0",
+        "duration": 1.6,
+        "downloads": 1373,
+        "url": "https://freesound.org/people/mokasza/sounds/810755/"
+      }
+    ]
+  },
+  "meter_rise": {
+    "why": "dopamine meter steps up",
+    "query": "level up",
+    "results": [
+      {
+        "file": "meter_rise-1.mp3",
+        "id": 270333,
+        "name": "Jingle_Win_00.wav",
+        "user": "LittleRobotSoundFactory",
+        "license": "CC BY 4.0",
+        "duration": 2.6,
+        "downloads": 11421,
+        "url": "https://freesound.org/people/LittleRobotSoundFactory/sounds/270333/"
+      },
+      {
+        "file": "meter_rise-2.mp3",
+        "id": 320655,
+        "name": "Level Up 01",
+        "user": "rhodesmas",
+        "license": "CC BY 4.0",
+        "duration": 1.1,
+        "downloads": 11274,
+        "url": "https://freesound.org/people/rhodesmas/sounds/320655/"
+      },
+      {
+        "file": "meter_rise-3.mp3",
+        "id": 126422,
+        "name": "level up.wav",
+        "user": "MakoFox",
+        "license": "CC BY 4.0",
+        "duration": 0.6,
+        "downloads": 9902,
+        "url": "https://freesound.org/people/MakoFox/sounds/126422/"
+      },
+      {
+        "file": "meter_rise-4.mp3",
+        "id": 171756,
+        "name": "Picked Coin Echo 2",
+        "user": "NenadSimic",
+        "license": "CC BY 4.0",
+        "duration": 1.7,
+        "downloads": 8436,
+        "url": "https://freesound.org/people/NenadSimic/sounds/171756/"
+      }
+    ]
+  },
+  "clock_tick": {
+    "why": "wall clock ticking during the clock beat",
+    "query": "wall clock ticking",
+    "results": [
+      {
+        "file": "clock_tick-1.mp3",
+        "id": 456236,
+        "name": "Antique wall clock.wav",
+        "user": "straget",
+        "license": "CC BY 4.0",
+        "duration": 9.3,
+        "downloads": 11904,
+        "url": "https://freesound.org/people/straget/sounds/456236/"
+      },
+      {
+        "file": "clock_tick-2.mp3",
+        "id": 268810,
+        "name": "Wall Clock Ticking",
+        "user": "michaelkoehler",
+        "license": "CC BY 4.0",
+        "duration": 16,
+        "downloads": 2797,
+        "url": "https://freesound.org/people/michaelkoehler/sounds/268810/"
+      },
+      {
+        "file": "clock_tick-3.mp3",
+        "id": 219219,
+        "name": "Clock Tick Tack",
+        "user": "qubodup",
+        "license": "CC BY 4.0",
+        "duration": 4,
+        "downloads": 2516,
+        "url": "https://freesound.org/people/qubodup/sounds/219219/"
+      },
+      {
+        "file": "clock_tick-4.mp3",
+        "id": 329786,
+        "name": "Wall Clock Ticking Softly",
+        "user": "visualasylum",
+        "license": "CC BY 4.0",
+        "duration": 10.4,
+        "downloads": 2424,
+        "url": "https://freesound.org/people/visualasylum/sounds/329786/"
+      }
+    ]
+  },
+  "page_turn": {
+    "why": "Green turning a page",
+    "query": "book page turn",
+    "results": [
+      {
+        "file": "page_turn-1.mp3",
+        "id": 63318,
+        "name": "Page Turn - Please Turn Over (PTO) - paper_turn_over.wav",
+        "user": "flag2",
+        "license": "CC BY 4.0",
+        "duration": 1,
+        "downloads": 36387,
+        "url": "https://freesound.org/people/flag2/sounds/63318/"
+      },
+      {
+        "file": "page_turn-2.mp3",
+        "id": 416179,
+        "name": "Book, Flipping Through Pages, A.wav",
+        "user": "InspectorJ",
+        "license": "CC BY 4.0",
+        "duration": 0.9,
+        "downloads": 32810,
+        "url": "https://freesound.org/people/InspectorJ/sounds/416179/"
+      },
+      {
+        "file": "page_turn-3.mp3",
+        "id": 20258,
+        "name": "Page_Turn_24.wav",
+        "user": "Koops",
+        "license": "CC BY 4.0",
+        "duration": 1.1,
+        "downloads": 20035,
+        "url": "https://freesound.org/people/Koops/sounds/20258/"
+      },
+      {
+        "file": "page_turn-4.mp3",
+        "id": 20233,
+        "name": "Page_Fumble_01.wav",
+        "user": "Koops",
+        "license": "CC BY 4.0",
+        "duration": 1.1,
+        "downloads": 5981,
+        "url": "https://freesound.org/people/Koops/sounds/20233/"
+      }
+    ]
+  },
+  "yawn": {
+    "why": "Green yawns",
+    "query": "man yawn",
+    "results": [
+      {
+        "file": "yawn-1.mp3",
+        "id": 401338,
+        "name": "Yawning",
+        "user": "ckvoiceover",
+        "license": "CC BY 4.0",
+        "duration": 4.2,
+        "downloads": 10349,
+        "url": "https://freesound.org/people/ckvoiceover/sounds/401338/"
+      },
+      {
+        "file": "yawn-2.mp3",
+        "id": 60681,
+        "name": "yawning1.wav",
+        "user": "K1m218",
+        "license": "CC BY 4.0",
+        "duration": 4.1,
+        "downloads": 3909,
+        "url": "https://freesound.org/people/K1m218/sounds/60681/"
+      }
+    ]
+  },
+  "sigh": {
+    "why": "Green sighs",
+    "query": "sigh male",
+    "results": [
+      {
+        "file": "sigh-1.mp3",
+        "id": 9661,
+        "name": "sighclean.wav",
+        "user": "thanvannispen",
+        "license": "CC BY 4.0",
+        "duration": 3.3,
+        "downloads": 2821,
+        "url": "https://freesound.org/people/thanvannispen/sounds/9661/"
+      },
+      {
+        "file": "sigh-2.mp3",
+        "id": 417750,
+        "name": "Sad male sigh :(",
+        "user": "pfranzen",
+        "license": "CC BY 4.0",
+        "duration": 2.2,
+        "downloads": 1624,
+        "url": "https://freesound.org/people/pfranzen/sounds/417750/"
+      }
+    ]
+  },
+  "book_thud": {
+    "why": "books stacking into the tower",
+    "query": "book drop",
+    "results": [
+      {
+        "file": "book_thud-1.mp3",
+        "id": 51460,
+        "name": "basket_ball_01_bounce.wav",
+        "user": "andre.nascimento",
+        "license": "CC BY 4.0",
+        "duration": 0.5,
+        "downloads": 7631,
+        "url": "https://freesound.org/people/andre.nascimento/sounds/51460/"
+      },
+      {
+        "file": "book_thud-2.mp3",
+        "id": 51461,
+        "name": "basket_ball_02_bounce.wav",
+        "user": "andre.nascimento",
+        "license": "CC BY 4.0",
+        "duration": 0.5,
+        "downloads": 5967,
+        "url": "https://freesound.org/people/andre.nascimento/sounds/51461/"
+      },
+      {
+        "file": "book_thud-3.mp3",
+        "id": 51462,
+        "name": "basket_ball_03_drop.wav.wav",
+        "user": "andre.nascimento",
+        "license": "CC BY 4.0",
+        "duration": 0.3,
+        "downloads": 5782,
+        "url": "https://freesound.org/people/andre.nascimento/sounds/51462/"
+      },
+      {
+        "file": "book_thud-4.mp3",
+        "id": 31330,
+        "name": "pencil-drop01.wav",
+        "user": "andre.nascimento",
+        "license": "CC BY 4.0",
+        "duration": 0.7,
+        "downloads": 1358,
+        "url": "https://freesound.org/people/andre.nascimento/sounds/31330/"
+      }
+    ]
+  },
+  "whoosh": {
+    "why": "soft air under each camera glide",
+    "query": "whoosh",
+    "results": [
+      {
+        "file": "whoosh-1.mp3",
+        "id": 21914,
+        "name": "neck_crack.wav",
+        "user": "Halleck",
+        "license": "CC BY 4.0",
+        "duration": 0.5,
+        "downloads": 27227,
+        "url": "https://freesound.org/people/Halleck/sounds/21914/"
+      },
+      {
+        "file": "whoosh-2.mp3",
+        "id": 216675,
+        "name": "Stick-Swoosh Whoosh ",
+        "user": "Hitrison",
+        "license": "CC BY 4.0",
+        "duration": 0.5,
+        "downloads": 26597,
+        "url": "https://freesound.org/people/Hitrison/sounds/216675/"
+      }
+    ]
+  },
+  "room_tone": {
+    "why": "quiet night room ambience bed",
+    "query": "room tone",
+    "results": [
+      {
+        "file": "room_tone-1.mp3",
+        "id": 212202,
+        "name": "RoomTone EmptyClassRoom  01 SHORT 130626_02.wav",
+        "user": "klankbeeld",
+        "license": "CC BY 4.0",
+        "duration": 115.5,
+        "downloads": 26048,
+        "url": "https://freesound.org/people/klankbeeld/sounds/212202/"
+      },
+      {
+        "file": "room_tone-2.mp3",
+        "id": 251652,
+        "name": "Original Ambience Sound Unaltered",
+        "user": "SeanSecret",
+        "license": "CC BY 4.0",
+        "duration": 34.2,
+        "downloads": 23166,
+        "url": "https://freesound.org/people/SeanSecret/sounds/251652/"
+      },
+      {
+        "file": "room_tone-3.mp3",
+        "id": 172307,
+        "name": "room-tone windy house 121220_00.wav",
+        "user": "klankbeeld",
+        "license": "CC BY 4.0",
+        "duration": 127.7,
+        "downloads": 20245,
+        "url": "https://freesound.org/people/klankbeeld/sounds/172307/"
+      }
+    ]
+  },
+  "title_swell": {
+    "why": "title card swell",
+    "query": "soft cinematic swell",
+    "results": [
+      {
+        "file": "title_swell-1.mp3",
+        "id": 810737,
+        "name": "Long, airy whoosh",
+        "user": "mokasza",
+        "license": "CC BY 4.0",
+        "duration": 5,
+        "downloads": 1175,
+        "url": "https://freesound.org/people/mokasza/sounds/810737/"
+      }
+    ]
+  },
+  "cloth": {
+    "why": "clothing rustle when he shifts",
+    "query": "clothes rustle fabric",
+    "results": [
+      {
+        "file": "cloth-1.mp3",
+        "id": 331354,
+        "name": "Getting dressed super fast!",
+        "user": "pfranzen",
+        "license": "CC BY 4.0",
+        "duration": 2.8,
+        "downloads": 5633,
+        "url": "https://freesound.org/people/pfranzen/sounds/331354/"
+      },
+      {
+        "file": "cloth-2.mp3",
+        "id": 798839,
+        "name": "cloth-foley-3",
+        "user": "Pepossum",
+        "license": "CC BY 4.0",
+        "duration": 2.9,
+        "downloads": 3080,
+        "url": "https://freesound.org/people/Pepossum/sounds/798839/"
+      },
+      {
+        "file": "cloth-3.mp3",
+        "id": 798838,
+        "name": "cloth-foley-2",
+        "user": "Pepossum",
+        "license": "CC BY 4.0",
+        "duration": 1.6,
+        "downloads": 1146,
+        "url": "https://freesound.org/people/Pepossum/sounds/798838/"
+      },
+      {
+        "file": "cloth-4.mp3",
+        "id": 798837,
+        "name": "cloth-foley-1",
+        "user": "Pepossum",
+        "license": "CC BY 4.0",
+        "duration": 0.9,
+        "downloads": 1146,
+        "url": "https://freesound.org/people/Pepossum/sounds/798837/"
+      }
+    ]
+  },
+  "chuckle": {
+    "why": "Red laughing at the phone",
+    "query": "man chuckle laugh",
+    "results": [
+      {
+        "file": "chuckle-1.mp3",
+        "id": 431610,
+        "name": "Laugh.wav",
+        "user": "owly-bee",
+        "license": "CC BY 4.0",
+        "duration": 1.4,
+        "downloads": 3883,
+        "url": "https://freesound.org/people/owly-bee/sounds/431610/"
+      },
+      {
+        "file": "chuckle-2.mp3",
+        "id": 180296,
+        "name": "Loose Chuckles",
+        "user": "jorickhoofd",
+        "license": "CC BY 4.0",
+        "duration": 2.4,
+        "downloads": 732,
+        "url": "https://freesound.org/people/jorickhoofd/sounds/180296/"
+      }
+    ]
+  },
+  "light_switch": {
+    "why": "Green switches the lamp off",
+    "query": "light switch",
+    "results": [
+      {
+        "file": "light_switch-1.mp3",
+        "id": 408,
+        "name": "light 1.wav",
+        "user": "TicTacShutUp",
+        "license": "CC BY 4.0",
+        "duration": 0.4,
+        "downloads": 10763,
+        "url": "https://freesound.org/people/TicTacShutUp/sounds/408/"
+      },
+      {
+        "file": "light_switch-2.mp3",
+        "id": 435845,
+        "name": "Flashlight Click",
+        "user": "dersuperanton",
+        "license": "CC BY 4.0",
+        "duration": 0.8,
+        "downloads": 8153,
+        "url": "https://freesound.org/people/dersuperanton/sounds/435845/"
+      },
+      {
+        "file": "light_switch-3.mp3",
+        "id": 409,
+        "name": "light 2.wav",
+        "user": "TicTacShutUp",
+        "license": "CC BY 4.0",
+        "duration": 0.5,
+        "downloads": 7594,
+        "url": "https://freesound.org/people/TicTacShutUp/sounds/409/"
+      },
+      {
+        "file": "light_switch-4.mp3",
+        "id": 414439,
+        "name": "Light, Pulley Switch, On, B.wav",
+        "user": "InspectorJ",
+        "license": "CC BY 4.0",
+        "duration": 0.5,
+        "downloads": 6212,
+        "url": "https://freesound.org/people/InspectorJ/sounds/414439/"
+      }
+    ]
+  },
+  "bed_rustle": {
+    "why": "Red settling into bed under the blanket",
+    "query": "blanket rustle",
+    "results": []
+  },
+  "door_creak": {
+    "why": "the mother at the doorway",
+    "query": "door creak",
+    "results": [
+      {
+        "file": "door_creak-1.mp3",
+        "id": 346211,
+        "name": "Door Squeak, Normal, E.wav",
+        "user": "InspectorJ",
+        "license": "CC BY 4.0",
+        "duration": 2.7,
+        "downloads": 25547,
+        "url": "https://freesound.org/people/InspectorJ/sounds/346211/"
+      },
+      {
+        "file": "door_creak-2.mp3",
+        "id": 346212,
+        "name": "Door Squeak, Normal, D.wav",
+        "user": "InspectorJ",
+        "license": "CC BY 4.0",
+        "duration": 2.9,
+        "downloads": 24921,
+        "url": "https://freesound.org/people/InspectorJ/sounds/346212/"
+      },
+      {
+        "file": "door_creak-3.mp3",
+        "id": 188606,
+        "name": "Wood Creak.wav",
+        "user": "TimPryor",
+        "license": "CC BY 4.0",
+        "duration": 1.6,
+        "downloads": 7646,
+        "url": "https://freesound.org/people/TimPryor/sounds/188606/"
+      }
+    ]
+  },
+  "gasp": {
+    "why": "the mother hurt by the snap",
+    "query": "gasp female",
+    "results": [
+      {
+        "file": "gasp-1.mp3",
+        "id": 367307,
+        "name": "woman_scream.wav",
+        "user": "themfish",
+        "license": "CC BY 4.0",
+        "duration": 1.3,
+        "downloads": 2765,
+        "url": "https://freesound.org/people/themfish/sounds/367307/"
+      },
+      {
+        "file": "gasp-2.mp3",
+        "id": 467348,
+        "name": "Female Gasp.wav",
+        "user": "nicklas3799",
+        "license": "CC BY 4.0",
+        "duration": 0.6,
+        "downloads": 1973,
+        "url": "https://freesound.org/people/nicklas3799/sounds/467348/"
+      }
+    ]
+  },
+  "shout": {
+    "why": "Red snaps",
+    "query": "man shout",
+    "results": [
+      {
+        "file": "shout-1.mp3",
+        "id": 348310,
+        "name": "Zombie Monster Scream",
+        "user": "redafs",
+        "license": "CC BY 4.0",
+        "duration": 1.1,
+        "downloads": 12752,
+        "url": "https://freesound.org/people/redafs/sounds/348310/"
+      },
+      {
+        "file": "shout-2.mp3",
+        "id": 368824,
+        "name": "man screaming HEY breaking voice.wav",
+        "user": "klankbeeld",
+        "license": "CC BY 4.0",
+        "duration": 0.9,
+        "downloads": 6504,
+        "url": "https://freesound.org/people/klankbeeld/sounds/368824/"
+      }
+    ]
+  },
+  "toothbrush": {
+    "why": "brushing teeth",
+    "query": "brushing teeth",
+    "results": [
+      {
+        "file": "toothbrush-1.mp3",
+        "id": 212050,
+        "name": "Brushing_teeth.mp3",
+        "user": "Taira Komori",
+        "license": "CC BY 4.0",
+        "duration": 6.2,
+        "downloads": 247,
+        "url": "https://freesound.org/people/Taira%20Komori/sounds/212050/"
+      }
+    ]
+  },
+  "spoon_bowl": {
+    "why": "cereal spoon in a bowl",
+    "query": "spoon bowl",
+    "results": []
+  },
+  "steam_kettle": {
+    "why": "tea / kettle",
+    "query": "tea pour cup",
+    "results": [
+      {
+        "file": "steam_kettle-1.mp3",
+        "id": 262322,
+        "name": "Pouring tea",
+        "user": "paul_sutyrin",
+        "license": "CC BY 4.0",
+        "duration": 2.3,
+        "downloads": 1837,
+        "url": "https://freesound.org/people/paul_sutyrin/sounds/262322/"
+      },
+      {
+        "file": "steam_kettle-2.mp3",
+        "id": 324937,
+        "name": "Pouring tea",
+        "user": "MrAuralization",
+        "license": "CC BY 4.0",
+        "duration": 5.6,
+        "downloads": 1808,
+        "url": "https://freesound.org/people/MrAuralization/sounds/324937/"
+      }
+    ]
+  }
+}

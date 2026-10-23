@@ -1,0 +1,1 @@
+Create an in-between animation frame that is exactly halfway between the first reference image and the second reference image: same room, same camera framing, same character, same flat vector style (solid flat colors only, no gradients, no glow, no soft shadows). His mouth is just starting to open into a yawn, eyes squinting, the book starting to sag. Soft eyebrows.

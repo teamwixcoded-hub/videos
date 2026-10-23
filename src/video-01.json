@@ -1,0 +1,19 @@
+{
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "scenes": [
+    {"id": "S01", "title": "Hook",       "start": 0,   "end": 35,  "layout": "split"},
+    {"id": "S02", "title": "The choice", "start": 35,  "end": 75,  "layout": "split"},
+    {"id": "S03", "title": "Night one",  "start": 75,  "end": 115, "layout": "cut"},
+    {"id": "S04", "title": "Day 5",      "start": 115, "end": 170, "layout": "cut"},
+    {"id": "S05", "title": "Day 21",     "start": 170, "end": 230, "layout": "cut"},
+    {"id": "S06", "title": "It spreads", "start": 230, "end": 280, "layout": "green"},
+    {"id": "S07", "title": "Day 90",     "start": 280, "end": 330, "layout": "split"},
+    {"id": "S08", "title": "Low point",  "start": 330, "end": 390, "layout": "red"},
+    {"id": "S09", "title": "The result", "start": 390, "end": 445, "layout": "green"},
+    {"id": "S10", "title": "Day 365",    "start": 445, "end": 485, "layout": "split"},
+    {"id": "S11", "title": "The turn",   "start": 485, "end": 515, "layout": "red"},
+    {"id": "S12", "title": "End",        "start": 515, "end": 525, "layout": "split"}
+  ]
+}
