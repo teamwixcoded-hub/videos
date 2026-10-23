@@ -1,3 +1,6 @@
 .env
 node_modules
 out
+
+# Image assets are too large for GitHub; copy public/images between machines manually
+public/images/
