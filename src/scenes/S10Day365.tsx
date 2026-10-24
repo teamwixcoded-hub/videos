@@ -52,7 +52,7 @@ const CAPTIONS: CaptionLine[] = [
   {text: 'They changed one night at a time.', from: 25.6, to: 29.0},
 ];
 
-const SFX: Cue[] = [
+export const SFX: Cue[] = [
   {file: 'room_tone', at: 0, dur: 19, vol: 0.2, fadeIn: 2, fadeOut: 2},
   {file: 'swell', at: 0.6, dur: 5, vol: 0.22, fadeIn: 1.2, fadeOut: 1.8},
   {file: 'whoosh', at: 11.4, vol: 0.2},

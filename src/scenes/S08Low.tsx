@@ -39,7 +39,7 @@ const CAPTIONS: CaptionLine[] = [
   {text: 'He learned everything. He changed nothing.', from: 28.0, to: 32.8},
 ];
 
-const SFX: Cue[] = [
+export const SFX: Cue[] = [
   {file: 'room_tone', at: 0, dur: 22, vol: 0.18, fadeIn: 2, fadeOut: 2},
   {file: 'notification', at: 3.8, vol: 0.2},
   {file: 'swipe', at: 8.6, vol: 0.22},

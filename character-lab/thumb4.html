@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cinematic thumbnails: reading vs scrolling, results hidden</title>
+<style>
+  html, body { margin:0; padding:0; background:#000; }
+  #t { position:relative; width:1280px; height:720px; overflow:hidden; background:#000; font-family: Impact, 'Arial Black', 'Segoe UI Black', sans-serif; filter: contrast(1.1) saturate(1.08); }
+  .abs { position:absolute; left:0; top:0; width:1280px; height:720px; pointer-events:none; }
+  .wrap { position:absolute; top:0; height:720px; }
+  .wrap canvas { position:absolute; left:0; top:0; }
+  svg.txt { position:absolute; left:0; top:0; width:1280px; height:720px; }
+  svg.txt text { paint-order: stroke fill; stroke-linejoin: round; text-anchor: middle; font-family: Impact, 'Arial Black', 'Segoe UI Black', sans-serif; }
+</style>
+</head>
+<body>
+<div id="t"></div>
+<script>
+const v = new URLSearchParams(location.search).get('v') || 'a';
+const root = document.getElementById('t');
+const wideTop = v !== 'c';
+const LAMP = wideTop ? [548, 408] : [512, 322], PHONE = wideTop ? [776, 588] : [822, 452];
+const load = (src) => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+const layer = (css) => { const d = document.createElement('div'); d.className = 'abs'; d.style.cssText = css; root.appendChild(d); return d; };
+
+// draw a crop of the source frame and swell the face (caricature bulge)
+async function half(file, ox, oy, s, W, H, bx, by, R, k) {
+  const img = await load('../public/images/' + file + '.png');
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d', {willReadFrequently: true}); g.imageSmoothingQuality = 'high';
+  g.drawImage(img, ox, oy, W / s, H / s, 0, 0, W, H);
+  const src = g.getImageData(0, 0, W, H), out = g.createImageData(W, H), sd = src.data, od = out.data;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    let sx = x, sy = y; const dx = x - bx, dy = y - by, r = Math.hypot(dx, dy);
+    if (r < R) { const t = r / R, f = 1 - k * (1 - t * t) * (1 - t * t); sx = bx + dx * f; sy = by + dy * f; }
+    const x0 = Math.floor(sx), y0 = Math.floor(sy), fx = sx - x0, fy = sy - y0, o = (y * W + x) * 4;
+    for (let ch = 0; ch < 4; ch++) {
+      const p = (xx, yy) => sd[(Math.min(H - 1, Math.max(0, yy)) * W + Math.min(W - 1, Math.max(0, xx))) * 4 + ch];
+      od[o + ch] = (p(x0, y0) * (1 - fx) + p(x0 + 1, y0) * fx) * (1 - fy) + (p(x0, y0 + 1) * (1 - fx) + p(x0 + 1, y0 + 1) * fx) * fy;
+    }
+  }
+  g.putImageData(out, 0, 0);
+  return c;
+}
+const clone = (c) => { const d = document.createElement('canvas'); d.width = c.width; d.height = c.height; d.getContext('2d').drawImage(c, 0, 0); return d; };
+// a panel = blurred copy of the frame (the room, out of focus) + a sharp copy that only shows around the subject (depth of field)
+function panel(canvas, left, clip, grade, mask, blurPx) {
+  const wrap = document.createElement('div'); wrap.className = 'wrap';
+  wrap.style.cssText = `left:${left}px; width:${canvas.width}px; clip-path:${clip}; filter:${grade}`;
+  const bl = clone(canvas); bl.style.cssText = `filter: blur(${blurPx}px) brightness(.8) saturate(1.1); transform: scale(1.05)`;
+  canvas.style.cssText = `-webkit-mask-image:${mask}; mask-image:${mask}`;
+  wrap.appendChild(bl); wrap.appendChild(canvas); root.appendChild(wrap);
+}
+const addSvg = (inner) => { const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('class', 'txt'); s.setAttribute('viewBox', '0 0 1280 720'); s.innerHTML = inner; root.appendChild(s); };
+
+(async () => {
+  const s = wideTop ? 1.28 : 1.1, hy = wideTop ? 352 : 246, gX = 290, rX = 548;
+  const left = await half('FL_G1', 484 - gX / s, 650 - hy / s, s, 780, 720, gX, hy + 14, 230, 0.34);
+  const right = await half('FL_R4', 1900 - rX / s, 560 - hy / s, s, 780, 720, rX, hy + 14, 230, 0.34);
+  const LC = 'polygon(0 0, 800px 0, 640px 720px, 0 720px)', RC = 'polygon(300px 0, 780px 0, 780px 720px, 140px 720px)';
+  // depth of field: sharp only around the reader / the scroller
+  panel(left, 0, LC, 'saturate(1.15) contrast(1.16) brightness(.96) sepia(.03)', `radial-gradient(ellipse 340px 470px at ${gX + 20}px ${hy + 130}px, #000 48%, rgba(0,0,0,0) 100%)`, 9);
+  panel(right, 500, RC, 'saturate(1.2) contrast(1.18) brightness(.9) hue-rotate(-6deg)', `radial-gradient(ellipse 380px 470px at ${rX - 10}px ${hy + 130}px, #000 48%, rgba(0,0,0,0) 100%)`, 9);
+
+  // colour grade: teal and orange
+  layer(`clip-path:${LC}; background: linear-gradient(115deg, rgba(255,128,20,.28), rgba(255,90,0,0) 72%); mix-blend-mode: overlay`);
+  layer(`clip-path:${LC}; background: linear-gradient(180deg, rgba(40,10,0,.35), rgba(0,0,0,0) 40%); mix-blend-mode: multiply`);
+  layer(`clip-path:polygon(800px 0, 1280px 0, 1280px 720px, 640px 720px); background: linear-gradient(245deg, rgba(0,160,210,.5), rgba(0,40,140,.0) 75%); mix-blend-mode: overlay`);
+  layer(`clip-path:polygon(800px 0, 1280px 0, 1280px 720px, 640px 720px); background: linear-gradient(180deg, rgba(0,20,60,.45), rgba(0,0,0,0) 45%); mix-blend-mode: multiply`);
+
+  // light: god rays from the lamp, bloom on lamp and phone, lens streak
+  layer(`clip-path:${LC}; background: repeating-conic-gradient(from 90deg at ${LAMP[0]}px ${LAMP[1]}px, rgba(255,222,150,.65) 0 2.2deg, rgba(255,222,150,0) 2.2deg 7deg); -webkit-mask-image: radial-gradient(circle at ${LAMP[0]}px ${LAMP[1]}px, #000 0, rgba(0,0,0,.0) 62%); mask-image: radial-gradient(circle at ${LAMP[0]}px ${LAMP[1]}px, #000 0, rgba(0,0,0,0) 62%); filter: blur(5px); mix-blend-mode: screen; opacity:.55`);
+  layer(`background: radial-gradient(circle at ${LAMP[0]}px ${LAMP[1]}px, rgba(255,246,214,.95) 0, rgba(255,214,120,.55) 5%, rgba(255,160,60,.0) 24%); mix-blend-mode: screen; filter: blur(2px)`);
+  layer(`background: radial-gradient(circle at ${PHONE[0]}px ${PHONE[1]}px, rgba(225,250,255,1) 0, rgba(90,200,255,.7) 9%, rgba(40,120,255,0) 36%); mix-blend-mode: screen; filter: blur(4px)`);
+  layer(`background: radial-gradient(ellipse 300px 260px at ${PHONE[0] + 150}px ${PHONE[1] - 190}px, rgba(110,210,255,.38), rgba(60,160,255,0) 70%); mix-blend-mode: screen`);
+  // phone body glow
+  if (wideTop) layer(`left:${PHONE[0] - 60}px; top:${PHONE[1] - 112}px; width:112px; height:190px; border-radius:22px; background: linear-gradient(160deg, rgba(190,245,255,.95), rgba(70,185,255,.7)); transform: rotate(-24deg); filter: blur(7px); mix-blend-mode: screen; opacity:.8`);
+  layer(`left:${PHONE[0] - 520}px; top:${PHONE[1] - 3}px; width:1040px; height:6px; background: linear-gradient(90deg, rgba(120,220,255,0), rgba(170,235,255,.95) 50%, rgba(120,220,255,0)); filter: blur(2px); mix-blend-mode: screen; opacity:.75`);
+  // cold shafts from the window on the scroller's side
+  layer(`clip-path: polygon(800px 0, 1280px 0, 1280px 720px, 640px 720px); background: linear-gradient(112deg, rgba(160,220,255,.0) 20%, rgba(160,220,255,.22) 38%, rgba(160,220,255,0) 52%, rgba(160,220,255,.16) 66%, rgba(160,220,255,0) 80%); filter: blur(10px); mix-blend-mode: screen`);
+
+  // dust in the light, vignette, grain, light leak
+  let dust = ''; let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 70; i++) { const warm = i % 2, x = rnd() * 1280, y = rnd() * 720, r = 1.2 + rnd() * 3.2; dust += `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${r.toFixed(1)}" fill="${warm ? '#ffe2a8' : '#bfe8ff'}" opacity="${(0.25 + rnd() * 0.5).toFixed(2)}" filter="url(#db)"/>`; }
+  addSvg(`<defs><filter id="db"><feGaussianBlur stdDeviation="1.2"/></filter></defs>${dust}`);
+  layer('background: radial-gradient(ellipse at center, rgba(0,0,0,0) 46%, rgba(0,0,0,.8) 100%)');
+  layer(`background: linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 26%, rgba(0,0,0,0) 66%, rgba(0,0,0,.7) 100%)`);
+  layer('background: radial-gradient(ellipse 360px 260px at 0 0, rgba(255,140,40,.45), rgba(255,140,40,0) 70%); mix-blend-mode: screen');
+  addSvg(`<defs><filter id="gr" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="4"/><feColorMatrix type="saturate" values="0"/></filter></defs><rect width="1280" height="720" filter="url(#gr)" opacity=".2" style="mix-blend-mode:overlay"/>`);
+
+  // light-seam divider with a slight chromatic split
+  const div = `<defs><filter id="gl" x="-50%" y="-5%" width="200%" height="110%"><feGaussianBlur stdDeviation="9"/></filter></defs>
+    <line x1="800" y1="-10" x2="640" y2="730" stroke="#fff" stroke-width="16" filter="url(#gl)" opacity=".85"/>
+    <line x1="796" y1="-10" x2="636" y2="730" stroke="#ff3b3b" stroke-width="3" opacity=".8"/><line x1="804" y1="-10" x2="644" y2="730" stroke="#2bd9ff" stroke-width="3" opacity=".8"/>
+    <line x1="800" y1="-10" x2="640" y2="730" stroke="#fff" stroke-width="5"/>`;
+  // title: metallic gradient fill, black outline, soft glow
+  const defs = `<defs>
+    <linearGradient id="tw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#eef3ff"/><stop offset="1" stop-color="#b9c6e4"/></linearGradient>
+    <linearGradient id="ty" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffbd0"/><stop offset=".5" stop-color="#ffd23a"/><stop offset="1" stop-color="#f08a00"/></linearGradient>
+    <filter id="tg" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="ts" x="-20%" y="-30%" width="140%" height="170%"><feGaussianBlur stdDeviation="9"/></filter></defs>`;
+  const title = (txt, x, y, size, fillId, extra = '') => `<text x="${x}" y="${y + 12}" font-size="${size}" fill="#000" stroke="#000" stroke-width="26" opacity=".7" filter="url(#ts)" ${extra}>${txt}</text>`
+    + `<text x="${x}" y="${y}" font-size="${size}" fill="url(#${fillId})" stroke="#000" stroke-width="22" filter="url(#tg)" ${extra}>${txt}</text>`;
+  let t = '';
+  if (v === 'a') t = title('ONE HABIT', 640, 170, 190, 'tw', 'letter-spacing="4"');
+  else if (v === 'b') t = title('1 YEAR LATER', 640, 168, 160, 'ty', 'letter-spacing="3"');
+  else t = `<text x="640" y="702" font-size="122" fill="#000" stroke="#000" stroke-width="26" opacity=".7" filter="url(#ts)"><tspan>WHICH ONE ARE YOU?</tspan></text><text x="640" y="690" font-size="122" stroke="#000" stroke-width="22" filter="url(#tg)"><tspan fill="url(#tw)">WHICH ONE </tspan><tspan fill="url(#ty)">ARE YOU?</tspan></text>`;
+  addSvg(defs + div + t);
+  document.title = 'ready';
+})();
+</script>
+</body>
+</html>

@@ -29,7 +29,7 @@ const CAPTIONS: CaptionLine[] = [
   {text: 'Tonight… which one will you pick up?', from: 8.4, to: 12.4},
 ];
 
-const SFX: Cue[] = [
+export const SFX: Cue[] = [
   {file: 'room_tone', at: 0, dur: 9, vol: 0.2, fadeIn: 1.5, fadeOut: 2},
   {file: 'swell', at: 0.4, dur: 5, vol: 0.24, fadeIn: 1.2, fadeOut: 2},
   {file: 'notification', at: 3.6, vol: 0.18},

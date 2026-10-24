@@ -1,0 +1,133 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Character lab</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg:#f2efe9; --ink:#1c1a1d; --muted:#6b6660; }
+  body { margin:0; padding:24px; background:var(--bg); color:var(--ink); font:14px/1.4 system-ui, sans-serif; }
+  h1 { font-size:20px; margin:0 0 4px; } p { margin:0 0 18px; color:var(--muted); }
+  .grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-bottom:30px; }
+  .cell { background:#fff; border-radius:12px; padding:8px 8px 10px; text-align:center; }
+  .cell svg { width:100%; height:auto; display:block; background:#ddd7cc; border-radius:8px; }
+  .cell b { display:block; margin-top:6px; font-size:13px; }
+  .poses { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; }
+  .blur svg { filter:blur(6px); }
+  h2 { font-size:15px; margin:18px 0 8px; }
+#faces,#faces-blur,h2,h1,p{display:none}</style>
+</head>
+<body>
+<h1>Character lab: expression sheet</h1>
+<p>Original character. White face parts on a black head. Each emotion is built from eyes, lids, brows and mouth only.</p>
+<div class="grid" id="faces"></div>
+<h2>Squint test (blurred): can you still read each emotion?</h2>
+<div class="grid blur" id="faces-blur"></div>
+<h2>Poses (silhouette + face)</h2>
+<div class="poses" id="poses"></div>
+
+<script>
+const INK = '#1c1a1d', WHITE = '#fbfaf7';
+const rad = (d) => d * Math.PI / 180;
+
+// ---------- face ----------
+// bl/br: [dy, angle] brows (angle>0 rotates clockwise). lid: [top, bottom, tilt] fraction of eye height covered.
+// pupil: [r, dx, dy]. mouth: key into MOUTH.
+const EMO = {
+  neutral:    {bl:[0,0],   br:[0,0],   lid:[0.0,0,0],   pupil:[7,0,0],   mouth:'flat'},
+  happy:      {bl:[-5,5],  br:[-5,-5], lid:[0.0,0.28,0], pupil:[8,0,-1], mouth:'smile'},
+  laughing:   {bl:[-9,6],  br:[-9,-6], lid:[0,0,0],      pupil:[6,0,0],  mouth:'laugh', arch:true},
+  sad:        {bl:[-2,-20],br:[-2,20], lid:[0.30,0,-8],  pupil:[8,0,5],  mouth:'frown'},
+  crying:     {bl:[-2,-24],br:[-2,24], lid:[0.34,0,-10], pupil:[9,0,6],  mouth:'wail', tears:true},
+  angry:      {bl:[8,24],  br:[8,-24], lid:[0.34,0,22],  pupil:[6,0,2],  mouth:'grit'},
+  determined: {bl:[5,14],  br:[5,-14], lid:[0.22,0,12],  pupil:[7,0,0],  mouth:'grit2'},
+  tired:      {bl:[8,-6],  br:[8,6],   lid:[0.58,0.08,0],pupil:[7,0,6],  mouth:'tiny', bags:true},
+  surprised:  {bl:[-9,0],  br:[-9,0], lid:[0,0,0],      pupil:[4,0,0],  mouth:'oh', big:1.12},
+  scared:     {bl:[-10,-12],br:[-10,12],lid:[0,0,0],     pupil:[3.5,0,0],mouth:'wavy', big:1.1},
+  smug:       {bl:[-7,-6], br:[3,10],  lid:[0.40,0,0],   pupil:[7,8,0],  mouth:'smirk'},
+  worried:    {bl:[-8,-22],br:[-8,22], lid:[0.0,0,0],    pupil:[6,-4,1], mouth:'wobble'},
+};
+const MOUTH = {
+  flat:  '<path d="M86 132 L114 132" />',
+  smile: '<path d="M76 120 Q100 150 124 120" />',
+  laugh: '<path d="M74 116 Q100 168 126 116 Z" fill="'+WHITE+'" />',
+  frown: '<path d="M80 140 Q100 120 120 140" />',
+  wail:  '<path d="M80 144 Q100 114 120 144 Z" fill="'+WHITE+'" />',
+  grit:  '<rect x="78" y="124" width="44" height="18" rx="5" fill="'+WHITE+'" stroke="none" /><path d="M89 124 V142 M100 124 V142 M111 124 V142" stroke="'+INK+'" stroke-width="2.5" />',
+  grit2: '<path d="M78 133 L122 133" stroke-width="7" />',
+  tiny:  '<path d="M92 136 L108 136" />',
+  oh:    '<ellipse cx="100" cy="134" rx="10" ry="15" fill="'+WHITE+'" stroke="none" />',
+  wavy:  '<path d="M78 136 Q86 126 94 136 T110 136 T124 136" />',
+  smirk: '<path d="M82 132 Q106 140 124 118" />',
+  wobble:'<path d="M86 138 Q94 130 100 136 T114 134" />',
+};
+
+function face(e, opts={}) {
+  const s = e.big || 1, ex = [70,130], ey = 88, rx = 17*s, ry = 22*s;
+  let g = '';
+  ex.forEach((cx, i) => {
+    const id = `clip${opts.uid}_${i}`, side = i === 0 ? 1 : -1;
+    if (e.arch) { g += `<path d="M${cx-16} ${ey+8} Q${cx} ${ey-22} ${cx+16} ${ey+8}" stroke="${WHITE}" stroke-width="7" stroke-linecap="round" fill="none"/>`; return; }
+    g += `<clipPath id="${id}"><ellipse cx="${cx}" cy="${ey}" rx="${rx}" ry="${ry}"/></clipPath>`;
+    g += `<clipPath id="${id}L"><ellipse cx="${cx}" cy="${ey}" rx="${rx+2.5}" ry="${ry+2.5}"/></clipPath>`;
+    g += `<ellipse cx="${cx}" cy="${ey}" rx="${rx}" ry="${ry}" fill="${WHITE}"/>`;
+    const [pr, pdx, pdy] = e.pupil;
+    g += `<circle cx="${cx + pdx}" cy="${ey + pdy}" r="${pr}" fill="${INK}" clip-path="url(#${id})"/>`;
+    const [top, bot, tilt] = e.lid;
+    const t = tilt * side;                       // inner side drops for angry, rises for sad
+    if (top > 0) g += `<rect x="${cx-60}" y="${ey-ry-70}" width="120" height="${70 + 2*ry*top}" fill="${INK}" transform="rotate(${t} ${cx} ${ey})" clip-path="url(#${id}L)"/>`;
+    if (bot > 0) g += `<rect x="${cx-40}" y="${ey+ry-2*ry*bot}" width="80" height="${40}" fill="${INK}" clip-path="url(#${id}L)"/>`;
+    if (e.bags) g += `<path d="M${cx-14} ${ey+ry+5} Q${cx} ${ey+ry+11} ${cx+14} ${ey+ry+5}" stroke="${WHITE}" stroke-opacity=".55" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+    if (e.tears) g += `<path d="M${cx} ${ey+ry} q-5 20 0 34 q5 -14 0 -34" fill="#bfe3ff"/>`;
+  });
+  const br = (cx, [dy, a]) => `<g transform="rotate(${a} ${cx} ${58+dy})"><path d="M${cx-17} ${58+dy} L${cx+17} ${58+dy}" stroke="${WHITE}" stroke-width="7" stroke-linecap="round"/></g>`;
+  g += br(70, e.bl) + br(130, e.br);
+  g += `<g stroke="${WHITE}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">${MOUTH[e.mouth]}</g>`;
+  return g;
+}
+const head = (g) => `<ellipse cx="100" cy="85" rx="64" ry="68" fill="${INK}"/>${g}`;
+
+// ---------- body rig (forward kinematics) ----------
+const dir = (a) => [Math.sin(rad(a)), Math.cos(rad(a))];   // a=0 down, 90 right, -90 left, 180 up
+const add = (p, v, l) => [p[0] + v[0]*l, p[1] + v[1]*l];
+function limb(p, q, w1, w2) {
+  const dx = q[0]-p[0], dy = q[1]-p[1], L = Math.hypot(dx, dy) || 1, nx = -dy/L, ny = dx/L;
+  const pts = [[p[0]+nx*w1/2,p[1]+ny*w1/2],[q[0]+nx*w2/2,q[1]+ny*w2/2],[q[0]-nx*w2/2,q[1]-ny*w2/2],[p[0]-nx*w1/2,p[1]-ny*w1/2]];
+  return `<polygon points="${pts.map(x=>x.join(',')).join(' ')}" fill="${INK}"/><circle cx="${p[0]}" cy="${p[1]}" r="${w1/2}" fill="${INK}"/><circle cx="${q[0]}" cy="${q[1]}" r="${w2/2}" fill="${INK}"/>`;
+}
+function body(pose, emo, uid) {
+  const H = [150, 250], L = pose.lean, up = [Math.sin(rad(L)), -Math.cos(rad(L))];
+  const N = add(H, up, 105);                                     // neck base
+  const headC = add(N, [Math.sin(rad(L + pose.tilt)), -Math.cos(rad(L + pose.tilt))], 70);
+  let s = limb(H, N, 24, 36);                                   // torso
+  const sh = add(N, up, -10);                                     // shoulder point
+  const arm = (a, side) => { const sp = add(sh, [Math.cos(rad(L)), Math.sin(rad(L))], side * 15), e = add(sp, dir(a[0]), 58), w = add(e, dir(a[1]), 52); return limb(sp, e, 12, 9) + limb(e, w, 9, 7) + `<ellipse cx="${w[0]}" cy="${w[1]}" rx="9" ry="11" fill="${INK}" transform="rotate(${-a[1]} ${w[0]} ${w[1]})"/>`; };
+  const leg = (a, side) => { const k = add(H, dir(a[0]), 78), f = add(k, dir(a[1]), 78); return limb(H, k, 16, 11) + limb(k, f, 11, 8) + `<ellipse cx="${f[0] + side*9}" cy="${f[1]+3}" rx="17" ry="7" fill="${INK}"/>`; };
+  s += leg(pose.legL, -1) + leg(pose.legR, 1) + arm(pose.armL, -1) + arm(pose.armR, 1);
+  s += limb(N, headC, 12, 12);
+  const k = 0.9;                                                  // head scale
+  s += `<g transform="translate(${headC[0]} ${headC[1]}) rotate(${L + pose.tilt}) scale(${k}) translate(-100 -85)">${head(face(emo, {uid}))}</g>`;
+  return s;
+}
+const POSES = {
+  idle:       {lean:0,  tilt:0,   armL:[-10,-5],  armR:[10,5],   legL:[-5,-2], legR:[5,2],   emo:'neutral'},
+  slumped:    {lean:16, tilt:22,  armL:[-3,0],    armR:[8,12],   legL:[-2,0],  legR:[10,6],  emo:'sad'},
+  triumphant: {lean:-4, tilt:-10, armL:[-120,-150],armR:[120,150],legL:[-14,-10],legR:[14,10],emo:'laughing'},
+  pointing:   {lean:5,  tilt:4,   armL:[-8,-4],   armR:[96,92],  legL:[-6,-3], legR:[8,4],   emo:'determined'},
+};
+
+// ---------- render ----------
+const facesEl = document.getElementById('faces'), blurEl = document.getElementById('faces-blur'), posesEl = document.getElementById('poses');
+let n = 0;
+for (const [name, e] of Object.entries(EMO)) {
+  const svg = `<svg viewBox="20 0 160 175" xmlns="http://www.w3.org/2000/svg">${head(face(e, {uid:'a'+(n++)}))}</svg>`;
+  facesEl.insertAdjacentHTML('beforeend', `<div class="cell">${svg}<b>${name}</b></div>`);
+  blurEl.insertAdjacentHTML('beforeend', `<div class="cell"><svg viewBox="20 0 160 175" xmlns="http://www.w3.org/2000/svg">${head(face(e, {uid:'b'+(n++)}))}</svg><b>${name}</b></div>`);
+}
+for (const [name, p] of Object.entries(POSES)) {
+  posesEl.insertAdjacentHTML('beforeend', `<div class="cell"><svg viewBox="0 0 300 430" xmlns="http://www.w3.org/2000/svg">${body(p, EMO[p.emo], 'p'+(n++))}<line x1="20" y1="418" x2="280" y2="418" stroke="#b9b2a5" stroke-width="3"/></svg><b>${name} (${p.emo})</b></div>`);
+}
+</script>
+</body>
+</html>
+

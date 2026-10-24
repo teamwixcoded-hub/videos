@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Character lab</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg:#f2efe9; --ink:#1c1a1d; --muted:#6b6660; }
+  body { margin:0; padding:24px; background:var(--bg); color:var(--ink); font:14px/1.4 system-ui, sans-serif; }
+  h1 { font-size:20px; margin:0 0 4px; } p { margin:0 0 18px; color:var(--muted); }
+  .grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-bottom:30px; }
+  .cell { background:#fff; border-radius:12px; padding:8px 8px 10px; text-align:center; }
+  .cell svg { width:100%; height:auto; display:block; border-radius:8px; }
+  .cell b { display:block; margin-top:6px; font-size:13px; }
+  .blur svg { filter:blur(6px); }
+  h2 { font-size:15px; margin:18px 0 8px; }
+</style>
+</head>
+<body>
+<h1>Character lab: outfit, color and glass look</h1>
+<p>Original character. Clothes, limbs and hands at 80% opacity (20% transparent) with rim light; the head is opaque glass with a sheen so the face stays clear.</p>
+<h2>Poses (indigo outfit, on a striped backdrop so the transparency shows)</h2><div class="grid" id="poses"></div>
+<h2>Outfit variants and dark backdrop</h2><div class="grid" id="outfits"></div>
+<h2>Expression sheet</h2><div class="grid" id="faces"></div>
+<h2>Squint test (blurred)</h2><div class="grid blur" id="faces-blur"></div>
+<script src="character.js"></script>
+<script>
+const $ = (id) => document.getElementById(id); let n = 0;
+for (const [name, p] of Object.entries(POSES)) $('poses').insertAdjacentHTML('beforeend', `<div class="cell">${scene(p, 'indigo', 'p'+(n++))}<b>${name} (${p.emo})</b></div>`);
+[['teal', false, 'idle'], ['coral', false, 'pointing'], ['gold', true, 'triumphant'], ['indigo', true, 'slumped']].forEach(([pal, dark, pose]) =>
+  $('outfits').insertAdjacentHTML('beforeend', `<div class="cell">${scene(POSES[pose], pal, 'o'+(n++), dark)}<b>${pal}${dark ? ' on dark' : ''}, ${pose}</b></div>`));
+for (const [name, e] of Object.entries(EMO)) {
+  $('faces').insertAdjacentHTML('beforeend', `<div class="cell">${headOnly(e, 'a'+(n++))}<b>${name}</b></div>`);
+  $('faces-blur').insertAdjacentHTML('beforeend', `<div class="cell">${headOnly(e, 'b'+(n++))}<b>${name}</b></div>`);
+}
+</script>
+</body>
+</html>

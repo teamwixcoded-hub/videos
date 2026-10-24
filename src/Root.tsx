@@ -21,6 +21,9 @@ import {S2Choice} from './scenes/S2Choice';
 import {S3Struggle} from './scenes/S3Struggle';
 import {S4Night} from './scenes/S4Night';
 import {S5Montage} from './scenes/S5Montage';
+import {LabTest, LAB_FRAMES} from './lab/LabTest';
+import {NewVideo01, NEW01_FRAMES, NEW_SCENE_LIST} from './new/NewVideo01';
+import {Act1New, A1_FRAMES} from './new/act1v2';
 
 const W = 1920, H = 1080, FPS = 30;
 
@@ -28,6 +31,10 @@ export const Root: React.FC = () => {
   return (
     <>
       <Composition id="Video01" component={Video01} durationInFrames={VIDEO01_FRAMES} fps={FPS} width={W} height={H} />
+      <Composition id="LabTest" component={LabTest} durationInFrames={LAB_FRAMES} fps={FPS} width={W} height={H} />
+      <Composition id="NewVideo01" component={NewVideo01} durationInFrames={NEW01_FRAMES} fps={FPS} width={W} height={H} />
+      <Composition id="A1-New" component={Act1New} durationInFrames={A1_FRAMES} fps={FPS} width={W} height={H} />
+      {NEW_SCENE_LIST.map((s) => <Composition key={s.id} id={s.id} component={s.C} durationInFrames={s.frames} fps={FPS} width={W} height={H} />)}
       <Composition id="Hook" component={Hook} durationInFrames={HOOK_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="S06Spreads" component={S06Spreads} durationInFrames={S06_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="S07Day90" component={S07Day90} durationInFrames={S07_FRAMES} fps={FPS} width={W} height={H} />

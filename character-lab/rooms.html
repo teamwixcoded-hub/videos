@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rooms lab: cinematic plates for the story</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg:#0e1118; --ink:#e9edf5; --muted:#8a93a6; }
+  body { margin:0; padding:24px; background:var(--bg); color:var(--ink); font:14px/1.4 system-ui, sans-serif; }
+  h1 { font-size:20px; margin:0 0 4px; } p { margin:0 0 18px; color:var(--muted); }
+  .grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
+  .cell { background:#161b26; border-radius:12px; padding:8px 8px 10px; }
+  .cell.wide { grid-column:1 / -1; }
+  .cell svg { width:100%; height:auto; display:block; border-radius:8px; }
+  .cell b { display:block; margin-top:6px; font-size:13px; }
+</style>
+</head>
+<body>
+<h1>Rooms: baked cinematic plates for the story</h1>
+<p>Blurred depth, colored light, glass. Each one is baked once into a JPEG so rendering stays fast.</p>
+<div class="grid" id="grid"></div>
+<script>
+const W = 800, H = 450;
+let _seed = 7;
+const rnd = () => (_seed = (_seed * 16807) % 2147483647) / 2147483647;
+const rad = (d) => d * Math.PI / 180;
+
+const bokeh = (n, cols, rMin, rMax, y0, y1, o = .55, blur = '1.6', x0 = 0, x1 = W) => {
+  let s = ''; for (let i = 0; i < n; i++) { const r = rMin + rnd() * (rMax - rMin), c = cols[i % cols.length];
+    s += `<circle cx="${(x0 + rnd() * (x1 - x0)).toFixed(0)}" cy="${(y0 + rnd() * (y1 - y0)).toFixed(0)}" r="${r.toFixed(0)}" fill="${c}" opacity="${(o * (.4 + rnd() * .6)).toFixed(2)}" stroke="#fff" stroke-opacity=".16" stroke-width="1.2"/>`; }
+  return `<g filter="url(#bk${blur})">${s}</g>`;
+};
+const rays = (x, y, color, spread, len, n = 5, o = .22) => {
+  let s = ''; for (let i = 0; i < n; i++) { const a = -spread / 2 + (spread / (n - 1)) * i + (rnd() - .5) * 6, w = 14 + rnd() * 26;
+    s += `<polygon points="${x},${y} ${x + Math.sin(rad(a - w / 4)) * len},${y + Math.cos(rad(a - w / 4)) * len} ${x + Math.sin(rad(a + w / 4)) * len},${y + Math.cos(rad(a + w / 4)) * len}" fill="url(#ray-${color.slice(1)})" opacity="${o}"/>`; }
+  return `<g filter="url(#blur6)" style="mix-blend-mode:screen">${s}</g>`;
+};
+const glass = (x, y, w, h, rot = 0, o = .10) => `<g transform="rotate(${rot} ${x + w / 2} ${y + h / 2})"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="#fff" opacity="${o}"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="1.5"/><path d="M${x + 8} ${y + 8} L${x + w * .5} ${y + 8} L${x + 8} ${y + h * .45} Z" fill="#fff" opacity=".09"/></g>`;
+const floor = (y, color, x0 = 0, w = W) => `<rect x="${x0}" y="${y - 50}" width="${w}" height="${H - y + 50}" fill="url(#floor-${color.slice(1)})"/>`;
+const glowc = (x, y, rx, ry, c, o) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${c}" opacity="${o}" filter="url(#blur14)" style="mix-blend-mode:screen"/>`;
+const skyG = (id, stops) => `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">${stops.map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join('')}</linearGradient>`;
+const windowFrame = (x, y, w, h, c = '#0a1230', o = .8) => `<g stroke="${c}" stroke-width="10" fill="none" opacity="${o}" filter="url(#blur3)"><rect x="${x}" y="${y}" width="${w}" height="${h}"/><path d="M${x + w / 2} ${y} V${y + h} M${x} ${y + h * .45} H${x + w}"/></g>`;
+const shelf = (x, y, w, rows, cols, base) => {   // blurred bookshelf: coloured spines in rows
+  let s = ''; const palette = ['#c0504d', '#3b6fd8', '#e8a317', '#2f8f4e', '#8b5cf6', '#e8741a', '#16a3a3', '#d9d2c2'];
+  for (let r = 0; r < rows; r++) { let cx = x; for (let c = 0; c < cols; c++) { const bw = 8 + rnd() * 10, bh = 36 + rnd() * 16;
+    s += `<rect x="${cx.toFixed(0)}" y="${(y + r * 64 + (56 - bh)).toFixed(0)}" width="${bw.toFixed(0)}" height="${bh.toFixed(0)}" fill="${palette[Math.floor(rnd() * palette.length)]}" opacity=".85"/>`; cx += bw + 2; if (cx > x + w) break; }
+    s += `<rect x="${x}" y="${y + r * 64 + 56}" width="${w}" height="6" fill="${base}"/>`; }
+  return `<g filter="url(#bk4)">${s}</g>`;
+};
+const rayColors = ['#ffd27a', '#7ee8ff', '#ff6fb5', '#fff4d0', '#9d8cff', '#ffb066', '#9fd0ff'];
+const sharedDefs = `<defs>
+  <filter id="blur3" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3"/></filter>
+  <filter id="blur6" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter>
+  <filter id="blur14" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+  <filter id="bk1.6" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.6"/></filter>
+  <filter id="bk4" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="4"/></filter>
+  <filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3"/><feColorMatrix type="saturate" values="0"/></filter>
+  <radialGradient id="vig" cx="50%" cy="50%" r="75%"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".6"/></radialGradient>
+  ${rayColors.map((c) => `<linearGradient id="ray-${c.slice(1)}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".95"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient>`).join('')}
+  ${rayColors.map((c) => `<linearGradient id="floor-${c.slice(1)}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity="0"/><stop offset=".22" stop-color="${c}" stop-opacity=".30"/><stop offset="1" stop-color="#000" stop-opacity=".6"/></linearGradient>`).join('')}
+</defs>`;
+
+// ---- room builders (800 x 450 each) ----
+const R = {
+  coldBedroom: () => `<defs>${skyG('cb', [[0, '#050a1c'], [.6, '#0b1a38'], [1, '#0d2147']])}</defs><rect width="${W}" height="${H}" fill="url(#cb)"/>
+    <circle cx="150" cy="95" r="42" fill="#dbe8ff" opacity=".85" filter="url(#blur6)"/>${rays(150, 100, '#9fd0ff', 40, 520, 4, .20)}
+    ${bokeh(20, ['#ffd27a', '#fff4d0', '#7ee8ff'], 3, 12, 110, 250, .5, '4', 40, 300)}${windowFrame(40, 30, 230, 240)}
+    <g filter="url(#bk4)" opacity=".85"><rect x="470" y="250" width="300" height="70" rx="14" fill="#0a1636"/><rect x="450" y="180" width="40" height="140" rx="10" fill="#0a1636"/><rect x="380" y="270" width="70" height="80" rx="8" fill="#0a1636"/></g>
+    ${glowc(560, 330, 260, 130, '#4fb8ff', .38)}${glowc(560, 300, 110, 60, '#9fe8ff', .35)}${floor(345, '#9fd0ff')}${bokeh(26, ['#bcd0ff'], 1.5, 3.5, 60, 400, .5)}`,
+  warmStudy: () => `<defs>${skyG('ws', [[0, '#1c0f08'], [.6, '#3a200f'], [1, '#2a170b']])}</defs><rect width="${W}" height="${H}" fill="url(#ws)"/>
+    ${shelf(40, 26, 330, 5, 28, '#4a2a14')}${shelf(450, 40, 320, 4, 26, '#4a2a14')}
+    ${glowc(200, 250, 260, 170, '#ffb347', .45)}${glowc(210, 190, 110, 90, '#ffe3a0', .5)}${rays(200, 150, '#ffd27a', 70, 360, 5, .22)}
+    <g filter="url(#bk4)" opacity=".9"><rect x="120" y="270" width="190" height="110" rx="34" fill="#5a2c12"/><rect x="100" y="320" width="70" height="80" rx="24" fill="#4a230d"/></g>
+    ${bokeh(16, ['#ffd27a', '#fff4d0', '#ffb347'], 4, 16, 60, 330, .5)}${floor(360, '#ffb066')}${bokeh(20, ['#ffe3a0'], 1.5, 3.5, 60, 400, .55)}`,
+  kitchen: () => `<defs>${skyG('kt', [[0, '#ffe6b8'], [.5, '#ffd08a'], [1, '#c98f60']])}</defs><rect width="${W}" height="${H}" fill="url(#kt)"/>
+    <rect x="70" y="40" width="230" height="230" fill="#fff6dc" opacity=".95" filter="url(#blur6)"/>${windowFrame(70, 40, 230, 230, '#b97b46', .55)}${rays(190, 60, '#fff4d0', 70, 520, 6, .32)}
+    <g filter="url(#bk4)" opacity=".8"><rect x="360" y="60" width="420" height="120" fill="#b97b46"/><rect x="340" y="250" width="440" height="120" fill="#d9a26a"/><rect x="340" y="240" width="440" height="14" fill="#f0c890"/></g>
+    ${bokeh(14, ['#fff4d0', '#ffd27a'], 4, 16, 60, 300, .5)}${floor(370, '#ffb066')}${bokeh(26, ['#fff'], 1.2, 3, 60, 400, .6)}`,
+  bathroom: () => `<defs>${skyG('bt', [[0, '#071a22'], [.6, '#0e3a44'], [1, '#0a2830']])}</defs><rect width="${W}" height="${H}" fill="url(#bt)"/>
+    <g stroke="#7ee8ff" stroke-opacity=".10" stroke-width="2">${[...Array(14)].map((_, i) => `<path d="M${i * 60} 0 V${H}"/>`).join('')}${[...Array(8)].map((_, i) => `<path d="M0 ${i * 60} H${W}"/>`).join('')}</g>
+    <rect x="260" y="60" width="280" height="190" rx="20" fill="#cfeeff" opacity=".55" filter="url(#blur6)"/>${glowc(400, 160, 260, 140, '#9fe8ff', .5)}${rays(400, 40, '#9fd0ff', 50, 380, 4, .22)}
+    <g filter="url(#bk4)" opacity=".85"><rect x="220" y="260" width="360" height="80" rx="16" fill="#0a2a33"/></g>
+    ${bokeh(14, ['#7ee8ff', '#fff'], 4, 14, 80, 320, .4)}${floor(360, '#7ee8ff')}`,
+  office: () => `<defs>${skyG('of', [[0, '#bcd6f2'], [.5, '#8fb3dc'], [1, '#3c5578']])}</defs><rect width="${W}" height="${H}" fill="url(#of)"/>
+    <g filter="url(#bk4)" opacity=".75">${[...Array(14)].map((_, i) => `<rect x="${i * 60 - 10}" y="${130 + (i * 41) % 90}" width="${44 + (i % 3) * 14}" height="260" fill="${['#5a7aa8', '#6b8bb8', '#486a96'][i % 3]}"/>`).join('')}</g>
+    <circle cx="640" cy="90" r="50" fill="#fff" opacity=".7" filter="url(#blur14)"/>${rays(640, 90, '#fff4d0', 70, 520, 5, .26)}
+    ${glass(40, 30, 220, 270, -3, .10)}${glass(290, 20, 210, 290, 0, .08)}${glass(530, 34, 230, 266, 3, .10)}
+    <g filter="url(#bk4)" opacity=".85"><rect x="140" y="300" width="520" height="22" rx="8" fill="#2a3a56"/><rect x="180" y="322" width="16" height="90" fill="#2a3a56"/><rect x="600" y="322" width="16" height="90" fill="#2a3a56"/></g>
+    ${floor(350, '#9fd0ff')}${bokeh(14, ['#fff', '#9fd0ff'], 4, 14, 60, 300, .4)}`,
+  living: () => `<defs>${skyG('lv', [[0, '#3a1e44'], [.45, '#c8604a'], [.8, '#ffb066'], [1, '#6a3a2a']])}</defs><rect width="${W}" height="${H}" fill="url(#lv)"/>
+    <circle cx="590" cy="190" r="70" fill="#fff0c0" opacity=".85" filter="url(#blur14)"/>${rays(590, 190, '#ffd27a', 80, 480, 6, .28)}${windowFrame(470, 50, 260, 250, '#2a1424', .6)}
+    <g filter="url(#bk4)" opacity=".9"><rect x="60" y="270" width="340" height="110" rx="40" fill="#4a1e2a"/><rect x="40" y="320" width="90" height="90" rx="28" fill="#3a1722"/></g>
+    ${glowc(250, 300, 260, 120, '#ffb066', .3)}${bokeh(16, ['#fff4d0', '#ffd27a'], 4, 16, 60, 320, .5)}${floor(370, '#ffb066')}`,
+  manager: () => `<defs>${skyG('mg', [[0, '#1a1030'], [.5, '#3a2146'], [1, '#2a1a1a']])}</defs><rect width="${W}" height="${H}" fill="url(#mg)"/>
+    <g filter="url(#bk4)" opacity=".8">${[...Array(15)].map((_, i) => `<rect x="${i * 56 - 10}" y="${150 + (i * 37) % 100}" width="${40 + (i % 3) * 12}" height="260" fill="${['#3a2a5a', '#4a345e', '#2e2250'][i % 3]}"/>`).join('')}</g>
+    ${bokeh(36, ['#ffd27a', '#fff4d0', '#ff9a6a', '#9d8cff'], 3, 12, 150, 330, .55, '4')}${windowFrame(60, 40, 680, 290, '#120a22', .7)}
+    ${glowc(400, 340, 330, 90, '#ffb066', .32)}<g filter="url(#bk4)" opacity=".9"><rect x="180" y="330" width="440" height="26" rx="8" fill="#3a2010"/></g>${floor(370, '#ffb066')}`,
+};
+const wide = () => `${R.warmStudy()}<g transform="translate(${W} 0)">${R.coldBedroom()}</g>
+  <rect x="${W - 140}" y="0" width="280" height="${H}" fill="url(#mid)"/>`;
+const midDefs = `<defs><linearGradient id="mid" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3a200f" stop-opacity="0"/><stop offset=".5" stop-color="#241a2e" stop-opacity=".85"/><stop offset="1" stop-color="#0b1a38" stop-opacity="0"/></linearGradient></defs>`;
+
+const ROOMS = [
+  {id: 'cold-bedroom', title: 'Cold bedroom', note: 'phone light, moon, night', vb: [W, H], bg: R.coldBedroom},
+  {id: 'warm-study', title: 'Warm study', note: 'lamp, shelves of books', vb: [W, H], bg: R.warmStudy},
+  {id: 'two-lives', title: 'Two lives (wide)', note: 'warm study left, cold bedroom right', vb: [W * 2, H], bg: () => midDefs + wide(), wide: true},
+  {id: 'kitchen', title: 'Kitchen, morning', note: 'sunlit', vb: [W, H], bg: R.kitchen},
+  {id: 'bathroom', title: 'Bathroom, night', note: 'cool tile, mirror glow', vb: [W, H], bg: R.bathroom},
+  {id: 'office', title: 'Office, day', note: 'glass, skyline', vb: [W, H], bg: R.office},
+  {id: 'living', title: 'Living room, evening', note: 'sunset through the window', vb: [W, H], bg: R.living},
+  {id: 'manager', title: "Manager's office", note: 'dusk skyline, warm desk', vb: [W, H], bg: R.manager},
+];
+const vignette = (w) => `<rect width="${w}" height="${H}" fill="url(#vig)"/>`;
+const grain = (w) => `<rect width="${w}" height="${H}" filter="url(#grain)" opacity=".08" style="mix-blend-mode:overlay"/>`;
+const svgFor = (r, i) => { _seed = 7 + i * 101; return `<svg viewBox="0 0 ${r.vb[0]} ${r.vb[1]}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">${sharedDefs}${r.bg()}${vignette(r.vb[0])}${grain(r.vb[0])}</svg>`; };
+
+const only = new URLSearchParams(location.search).get('bare');
+if (only !== null) {
+  const i = ROOMS.findIndex((r) => r.id === only);
+  document.body.style.cssText = 'margin:0;padding:0;background:#000;overflow:hidden';
+  document.body.innerHTML = svgFor(ROOMS[i], i).replace('<svg ', '<svg style="width:100vw;height:100vh;display:block" ');
+} else {
+  const grid = document.getElementById('grid');
+  ROOMS.forEach((r, i) => grid.insertAdjacentHTML('beforeend', `<div class="cell${r.wide ? ' wide' : ''}">${svgFor(r, i)}<b>${r.title}</b> <span style="color:#8a93a6;font-size:12px">${r.note}</span></div>`));
+}
+</script>
+</body>
+</html>

@@ -47,7 +47,7 @@ const CAPTIONS: CaptionLine[] = [
   {text: 'But he knows where it came from.', from: 23.0, to: 27.4},
 ];
 
-const SFX: Cue[] = [
+export const SFX: Cue[] = [
   {file: 'boom', at: 15.9, real: true, vol: 0.35, dur: 1.2, fadeOut: 0.5},
   {file: 'room_tone', at: 0, dur: 19, vol: 0.12, fadeIn: 1.5, fadeOut: 2},
   {file: 'swell', at: 0.6, dur: 5, vol: 0.2, fadeIn: 1.2, fadeOut: 1.8},

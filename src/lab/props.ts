@@ -1,0 +1,135 @@
+// @ts-nocheck
+// Ported from character-lab/props.html (vector props and effects).
+
+let RIM = '#eaf6ff'; const OP = 0.92;
+// ---------- gradients ----------
+const G = {
+  red:['#ff8f8f','#d33a3a'], coral:['#ffa0ae','#c81e4a'], gold:['#ffe28a','#e8a317'], yellow:['#fff39a','#f5c518'],
+  green:['#86e0a0','#2f8f4e'], teal:['#7be8d6','#0f8f84'], blue:['#9ccbff','#3b6fd8'], indigo:['#a79fff','#4338ca'],
+  orange:['#ffbd7a','#e8741a'], paper:['#fffdf8','#e6dfce'], cream:['#fff4e0','#ecd2a8'], slate:['#b3bed2','#5f6f8a'],
+  dark:['#4a5a7e','#1b2437'], grey:['#dde2ea','#8e98a8'], cloud:['#eceff3','#9aa3b2'], brown:['#dca066','#8e5a2e'],
+  terra:['#e9a073','#b4552b'], leaf:['#8fe3a2','#1f8a45'], glass:['#e9f7ff','#a6d4f6'], water:['#c5e9ff','#4fa8e6'],
+  screen:['#8aeaff','#3b82f6'], tan:['#f1c7a0','#c98f60'], suit:['#5b6b92','#252f4d'], pink:['#ffc2d4','#f0709a'],
+};
+const PROP_DEFS = Object.entries(G).map(([k, [a, b]]) =>
+  `<linearGradient id="g-${k}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`).join('')
+  + `<radialGradient id="g-glow"><stop offset="0" stop-color="#fff6b0" stop-opacity=".95"/><stop offset="1" stop-color="#fff6b0" stop-opacity="0"/></radialGradient>`
+  + `<radialGradient id="g-cyan"><stop offset="0" stop-color="#7ee8ff" stop-opacity=".8"/><stop offset="1" stop-color="#7ee8ff" stop-opacity="0"/></radialGradient>`
+  + `<pattern id="g-bg" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="26" height="26" fill="#e4ddd0"/><rect width="13" height="26" fill="#d3c9b8"/></pattern>`;
+const f = (k) => `url(#g-${k})`;
+
+// ---------- drawing helpers ----------
+// U: union of filled shapes â€” all rims first, then all fills, so shapes merge into one glass piece
+const U = (shapes, fill) => shapes.map(([t, a]) => `<${t} ${a} fill="${RIM}" stroke="${RIM}" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>`).join('')
+  + shapes.map(([t, a]) => `<${t} ${a} fill="${fill}"/>`).join('');
+const one = (t, a, fill) => U([[t, a]], f(fill));
+const sk = (d, color, w) => `<path d="${d}" fill="none" stroke="${RIM}" stroke-width="${w + 5}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+const line = (d, c = '#5f6f8a', w = 3, o = .55) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-opacity="${o}" stroke-linecap="round"/>`;
+const hl = (d, o = .45) => `<path d="${d}" fill="none" stroke="#fff" stroke-width="5" stroke-opacity="${o}" stroke-linecap="round"/>`;
+
+const P = {}, FX = {};
+
+P.alarm = () => {
+  let ticks = ''; for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6, r1 = 41, r2 = i % 3 ? 45 : 38; ticks += `<path d="M${100 + Math.sin(a)*r1} ${108 - Math.cos(a)*r1} L${100 + Math.sin(a)*r2*1.0} ${108 - Math.cos(a)*r2}" stroke="#4b5568" stroke-width="${i % 3 ? 2.5 : 4}" stroke-linecap="round"/>`; }
+  return one('rect', 'x="52" y="150" width="16" height="30" rx="7" transform="rotate(22 60 152)"', 'red') + one('rect', 'x="132" y="150" width="16" height="30" rx="7" transform="rotate(-22 140 152)"', 'red')
+    + one('circle', 'cx="60" cy="48" r="22"', 'gold') + one('circle', 'cx="140" cy="48" r="22"', 'gold') + sk('M100 30 L100 44', '#a33', 8)
+    + one('circle', 'cx="100" cy="108" r="66"', 'red') + one('circle', 'cx="100" cy="108" r="50"', 'paper') + ticks
+    + sk('M100 108 L76 123', '#2c3447', 6) + sk('M100 108 L100 70', '#2c3447', 4.5) + `<circle cx="100" cy="108" r="5" fill="#2c3447"/>` + hl('M52 80 Q60 60 78 52', .5);
+};
+P.blanket = () => one('rect', 'x="22" y="122" width="158" height="48" rx="22" transform="rotate(-2 100 146)"', 'slate')
+  + one('rect', 'x="28" y="92" width="150" height="46" rx="22" transform="rotate(1.5 100 115)"', 'grey')
+  + one('rect', 'x="20" y="60" width="160" height="46" rx="22" transform="rotate(-1.5 100 83)"', 'paper')
+  + line('M40 84 Q100 74 164 84', '#8e98a8', 3, .5) + line('M44 116 Q100 108 160 116', '#7f8aa0', 3, .5) + line('M40 148 Q100 140 164 148', '#5f6f8a', 3, .5)
+  + `<path d="M166 66 Q184 83 166 100" fill="none" stroke="#8e98a8" stroke-width="3" stroke-opacity=".5" stroke-linecap="round"/>` + hl('M36 72 Q70 64 110 66', .6);
+P['book-closed'] = () => U([['rect', 'x="44" y="18" width="104" height="152" rx="9"']], f('green')) + U([['rect', 'x="44" y="18" width="18" height="152" rx="9"']], f('teal'))
+  + U([['rect', 'x="54" y="158" width="100" height="18" rx="4"']], f('cream')) + line('M62 164 H148 M62 170 H148', '#b79a6a', 2, .8)
+  + `<rect x="76" y="56" width="58" height="12" rx="6" fill="#ffe28a" opacity=".9"/><rect x="82" y="78" width="46" height="8" rx="4" fill="#ffe28a" opacity=".6"/>` + hl('M70 30 V150', .25);
+P['book-open'] = () => U([['path', 'd="M16 46 L16 160 Q64 150 100 168 Q136 150 184 160 L184 46 Q136 36 100 54 Q64 36 16 46 Z"']], f('indigo'))
+  + U([['path', 'd="M24 40 Q64 30 100 48 L100 156 Q64 140 24 148 Z"']], f('paper')) + U([['path', 'd="M176 40 Q136 30 100 48 L100 156 Q136 140 176 148 Z"']], f('paper'))
+  + line('M38 62 Q64 58 86 70 M38 78 Q64 74 86 86 M38 94 Q64 90 86 102 M38 110 Q64 106 86 118', '#8e98a8', 3, .7) + line('M162 62 Q136 58 114 70 M162 78 Q136 74 114 86 M162 94 Q136 90 114 102 M162 110 Q136 106 114 118', '#8e98a8', 3, .7);
+P['book-red'] = () => U([['rect', 'x="46" y="16" width="108" height="156" rx="8"']], f('red')) + U([['rect', 'x="46" y="16" width="16" height="156" rx="8"']], f('coral'))
+  + `<circle cx="108" cy="82" r="20" fill="#ffe28a" opacity=".85"/><circle cx="108" cy="82" r="10" fill="#d33a3a" opacity=".7"/>` + U([['rect', 'x="54" y="162" width="104" height="14" rx="4"']], f('cream')) + hl('M72 28 V140', .25);
+P['book-stack'] = () => `<circle cx="100" cy="100" r="86" fill="${RIM}"/><circle cx="100" cy="100" r="82" fill="url(#g-paper)"/>`
+  + one('rect', 'x="52" y="48" width="30" height="96" rx="5" transform="rotate(-6 67 96)"', 'blue') + one('rect', 'x="84" y="40" width="34" height="104" rx="5"', 'gold') + one('rect', 'x="120" y="50" width="30" height="94" rx="5" transform="rotate(5 135 97)"', 'red')
+  + `<rect x="90" y="62" width="22" height="6" rx="3" fill="#fff" opacity=".7"/><rect x="58" y="62" width="18" height="5" rx="2.5" fill="#fff" opacity=".6" transform="rotate(-6 67 96)"/>` + `<ellipse cx="100" cy="150" rx="56" ry="6" fill="#000" opacity=".12"/>`;
+P['book-tower'] = () => {
+  const cols = ['red', 'blue', 'green', 'gold', 'indigo', 'orange', 'teal', 'coral'], off = [0, 6, -4, 8, -2, 4, -6, 2]; let s = '';
+  cols.forEach((c, i) => { const y = 168 - i * 19, x = 36 + off[i], w = 112; s += U([['rect', `x="${x}" y="${y}" width="${w}" height="17" rx="4"`]], f(c)) + `<rect x="${x + w - 18}" y="${y + 3}" width="14" height="11" rx="2" fill="#fff4e0" opacity=".9"/>`; });
+  return s;
+};
+P['books-flat'] = () => {
+  const items = [['blue', 124, 0], ['green', 90, 8], ['orange', 56, -4]]; let s = '';
+  items.forEach(([c, y, dx]) => { s += U([['rect', `x="${28 + dx}" y="${y}" width="144" height="36" rx="6"`]], f(c)) + U([['rect', `x="${44 + dx}" y="${y + 8}" width="122" height="20" rx="3"`]], f('cream')) + line(`M${50 + dx} ${y + 14} H${160 + dx} M${50 + dx} ${y + 21} H${160 + dx}`, '#b79a6a', 2, .8); });
+  return s;
+};
+P['bubble-speech'] = () => U([['path', 'd="M52 118 L30 168 L88 134 Z"'], ['ellipse', 'cx="104" cy="86" rx="84" ry="60"']], f('paper')) + hl('M44 70 Q56 44 92 36', .55);
+P['bubble-thought'] = () => U([['circle', 'cx="62" cy="80" r="40"'], ['circle', 'cx="108" cy="58" r="46"'], ['circle', 'cx="152" cy="86" r="38"'], ['circle', 'cx="98" cy="102" r="42"'], ['circle', 'cx="50" cy="130" r="18"'], ['circle', 'cx="26" cy="166" r="11"']], '#fbf8f0') + hl('M62 52 Q80 34 104 30', .55);
+P.calendar = () => {
+  let g = ''; for (let c = 1; c < 6; c++) g += `<path d="M${30 + c * 23.3} 76 V164" stroke="#aab3c4" stroke-width="2"/>`; for (let r = 1; r < 4; r++) g += `<path d="M30 ${76 + r * 22} H170" stroke="#aab3c4" stroke-width="2"/>`;
+  return U([['rect', 'x="30" y="36" width="140" height="130" rx="12"']], f('paper')) + `<path d="M30 48 Q30 36 42 36 H158 Q170 36 170 48 V70 H30 Z" fill="url(#g-blue)"/>` + g
+    + [52, 100, 148].map((x) => one('rect', `x="${x - 5}" y="24" width="10" height="26" rx="5"`, 'slate')).join('') + `<circle cx="122" cy="120" r="9" fill="#d33a3a" opacity=".85"/>`;
+};
+P.cereal = () => {
+  let o = ''; for (let i = 0; i < 16; i++) { const x = 58 + (i * 37) % 86, y = 84 + (i * 19) % 14; o += `<ellipse cx="${x}" cy="${y}" rx="9" ry="6" fill="${i % 3 ? '#f1b84a' : '#e29a2a'}" stroke="#fff" stroke-opacity=".5" stroke-width="1.5" transform="rotate(${i * 40} ${x} ${y})"/>`; }
+  return sk('M118 92 L168 36', '#8e98a8', 7) + one('ellipse', 'cx="172" cy="32" rx="12" ry="8" transform="rotate(-50 172 32)"', 'grey')
+    + one('path', 'd="M26 96 Q26 166 100 166 Q174 166 174 96 Z"', 'cream') + one('ellipse', 'cx="100" cy="96" rx="74" ry="16"', 'tan') + `<ellipse cx="100" cy="97" rx="64" ry="11" fill="#e8c68d"/>` + o + hl('M38 112 Q44 140 70 154', .5);
+};
+P.glasses = () => `<path d="M90 100 Q100 90 110 100" fill="none" stroke="${RIM}" stroke-width="12"/><path d="M90 100 Q100 90 110 100" fill="none" stroke="#3a2c26" stroke-width="7" stroke-linecap="round"/>`
+  + [58, 142].map((x) => `<circle cx="${x}" cy="108" r="34" fill="${RIM}"/><circle cx="${x}" cy="108" r="31" fill="#3a2c26"/><circle cx="${x}" cy="108" r="25" fill="url(#g-dark)"/><path d="M${x - 16} ${96} L${x + 2} ${80}" stroke="#fff" stroke-width="6" stroke-opacity=".5" stroke-linecap="round"/>`).join('')
+  + sk('M24 104 L8 96 M176 104 L192 96', '#3a2c26', 6);
+P.headphones = () => sk('M36 124 Q36 30 100 30 Q164 30 164 124', '#2c3447', 14) + one('rect', 'x="22" y="98" width="44" height="76" rx="20"', 'slate') + one('rect', 'x="134" y="98" width="44" height="76" rx="20"', 'slate')
+  + `<ellipse cx="44" cy="138" rx="14" ry="26" fill="#2c3447"/><ellipse cx="156" cy="138" rx="14" ry="26" fill="#2c3447"/>` + hl('M32 112 Q36 104 48 104', .5);
+P.hoodie = () => one('path', 'd="M72 34 Q100 18 128 34 L170 54 L188 128 L160 138 L154 102 L154 178 L46 178 L46 102 L40 138 L12 128 L30 54 Z"', 'slate')
+  + one('path', 'd="M72 34 Q100 70 128 34 Q100 12 72 34 Z"', 'grey') + one('path', 'd="M62 128 H138 L146 164 H54 Z"', 'grey')
+  + sk('M90 56 L88 92 M110 56 L112 92', '#fff', 4) + line('M100 66 V128', '#5f6f8a', 2, .35) + hl('M44 64 L30 118', .35);
+P.lamp = () => `<ellipse cx="100" cy="86" rx="70" ry="64" fill="url(#g-glow)" opacity=".7"/>` + one('ellipse', 'cx="100" cy="182" rx="30" ry="8"', 'slate') + one('rect', 'x="96" y="84" width="8" height="98" rx="4"', 'slate')
+  + one('path', 'd="M60 84 L140 84 L120 22 L80 22 Z"', 'gold') + sk('M126 84 L126 112', '#5f6f8a', 3) + `<circle cx="126" cy="116" r="4" fill="#5f6f8a"/>` + hl('M84 34 L70 74', .55);
+P.mug = () => `<path d="M140 76 Q188 76 188 110 Q188 146 140 142" fill="none" stroke="${RIM}" stroke-width="22" stroke-linecap="round"/><path d="M140 76 Q188 76 188 110 Q188 146 140 142" fill="none" stroke="#2f8f4e" stroke-width="14" stroke-linecap="round"/>`
+  + one('path', 'd="M38 56 H142 V142 Q142 168 116 168 H64 Q38 168 38 142 Z"', 'green') + one('ellipse', 'cx="90" cy="56" rx="52" ry="12"', 'teal') + `<ellipse cx="90" cy="57" rx="43" ry="8" fill="#5a3a22"/>` + hl('M52 80 V138', .45);
+P.phone = () => one('rect', 'x="58" y="14" width="84" height="172" rx="16"', 'dark') + `<rect x="66" y="28" width="68" height="144" rx="8" fill="#0f172a"/><rect x="88" y="33" width="24" height="6" rx="3" fill="#2c3447"/><rect x="86" y="164" width="28" height="3" rx="1.5" fill="#46567a"/>` + hl('M70 36 L120 160', .12);
+P['phone-lit'] = () => `<ellipse cx="100" cy="100" rx="96" ry="98" fill="url(#g-cyan)"/>` + one('rect', 'x="58" y="14" width="84" height="172" rx="16"', 'dark') + `<rect x="66" y="28" width="68" height="144" rx="8" fill="url(#g-screen)"/><rect x="88" y="33" width="24" height="6" rx="3" fill="#1b2437"/>`
+  + `<rect x="74" y="52" width="52" height="12" rx="6" fill="#fff" opacity=".85"/><rect x="74" y="76" width="36" height="8" rx="4" fill="#fff" opacity=".6"/><rect x="74" y="94" width="52" height="30" rx="8" fill="#fff" opacity=".35"/><circle cx="100" cy="148" r="10" fill="#fff" opacity=".6"/>` + hl('M70 36 L110 150', .3);
+P.photo = () => `<path d="M30 70 L14 176 L40 176 Z" fill="${RIM}"/><path d="M32 78 L22 170 L38 170 Z" fill="url(#g-brown)"/>` + one('rect', 'x="36" y="26" width="132" height="146" rx="8"', 'brown') + `<rect x="50" y="40" width="104" height="118" rx="3" fill="url(#g-glass)"/>`
+  + `<path d="M50 158 Q54 118 102 112 Q150 118 154 158 Z" fill="url(#g-suit)"/><path d="M102 112 L90 126 L102 158 L114 126 Z" fill="#fff"/><path d="M102 124 L97 134 L102 156 L107 134 Z" fill="#d33a3a"/><circle cx="102" cy="82" r="24" fill="url(#g-tan)"/>`
+  + `<circle cx="93" cy="78" r="2.8" fill="#2c3447"/><circle cx="111" cy="78" r="2.8" fill="#2c3447"/><path d="M92 92 Q102 100 112 92" fill="none" stroke="#7a4a2a" stroke-width="3" stroke-linecap="round"/>`;
+P.pillow = () => one('path', 'd="M22 56 Q100 34 178 56 Q190 100 178 146 Q100 168 22 146 Q10 100 22 56 Z"', 'paper') + line('M34 62 Q50 82 46 100 M166 62 Q150 82 154 100 M34 140 Q52 120 48 104 M166 140 Q150 120 152 104', '#a9b2c3', 3, .6) + hl('M44 70 Q80 58 120 60', .6);
+P.plant = () => one('path', 'd="M100 128 Q64 90 72 32 Q112 62 100 128 Z"', 'leaf') + one('path', 'd="M100 128 Q136 90 128 32 Q88 62 100 128 Z"', 'leaf') + one('path', 'd="M100 128 Q84 76 100 14 Q116 76 100 128 Z"', 'green')
+  + one('path', 'd="M100 128 Q50 118 34 78 Q80 82 100 128 Z"', 'leaf') + one('path', 'd="M100 128 Q150 118 166 78 Q120 82 100 128 Z"', 'leaf')
+  + one('path', 'd="M64 138 H136 L126 182 Q100 188 74 182 Z"', 'terra') + one('rect', 'x="56" y="124" width="88" height="20" rx="8"', 'orange') + hl('M72 152 L78 174', .4);
+P.teacup = () => one('ellipse', 'cx="100" cy="162" rx="82" ry="15"', 'cream') + `<path d="M146 84 Q190 82 188 112 Q186 140 144 134" fill="none" stroke="${RIM}" stroke-width="20" stroke-linecap="round"/><path d="M146 84 Q190 82 188 112 Q186 140 144 134" fill="none" stroke="#ecd2a8" stroke-width="12" stroke-linecap="round"/>`
+  + one('path', 'd="M46 78 Q46 156 100 156 Q154 156 154 78 Z"', 'cream') + one('ellipse', 'cx="100" cy="78" rx="54" ry="13"', 'tan') + `<ellipse cx="100" cy="79" rx="45" ry="9" fill="#a65e2e"/>` + hl('M58 96 Q62 130 84 144', .5);
+P.toothbrush = () => `<g transform="rotate(-42 100 100)">` + one('rect', 'x="22" y="91" width="118" height="18" rx="9"', 'teal') + one('rect', 'x="132" y="94" width="30" height="12" rx="5"', 'teal') + one('rect', 'x="152" y="82" width="34" height="36" rx="8"', 'paper')
+  + [158, 168, 178].map((x) => `<rect x="${x}" y="74" width="7" height="14" rx="3" fill="#3b82f6" stroke="#eaf6ff" stroke-width="1.5"/>`).join('') + hl('M36 96 H118', .55) + `</g>`;
+P.water = () => `<path d="M54 30 L146 30 L135 176 Q100 184 65 176 Z" fill="${RIM}" stroke="${RIM}" stroke-width="5" stroke-linejoin="round"/><path d="M54 30 L146 30 L135 176 Q100 184 65 176 Z" fill="url(#g-glass)" opacity=".7"/>`
+  + `<path d="M58 72 Q100 82 142 72 L135 172 Q100 180 65 172 Z" fill="url(#g-water)"/>` + `<ellipse cx="100" cy="72" rx="42" ry="7" fill="#d9f1ff" opacity=".9"/>`
+  + `<circle cx="84" cy="128" r="5" fill="#fff" opacity=".6"/><circle cx="108" cy="110" r="3.5" fill="#fff" opacity=".6"/><circle cx="116" cy="146" r="6" fill="#fff" opacity=".5"/>` + hl('M66 44 L74 160', .6);
+
+// ---------- effects ----------
+FX.anger = () => [['M86 30 Q54 46 60 86'], ['M114 30 Q146 46 140 86'], ['M60 114 Q54 154 86 170'], ['M140 114 Q146 154 114 170']].map(([d]) => sk(d, '#d33a3a', 16)).join('');
+FX.badge = () => one('circle', 'cx="100" cy="100" r="78"', 'red') + hl('M52 74 Q64 48 100 38', .6);
+FX.bolt = () => one('path', 'd="M112 10 L56 108 L94 108 L78 190 L146 84 L106 84 Z"', 'yellow') + hl('M108 26 L74 92', .6);
+FX.bulb = () => one('circle', 'cx="100" cy="78" r="50"', 'yellow') + one('path', 'd="M78 112 H122 L118 138 H82 Z"', 'yellow') + one('rect', 'x="80" y="138" width="40" height="12" rx="5"', 'grey') + one('rect', 'x="84" y="150" width="32" height="12" rx="5"', 'slate')
+  + `<path d="M88 112 V88 Q88 76 100 76 Q112 76 112 88 V112" fill="none" stroke="#c98a1a" stroke-width="3.5" stroke-linecap="round"/>` + hl('M68 58 Q74 44 90 38', .7);
+FX.dust = () => U([['circle', 'cx="100" cy="70" r="40"'], ['circle', 'cx="62" cy="88" r="30"'], ['circle', 'cx="140" cy="88" r="30"'], ['circle', 'cx="100" cy="104" r="34"'], ['rect', 'x="88" y="110" width="24" height="64" rx="10"']], f('cloud')) + hl('M70 54 Q84 36 108 36', .5);
+FX.exclaim = () => one('rect', 'x="86" y="14" width="28" height="110" rx="14"', 'red') + one('circle', 'cx="100" cy="162" r="17"', 'red') + hl('M95 28 V100', .5);
+FX.heart = () => one('path', 'd="M100 176 C16 116 18 48 64 44 C86 42 98 56 100 70 C102 56 114 42 136 44 C182 48 184 116 100 176 Z"', 'red') + hl('M44 70 Q50 56 66 54', .6);
+FX.question = () => sk('M64 64 Q64 24 102 24 Q140 24 140 62 Q140 88 110 102 Q100 108 100 126', '#d33a3a', 22) + one('circle', 'cx="100" cy="164" r="15"', 'red');
+FX.sparkle = () => one('path', 'd="M96 20 Q104 90 176 98 Q104 106 96 176 Q88 106 16 98 Q88 90 96 20 Z"', 'gold') + one('path', 'd="M162 14 Q165 36 186 40 Q165 44 162 66 Q159 44 138 40 Q159 36 162 14 Z"', 'yellow');
+FX.speed = () => [[44, 14], [72, 18], [100, 18], [128, 16], [156, 12]].map(([y, h], i) => `<path d="M${16 + i * 10} ${y - h / 2} Q110 ${y - h / 2 + 2} 188 ${y + (i - 2) * 2} Q110 ${y + h / 2 - 2} ${16 + i * 10} ${y + h / 2} Z" fill="#2c3447" stroke="${RIM}" stroke-width="3" stroke-linejoin="round"/>`).join('');
+FX.sweat = () => one('path', 'd="M100 18 Q150 86 150 122 Q150 172 100 172 Q50 172 50 122 Q50 86 100 18 Z"', 'water') + hl('M76 118 Q76 142 92 154', .7);
+FX.zzz = () => sk('M108 22 L168 22 L108 82 L168 82', '#4338ca', 15) + sk('M64 96 L106 96 L64 136 L106 136', '#6d63ff', 12) + sk('M22 148 L52 148 L22 176 L52 176', '#8b83ff', 9);
+
+
+export { PROP_DEFS, P as PROPS, FX as FXS };
+export function propSvg(name: string, op = 0.92, flat = false) {
+  const fn = (P as any)[name] || (FX as any)[name];
+  RIM = flat ? '#33190f' : '#eaf6ff';
+  const inner = fn();
+  RIM = '#eaf6ff';
+  return '<defs>' + PROP_DEFS + '</defs><g opacity="' + op + '">' + inner + '</g>';
+}
+
+
+export { U, one, sk, line, hl, f, G };
+
+export function setRim(c: string) { RIM = c; }

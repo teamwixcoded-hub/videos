@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cinematic backgrounds lab</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg:#0e1118; --ink:#e9edf5; --muted:#8a93a6; }
+  body { margin:0; padding:24px; background:var(--bg); color:var(--ink); font:14px/1.4 system-ui, sans-serif; }
+  h1 { font-size:20px; margin:0 0 4px; } p { margin:0 0 18px; color:var(--muted); }
+  .grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
+  .cell { background:#161b26; border-radius:12px; padding:8px 8px 10px; }
+  .cell svg { width:100%; height:auto; display:block; border-radius:8px; }
+  .cell b { display:block; margin-top:6px; font-size:13px; }
+  .cell span { color:var(--muted); font-size:12px; }
+</style>
+</head>
+<body>
+<h1>Cinematic backgrounds: code-built, blurred, glassy</h1>
+<p>Six moods behind the same character. Every effect is vector or gradient, so each scene can be baked once into a single image.</p>
+<div class="grid" id="grid"></div>
+<script src="character.js"></script>
+<script>
+const W = 800, H = 450;
+let _seed = 7;
+const rnd = () => (_seed = (_seed * 16807) % 2147483647) / 2147483647;
+
+// ---- building blocks ----
+const bokeh = (n, cols, rMin, rMax, y0, y1, o = .55, blur = 1.6) => {
+  let s = ''; for (let i = 0; i < n; i++) { const r = rMin + rnd() * (rMax - rMin), c = cols[i % cols.length];
+    s += `<circle cx="${(rnd() * W).toFixed(0)}" cy="${(y0 + rnd() * (y1 - y0)).toFixed(0)}" r="${r.toFixed(0)}" fill="${c}" opacity="${(o * (.4 + rnd() * .6)).toFixed(2)}" stroke="#fff" stroke-opacity=".18" stroke-width="1.2"/>`; }
+  return `<g filter="url(#bk${blur})">${s}</g>`;
+};
+const rays = (x, y, color, spread, len, n = 5, o = .22) => {
+  let s = ''; for (let i = 0; i < n; i++) { const a = -spread / 2 + (spread / (n - 1)) * i + (rnd() - .5) * 6, w = 14 + rnd() * 26;
+    s += `<polygon points="${x},${y} ${x + Math.sin(rad(a - w / 4)) * len},${y + Math.cos(rad(a - w / 4)) * len} ${x + Math.sin(rad(a + w / 4)) * len},${y + Math.cos(rad(a + w / 4)) * len}" fill="url(#ray-${color.slice(1)})" opacity="${o}"/>`; }
+  return `<g filter="url(#blur6)" style="mix-blend-mode:screen">${s}</g>`;
+};
+const glass = (x, y, w, h, rot = 0, o = .10) => `<g transform="rotate(${rot} ${x + w / 2} ${y + h / 2})"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="#fff" opacity="${o}"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1.5"/><path d="M${x + 8} ${y + 8} L${x + w * .55} ${y + 8} L${x + 8} ${y + h * .5} Z" fill="#fff" opacity=".10"/></g>`;
+const floor = (y, color) => `<rect x="0" y="${y - 50}" width="${W}" height="${H - y + 50}" fill="url(#floor-${color.slice(1)})"/>`;
+const vignette = `<rect width="${W}" height="${H}" fill="url(#vig)"/>`;
+const grain = `<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".10" style="mix-blend-mode:overlay"/>`;
+const flare = (x, y, c) => `<g style="mix-blend-mode:screen" filter="url(#blur3)"><circle cx="${x}" cy="${y}" r="38" fill="${c}" opacity=".5"/><circle cx="${x}" cy="${y}" r="10" fill="#fff" opacity=".9"/><path d="M${x - 220} ${y} H${x + 220}" stroke="${c}" stroke-width="3" opacity=".6"/></g>`;
+
+const rayColors = ['#ffd27a', '#7ee8ff', '#ff6fb5', '#fff4d0', '#9d8cff'];
+const sharedDefs = `<defs>
+  <filter id="blur3" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3"/></filter>
+  <filter id="blur6" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter>
+  <filter id="blur14" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
+  <filter id="bk1.6" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.6"/></filter>
+  <filter id="bk4" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="4"/></filter>
+  <filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3"/><feColorMatrix type="saturate" values="0"/></filter>
+  <radialGradient id="vig" cx="50%" cy="50%" r="75%"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".65"/></radialGradient>
+  ${rayColors.map((c) => `<linearGradient id="ray-${c.slice(1)}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".95"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient>`).join('')}
+  ${rayColors.map((c) => `<linearGradient id="floor-${c.slice(1)}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity="0"/><stop offset=".22" stop-color="${c}" stop-opacity=".34"/><stop offset="1" stop-color="#000" stop-opacity=".6"/></linearGradient>`).join('')}
+</defs>`;
+const skyG = (id, stops) => `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">${stops.map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join('')}</linearGradient>`;
+
+// ---- six scenes ----
+const SCENES = [
+  { name: 'Neon rain street', note: 'night, magenta + cyan bokeh, wet floor', pal: 'indigo', pose: POSES.pointing, glow: '#7ee8ff', bg: () => `
+    <defs>${skyG('s1', [[0, '#0a0d24'], [.55, '#241046'], [1, '#3b0f4f']])}</defs><rect width="${W}" height="${H}" fill="url(#s1)"/>
+    ${[60, 150, 250, 560, 650, 730].map((x, i) => `<rect x="${x}" y="${120 + (i % 3) * 30}" width="${60 + (i % 2) * 30}" height="${240}" fill="#120a2a" opacity=".85" filter="url(#bk4)"/>`).join('')}
+    ${bokeh(14, ['#ff4fa3', '#37d7ff', '#ffd23a', '#9d6bff'], 12, 30, 80, 330, .42, 4)}${bokeh(18, ['#ff4fa3', '#37d7ff', '#fff'], 3, 9, 150, 340, .6)}
+    ${floor(330, '#7ee8ff')}<g filter="url(#blur6)" opacity=".5">${[90, 200, 330, 520, 640].map((x, i) => `<rect x="${x}" y="340" width="10" height="${70 + i * 8}" fill="${['#ff4fa3', '#37d7ff'][i % 2]}"/>`).join('')}</g>
+    ${[...Array(34)].map(() => { const x = rnd() * W, y = rnd() * H; return `<path d="M${x.toFixed(0)} ${y.toFixed(0)} l-4 16" stroke="#cfe9ff" stroke-opacity=".25" stroke-width="1"/>`; }).join('')}` },
+  { name: 'Golden hour penthouse', note: 'warm sun glare through glass, skyline', pal: 'teal', pose: POSES.idle, glow: '#ffd27a', bg: () => `
+    <defs>${skyG('s2', [[0, '#ff9a5a'], [.45, '#ffc88a'], [1, '#6a4a7a']])}</defs><rect width="${W}" height="${H}" fill="url(#s2)"/>
+    <g filter="url(#bk4)" opacity=".8">${[...Array(16)].map((_, i) => `<rect x="${i * 52 - 10}" y="${200 + (i * 37) % 70}" width="${40 + (i % 3) * 12}" height="${250}" fill="${['#7a4a6a', '#5a3a62', '#8c5a6e'][i % 3]}"/>`).join('')}</g>
+    <circle cx="560" cy="170" r="70" fill="#fff6d0" opacity=".85" filter="url(#blur14)"/>${rays(560, 150, '#ffd27a', 90, 520, 6, .3)}
+    ${glass(40, 40, 230, 300, -4, .09)}${glass(300, 20, 200, 330, 0, .07)}${glass(520, 50, 240, 290, 4, .09)}
+    ${floor(340, '#ffd27a')}${bokeh(14, ['#fff4d0', '#ffd27a'], 6, 20, 60, 300, .5)}${flare(560, 170, '#ffd27a')}` },
+  { name: 'Midnight window', note: 'cool moonlight, quiet, intimate', pal: 'indigo', pose: POSES.slumped, glow: '#9d8cff', bg: () => `
+    <defs>${skyG('s3', [[0, '#050818'], [.6, '#0d1b3d'], [1, '#14264f']])}</defs><rect width="${W}" height="${H}" fill="url(#s3)"/>
+    <g filter="url(#bk4)">${bokeh(30, ['#ffd27a', '#fff4d0', '#7ee8ff'], 4, 16, 150, 300, .55, 4)}</g>
+    <polygon points="520,0 760,0 640,450 380,450" fill="#bcd0ff" opacity=".10" filter="url(#blur14)"/>${rays(560, 0, '#9d8cff', 40, 560, 4, .22)}
+    <g stroke="#0a1230" stroke-width="12" opacity=".8" filter="url(#blur3)"><path d="M470 0 V300 M600 0 V300 M730 0 V300 M440 130 H780"/></g>
+    ${glass(430, 40, 340, 270, 0, .06)}${floor(360, '#9d8cff')}${bokeh(24, ['#bcd0ff'], 1.5, 4, 60, 400, .6)}` },
+  { name: 'Gym dawn spotlights', note: 'teal and orange, haze, determination', pal: 'coral', pose: POSES.determined ? POSES.pointing : POSES.pointing, glow: '#ff9a5a', bg: () => `
+    <defs>${skyG('s4', [[0, '#071a22'], [.6, '#0f3a46'], [1, '#2a1a1a']])}</defs><rect width="${W}" height="${H}" fill="url(#s4)"/>
+    <g filter="url(#bk4)" opacity=".7">${[80, 220, 360, 560, 700].map((x, i) => `<rect x="${x}" y="${190 + (i % 2) * 20}" width="${50}" height="${170}" fill="#0a2a33"/>`).join('')}</g>
+    ${rays(200, 0, '#7ee8ff', 50, 520, 4, .28)}${rays(600, 0, '#ffd27a', 50, 520, 4, .30)}
+    <ellipse cx="400" cy="300" rx="420" ry="80" fill="#9fe9ff" opacity=".12" filter="url(#blur14)"/>
+    ${floor(350, '#ff9a5a')}${bokeh(18, ['#7ee8ff', '#ffb066'], 5, 16, 80, 300, .45)}` },
+  { name: 'Summit sunrise', note: 'big sky, layered blurred mountains, hope', pal: 'indigo', pose: POSES.triumphant, glow: '#ffd27a', bg: () => `
+    <defs>${skyG('s5', [[0, '#3a2a6a'], [.4, '#c25a8a'], [.7, '#ff9a5a'], [1, '#ffe0a0']])}</defs><rect width="${W}" height="${H}" fill="url(#s5)"/>
+    <circle cx="400" cy="270" r="110" fill="#fff0c0" opacity=".9" filter="url(#blur14)"/>${rays(400, 270, '#fff4d0', 140, 480, 8, .28)}
+    <g filter="url(#bk4)"><path d="M0 330 L120 230 L220 300 L340 210 L470 310 L600 220 L720 300 L800 250 V450 H0 Z" fill="#5a3a72" opacity=".75"/><path d="M0 380 L140 300 L260 360 L400 290 L540 360 L680 300 L800 350 V450 H0 Z" fill="#3a2458" opacity=".9"/></g>
+    <g filter="url(#blur6)" opacity=".5"><ellipse cx="160" cy="130" rx="130" ry="22" fill="#fff"/><ellipse cx="620" cy="100" rx="160" ry="24" fill="#ffd0b0"/></g>
+    ${bokeh(16, ['#fff4d0', '#ffd27a'], 4, 14, 100, 330, .5)}${flare(400, 270, '#ffd27a')}` },
+  { name: 'Glass stage', note: 'abstract, flashy, shards of glass and light', pal: 'teal', pose: POSES.triumphant, glow: '#ff6fb5', bg: () => `
+    <defs>${skyG('s6', [[0, '#0b0620'], [.6, '#1a0f3a'], [1, '#05030f']])}</defs><rect width="${W}" height="${H}" fill="url(#s6)"/>
+    ${rays(400, 0, '#ff6fb5', 70, 560, 5, .30)}${rays(400, 0, '#7ee8ff', 40, 560, 3, .25)}
+    ${glass(60, 70, 160, 250, -12, .12)}${glass(230, 40, 120, 280, 8, .09)}${glass(480, 60, 150, 270, -6, .12)}${glass(650, 90, 110, 230, 14, .10)}
+    <polygon points="90,320 200,100 260,330" fill="#9d8cff" opacity=".12" filter="url(#blur3)"/><polygon points="560,330 700,110 740,330" fill="#ff6fb5" opacity=".14" filter="url(#blur3)"/>
+    ${floor(350, '#ff6fb5')}<ellipse cx="400" cy="372" rx="190" ry="28" fill="#ff6fb5" opacity=".25" filter="url(#blur6)"/>${bokeh(20, ['#ff6fb5', '#7ee8ff', '#9d8cff'], 4, 18, 60, 330, .5)}` },
+];
+
+const grid = document.getElementById('grid');
+const only = new URLSearchParams(location.search).get('bare');
+if (only !== null) {                                   // bare mode: one background, full window, no character
+  const i = +only; _seed = 7 + i * 101;
+  document.body.style.cssText = 'margin:0;padding:0;background:#000;overflow:hidden';
+  document.body.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" style="width:100vw;height:100vh;display:block" xmlns="http://www.w3.org/2000/svg">${sharedDefs}${SCENES[i].bg()}${vignette}${grain}</svg>`;
+} else SCENES.forEach((s, i) => {
+  _seed = 7 + i * 101;
+  const u = 'c' + i, figH = 330, k = figH / 430, fx = W * 0.5 - 150 * k, fy = H - figH - 8;
+  const svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${sharedDefs}
+    <defs><filter id="g${i}" x="-40%" y="-30%" width="180%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="${s.glow}" flood-opacity=".75"/></filter></defs>
+    ${s.bg()}
+    <ellipse cx="${W / 2}" cy="${H - 14}" rx="130" ry="12" fill="#000" opacity=".4" filter="url(#blur6)"/>
+    <g transform="translate(${fx} ${fy}) scale(${k})" filter="url(#g${i})">${figure(s.pose, s.pal, u, true)}</g>
+    ${vignette}${grain}</svg>`;
+  grid.insertAdjacentHTML('beforeend', `<div class="cell">${svg}<b>${s.name}</b> <span>${s.note}</span></div>`);
+});
+</script>
+</body>
+</html>

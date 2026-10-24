@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rig 2.3 test: ears, reading, phone</title>
+<style>
+  body { margin:0; padding:20px; background:#1a1f2b; color:#e9edf5; font:14px/1.4 system-ui, sans-serif; }
+  h1 { font-size:18px; margin:0 0 12px; }
+  .grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; }
+  .cell { background:#242b3a; border-radius:10px; padding:6px 6px 8px; text-align:center; }
+  .cell svg { width:100%; height:auto; display:block; border-radius:8px; background:linear-gradient(#3a3f55,#2a2f44); }
+  .cell b { display:block; margin-top:4px; font-size:13px; }
+</style>
+</head>
+<body>
+<h1>Rig 2.3: ears in the right place, a book that is READ (not shown), a phone held and scrolled naturally</h1>
+<div class="grid" id="grid"></div>
+<script src="character.js"></script>
+<script src="rig2.js"></script>
+<script src="held.js"></script>
+<script>
+const OUTC = '#33190f';
+const rr = (x, y, w, h, rx, fill) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${OUTC}" stroke="${OUTC}" stroke-width="6"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${fill}"/>`;
+const chairBack = rr(34, 190, 92, 172, 38, '#c8693a') + rr(40, 336, 252, 52, 20, '#d9a24a') + rr(50, 386, 24, 30, 6, '#6b4630') + rr(270, 386, 24, 30, 6, '#6b4630');
+const chairFront = rr(56, 300, 96, 86, 26, '#b85a2e') + rr(48, 288, 124, 24, 12, '#a04e26');
+const bedBack = rr(20, 330, 270, 40, 10, '#e8e0cf') + rr(20, 368, 270, 26, 8, '#8a5a2b') + rr(20, 380, 18, 36, 6, '#6b4630') + rr(262, 380, 18, 36, 6, '#6b4630');
+const T = [
+  {name: 'head turns: front / 3/4 / profile (ear moves to the middle)', multi: true},
+  {name: 'reading (pages face HIM, we see the back cover + page edge)', back: chairBack, front: chairFront, spec: {pal: 'teal', u: 't4', turn: 0.62, hip: [150, 322], lean: -2, chest: 5, headTilt: 14, emo: EMO.determined, look: [218, 232],
+    legL: {foot: [226, 405]}, legR: {foot: [248, 405]}, armL: {reach: [204, 262], hand: 'hold'}, armR: {reach: [222, 268], hand: 'hold'},
+    heldFn: (h) => Held.book((h.L[0] + h.R[0]) / 2 + 6, (h.L[1] + h.R[1]) / 2 - 20, {tilt: -16})}},
+  {name: 'phone, sitting: one hand holds, thumb scrolls, other hand on knee', back: bedBack, spec: {pal: 'coral', u: 't5', turn: 0.62, hip: [150, 330], lean: 8, chest: 8, headTilt: 24, emo: EMO.neutral, look: [214, 246],
+    legL: {foot: [214, 405]}, legR: {foot: [236, 405]}, armL: {reach: [200, 252], hand: 'hold'}, armR: {reach: [222, 330], hand: 'relaxed'},
+    heldFn: (h) => Held.phone(h.L[0] + 12, h.L[1] - 18, {tilt: -20, scroll: 0.3, skin: 't5k'})}},
+  {name: 'phone, standing (3/4), eyes on the screen', spec: {pal: 'indigo', u: 't6', turn: 0.5, lean: 4, chest: 4, headTilt: 20, emo: EMO.happy, look: [200, 222],
+    armL: {reach: [186, 234], hand: 'hold'}, armR: {ang: [6, 6], hand: 'relaxed'}, heldFn: (h) => Held.phone(h.L[0] + 12, h.L[1] - 18, {tilt: -20, scroll: 0.2, skin: 't6k'})}},
+  {name: 'profile, hand out', spec: {pal: 'teal', u: 't2', turn: 1, emo: EMO.happy, armL: {ang: [28, 50]}, armR: {ang: [-14, -8]}}},
+  {name: '3/4 facing left, pointing', tgt: [20, 190], spec: {pal: 'coral', u: 't3', turn: -0.6, lean: -3, emo: EMO.angry, look: [20, 190], armL: {reach: [20, 190], hand: 'point'}, armR: {ang: [10, 4], hand: 'grip'}}},
+];
+const grid = document.getElementById('grid');
+T.forEach((t) => {
+  if (t.multi) {
+    let s = '';
+    [0, 0.5, 1].forEach((tn, i) => { const f = Rig2.figure({style: 'flat', pal: 'coral', u: 'm' + i, turn: tn, emo: EMO.neutral}); s += `<g transform="translate(${i * 100 - 70} 0) scale(.66)" >${f.svg}</g>`; });
+    grid.insertAdjacentHTML('beforeend', `<div class="cell"><svg viewBox="0 0 300 300"><g transform="translate(0 -10)">${s}</g></svg><b>${t.name}</b></div>`);
+    return;
+  }
+  const f = Rig2.figure(Object.assign({style: 'flat'}, t.spec));
+  let marks = t.tgt ? `<circle cx="${t.tgt[0]}" cy="${t.tgt[1]}" r="5" fill="#ffd23f" stroke="#000" stroke-width="1.5"/>` : '';
+  marks += `<line x1="10" y1="416" x2="290" y2="416" stroke="#8793ad" stroke-width="2"/>`;
+  grid.insertAdjacentHTML('beforeend', `<div class="cell"><svg viewBox="0 0 300 440">${t.back || ''}${f.svg}${t.front || ''}${marks}</svg><b>${t.name}</b></div>`);
+});
+</script>
+</body>
+</html>

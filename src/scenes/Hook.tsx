@@ -81,7 +81,7 @@ const Rewind: React.FC<{from: number; to: number}> = ({from, to}) => {
   );
 };
 
-const CUES: Cue[] = [
+export const CUES: Cue[] = [
   {file: 'boom', at: 0.05, real: true, vol: 0.55, dur: 1.6, fadeOut: 0.6},
   {file: 'pop_b', at: 0.25, real: true, vol: 0.3, rate: 0.7},
   {file: 'riser', at: 1.7, real: true, vol: 0.38, dur: 1.4, fadeOut: 0.15},

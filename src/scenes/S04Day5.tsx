@@ -144,7 +144,7 @@ const CAPTIONS: CaptionLine[] = [
   {text: "But it's becoming a pattern.", from: 46.6, to: 50.6},
 ];
 
-const SFX: Cue[] = [
+export const SFX: Cue[] = [
   {file: 'room_tone', at: 0, dur: 34, vol: 0.14, fadeIn: 1.5, fadeOut: 2},
   {file: 'notification', at: 0.9, vol: 0.28},
   {file: 'pickup', at: 1.6, vol: 0.3},

@@ -60,7 +60,7 @@ const CAPTIONS: CaptionLine[] = [
   {text: "Now it's the other way around.", from: 32.2, to: 35.6},
 ];
 
-const SFX: Cue[] = [
+export const SFX: Cue[] = [
   {file: 'room_tone', at: 0, dur: 22, vol: 0.2, fadeIn: 2, fadeOut: 2},
   {file: 'swell', at: 0.6, dur: 5, vol: 0.22, fadeIn: 1.2, fadeOut: 1.8},
   ...FLIPS.map((_, i): Cue => ({file: 'page', at: 5.8 + i * 0.75, vol: 0.26, rate: 1.1 + (i % 3) * 0.06, dur: 0.9})),

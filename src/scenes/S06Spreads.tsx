@@ -66,7 +66,7 @@ const Vignette1: React.FC<{frames: {src: string; at: number; fade?: number}[]; c
   </AbsoluteFill>
 );
 
-const SFX: Cue[] = [
+export const SFX: Cue[] = [
   {file: 'room_tone', at: 0, dur: 42, vol: 0.14, fadeIn: 1.5, fadeOut: 2},
   {file: 'swell', at: 0.4, dur: 5, vol: 0.2, fadeIn: 1.2, fadeOut: 1.8},
   {file: 'pop_a', at: 2.2, vol: 0.28}, {file: 'pop_b', at: 3.4, vol: 0.28}, {file: 'pop_c', at: 4.6, vol: 0.28},

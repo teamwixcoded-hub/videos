@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Thumbnail</title>
+<style>
+  html, body { margin:0; padding:0; background:#000; }
+  #t { position:relative; width:1280px; height:720px; overflow:hidden; background:#111; font-family: Impact, 'Arial Black', 'Segoe UI Black', sans-serif; }
+  .layer { position:absolute; top:0; height:720px; background-repeat:no-repeat; background-size:2752px 1536px; }
+  #g { left:0; width:860px; background-image:url('../public/images/FL_G15.png'); background-position:-190px -330px; clip-path:polygon(0 0, 800px 0, 640px 720px, 0 720px); filter:saturate(1.4) contrast(1.12) brightness(1.02); }
+  #r { left:420px; width:860px; background-image:url('../public/images/FL_R8.png'); background-position:-1380px -392px; clip-path:polygon(380px 0, 860px 0, 860px 720px, 220px 720px); filter:saturate(.6) contrast(1.22) brightness(.76) hue-rotate(6deg); }
+  .abs { position:absolute; inset:0; pointer-events:none; }
+  #warm { background: radial-gradient(ellipse 520px 520px at 250px 300px, rgba(255,196,90,.55), rgba(255,160,40,.0) 70%), linear-gradient(100deg, rgba(255,170,60,.28), rgba(255,170,60,0) 60%); clip-path:polygon(0 0, 800px 0, 640px 720px, 0 720px); mix-blend-mode:screen; }
+  #cold { background: radial-gradient(ellipse 480px 520px at 960px 460px, rgba(70,170,255,.55), rgba(40,120,255,0) 70%), linear-gradient(260deg, rgba(10,24,70,.55), rgba(10,24,70,0) 70%); clip-path:polygon(800px 0, 1280px 0, 1280px 720px, 640px 720px); mix-blend-mode:screen; }
+  #vig { background: radial-gradient(ellipse at center, rgba(0,0,0,0) 52%, rgba(0,0,0,.62) 100%); }
+  #grad { background: linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0) 62%, rgba(0,0,0,.7) 100%); }
+  svg.txt { position:absolute; inset:0; width:1280px; height:720px; }
+  svg.txt text { font-family: Impact, 'Arial Black', 'Segoe UI Black', sans-serif; paint-order: stroke fill; stroke-linejoin: round; text-anchor: middle; }
+</style>
+</head>
+<body>
+<div id="t">
+  <div class="layer" id="g"></div>
+  <div class="layer" id="r"></div>
+  <div class="abs" id="warm"></div>
+  <div class="abs" id="cold"></div>
+  <div class="abs" id="grad"></div>
+  <div class="abs" id="vig"></div>
+  <svg class="txt" viewBox="0 0 1280 720" id="svg"></svg>
+</div>
+<script>
+const v = new URLSearchParams(location.search).get('v') || '1';
+const svg = document.getElementById('svg');
+const T = (txt, x, y, size, fill, stroke = '#000', sw = 16, extra = '') => `<text x="${x}" y="${y}" font-size="${size}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${extra}>${txt}</text>`;
+// the divider: a bright slash with glow
+const slash = `<defs><filter id="gl" x="-50%" y="-5%" width="200%" height="110%"><feGaussianBlur stdDeviation="9"/></filter></defs>
+  <line x1="800" y1="-10" x2="640" y2="730" stroke="#fff" stroke-width="14" filter="url(#gl)" opacity=".9"/><line x1="800" y1="-10" x2="640" y2="730" stroke="#fff" stroke-width="6"/>`;
+let out = slash;
+if (v === '4') {            // the final one: one word, nothing else; faces sit lower so the word never covers them
+  document.getElementById('g').style.backgroundPosition = '-190px -296px';
+  document.getElementById('r').style.backgroundPosition = '-1380px -300px';
+  out += T('SAME.', 640, 238, 282, '#ffffff', '#000', 26, 'letter-spacing="4"');
+} else if (v === '1') {            // SAME MAN. + what each one got
+  out += T('SAME MAN.', 640, 178, 190, '#ffffff', '#000', 22, 'letter-spacing="3"');
+  out += T('20+ BOOKS', 300, 676, 112, '#7dff9a', '#06220f', 18);
+  out += T('1,000+ HOURS', 968, 640, 84, '#ff5a4a', '#2a0603', 16) + T('ON A SCREEN', 968, 702, 64, '#ffffff', '#000', 12);
+} else if (v === '2') {     // the question
+  out += T('ONE SCROLLED.', 640, 122, 112, '#ff6b5e', '#000', 20, 'transform="rotate(-2 640 122)"');
+  out += T('ONE READ.', 640, 232, 112, '#7dff9a', '#000', 20, 'transform="rotate(-2 640 232)"');
+  out += T('365 DAYS', 640, 684, 150, '#ffd23f', '#000', 22);
+} else {                    // WHICH ONE?
+  out += T('WHICH ONE?', 640, 172, 190, '#ffffff', '#000', 22);
+  out += T('READ', 270, 690, 118, '#7dff9a', '#06220f', 18) + T('SCROLL', 1000, 690, 118, '#ff5a4a', '#2a0603', 18);
+}
+svg.innerHTML = out;
+</script>
+</body>
+</html>

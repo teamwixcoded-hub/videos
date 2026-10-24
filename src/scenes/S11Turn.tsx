@@ -44,7 +44,7 @@ const CAPTIONS: CaptionLine[] = [
   {text: 'Exactly like the other one did… on night one.', from: 20.4, to: 25.4},
 ];
 
-const SFX: Cue[] = [
+export const SFX: Cue[] = [
   {file: 'room_tone', at: 0, dur: 17, vol: 0.2, fadeIn: 2, fadeOut: 2},
   {file: 'notification', at: 1.0, vol: 0.24},
   {file: 'whoosh', at: 0.9, vol: 0.18},

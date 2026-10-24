@@ -109,7 +109,7 @@ const CAPTIONS: CaptionLine[] = [
   {text: 'The hard part is getting easier.', from: 44.6, to: 48.4},
 ];
 
-const SFX: Cue[] = [
+export const SFX: Cue[] = [
   {file: 'room_tone', at: 0, dur: 29, vol: 0.14, fadeIn: 1.5, fadeOut: 2},
   {file: 'door', at: 8.6, dur: 2.7, vol: 0.3, fadeOut: 0.4}, // his mother opens the door
   {file: 'thump', at: 13.75, vol: 0.3, rate: 0.88, dur: 0.6, fadeIn: 0.04, fadeOut: 0.25}, // the snap
