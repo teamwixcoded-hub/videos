@@ -4,7 +4,7 @@ import {FPS} from './theme';
 
 // Sound design for the 2D cut: ElevenLabs recordings in public/sfx3/ (see scripts/el-sfx3.mjs). `old: true` plays a real recorded voice from
 // public/sfx/ (yawn, sigh, chuckle) because human sounds stay the real ones. Times are VIDEO seconds.
-export type Cue3 = {file: string; at: number; vol?: number; dur?: number; loop?: boolean; rate?: number; fadeIn?: number; fadeOut?: number; old?: boolean};
+export type Cue3 = {file: string; at: number; vol?: number; dur?: number; loop?: boolean; rate?: number; fadeIn?: number; fadeOut?: number; old?: boolean; dir?: string};
 
 export const Sfx3: React.FC<{cues: Cue3[]; gain?: number; duck?: (t: number) => number; minVol?: number}> = ({cues, gain = 1, duck, minVol = 0}) => (
   <>
@@ -14,7 +14,7 @@ export const Sfx3: React.FC<{cues: Cue3[]; gain?: number; duck?: (t: number) => 
       return (
         <Sequence key={i} from={from} durationInFrames={dur}>
           <Audio
-            src={staticFile(`${c.old ? 'sfx' : 'sfx3'}/${c.file}.mp3`)}
+            src={staticFile(`${c.dir ?? (c.old ? 'sfx' : 'sfx3')}/${c.file}.mp3`)}
             loop={c.loop}
             playbackRate={c.rate ?? 1}
             volume={(f) => (c.loop ? (c.vol ?? 0.5) : Math.max(c.vol ?? 0.5, minVol)) * gain * (duck ? duck(c.at + f / FPS) : 1) * Math.min(1, f / fi) * (dur ? Math.min(1, Math.max(0, (dur - f) / fo)) : 1)}

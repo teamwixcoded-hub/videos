@@ -24,7 +24,7 @@ const ctxOf = (s: Shot, t: number): Ctx => ({t, l: t - s.from, d: s.to - s.from,
 // ---------------- sound ----------------
 // Effects that exist today (public/sfx3, public/sfx). New ones for this story (ring, knock, applause, kite wind...) are in scripts/el-sfx4.mjs -> public/sfx4/ and
 // switched on with HAVE_SFX4 once they have been generated.
-const HAVE_SFX4 = false;
+const HAVE_SFX4 = true;
 const kwCue = (w: KW): Cue3 | null => (w.style === 'tag' ? {file: 'stamp_hit', at: w.at, vol: 0.28} : w.style === 'time' ? {file: 'phone_tap', at: w.at, vol: 0.22} : w.style === 'quote' ? {file: 'text_whisper', at: w.at, vol: 0.3} : {file: 'text_title', at: w.at, vol: 0.3});
 const CUES: Cue3[] = [
   // cold open: room tone, the clock
@@ -32,17 +32,17 @@ const CUES: Cue3[] = [
   // the rewind
   {file: 'tape_rewind', at: 30.9, vol: 0.5}, {file: 'paper_scatter', at: 32.0, vol: 0.4},
   // the choice
-  {file: 'lamp_click', at: 56.95, vol: 0.5}, {file: 'lamp_click', at: 82.75, vol: 0.5}, {file: 'receipt_print', at: 87.5, vol: 0.2},
+  {file: 'receipt_print', at: 87.5, vol: 0.2},
   {file: 'typing_keys', at: 59.0, vol: 0.16, dur: 14, loop: true}, {file: 'amb_office', at: 59, vol: 0.12, dur: 20, loop: true}, {file: 'amb_kitchen', at: 215, vol: 0.14, dur: 6, loop: true},
   // the pile and the toy car
   {file: 'thud', old: true, at: 101.7, vol: 0.4}, {file: 'thud', old: true, at: 107.2, vol: 0.35},
   // door, knocks, phone buzz
-  {file: 'thud', old: true, at: 198.5, vol: 0.55}, {file: 'thud', old: true, at: 198.95, vol: 0.55}, {file: 'phone_buzz', at: 211.0, vol: 0.5}, {file: 'thud', old: true, at: 217.9, vol: 0.5},
+  {file: 'phone_buzz', at: 211.0, vol: 0.5},
   {file: 'amb_night_room', at: 192, vol: 0.12, dur: 20, loop: true}, {file: 'amb_night_room', at: 265, vol: 0.12, dur: 24, loop: true},
   // the tea stall
   {file: 'tea_pour', at: 223.6, vol: 0.3}, {file: 'tea_pour', at: 381.2, vol: 0.3}, {file: 'glass_clink', at: 458.6, vol: 0.3},
   // Leo sends money, Adam's phone chimes
-  {file: 'phone_tap', at: 295.8, vol: 0.3}, {file: 'phone_notif', at: 297.3, vol: 0.5},
+  {file: 'phone_tap', at: 295.8, vol: 0.3},
   // M3: a page flip for every Sunday, a heartbeat at the end
   ...SHOTS.filter((s) => s.from >= 386 && s.from < 414).map((s): Cue3 => ({file: 'page_turn', at: s.from, vol: 0.2})),
   {file: 'heartbeat', at: 410.0, vol: 0.5, dur: 4.2, loop: true},
@@ -52,16 +52,25 @@ const CUES: Cue3[] = [
   // "I'll come on Friday, Dad."
   {file: 'impact_bloom', at: 441.7, vol: 0.35}, {file: 'door_open', at: 452.0, vol: 0.3}, {file: 'amb_morning', at: 450, vol: 0.12, dur: 40, loop: true},
   // the photo
-  {file: 'lamp_click', at: 466.0, vol: 0.6}, {file: 'shimmer', at: 466.0, vol: 0.3},
+  {file: 'shimmer', at: 466.0, vol: 0.3},
   ...SHOTS.filter((s) => s.fx).map((s): Cue3 => (s.fx === 'w' ? {file: 'whip', at: s.from - 0.05, vol: 0.32} : s.fx === 'f' ? {file: 'shimmer', at: s.from - 0.02, vol: 0.3} : {file: 'whoosh_soft', at: s.from - 0.1, vol: 0.3})),
   ...KWORDS.map(kwCue).filter((c): c is Cue3 => !!c),
 ];
-const CUES4: Cue3[] = HAVE_SFX4 ? [] : [];
+const n4 = (file: string, at: number, vol: number, extra: Partial<Cue3> = {}): Cue3 => ({file, at, vol, dir: 'sfx4', ...extra});
+const CUES4: Cue3[] = !HAVE_SFX4 ? [] : [
+  n4('phone_ring_far', 26.3, 0.5), n4('hospital_amb', 35, 0.2, {dur: 18, loop: true}), n4('baby_coo', 48.0, 0.35), n4('laptop_lid', 56.95, 0.6), n4('laptop_lid', 82.75, 0.6),
+  n4('party_noise', 95, 0.18, {dur: 10, loop: true}), n4('kite_wind', 109, 0.2, {dur: 39, loop: true}), n4('kite_tear', 140.9, 0.5),
+  n4('applause_hall', 168.0, 0.45), n4('applause_hall', 172.2, 0.45), n4('door_knock', 198.3, 0.7), n4('door_knock', 204.8, 0.4), n4('chair_slam', 217.8, 0.55),
+  n4('footsteps_walk', 220.6, 0.2, {dur: 2.9, loop: true}), n4('crowd_cafe_street', 223.5, 0.16, {dur: 8, loop: true}), n4('footsteps_walk', 362, 0.2, {dur: 5.3, loop: true}), n4('crowd_cafe_street', 367.3, 0.16, {dur: 5, loop: true}),
+  n4('transfer_chime', 297.3, 0.55), n4('phone_ring_close', 299.7, 0.5, {dur: 2.7}), n4('phone_ring_far', 302.0, 0.3, {dur: 0.6}),
+  ...SHOTS.filter((s) => s.from >= 386 && s.from < 414).map((s, i): Cue3 => n4(i % 2 ? 'transfer_chime' : 'phone_ring_close', s.from, 0.3, {dur: 0.5})),
+  n4('footsteps_walk', 454, 0.18, {dur: 4, loop: true}), n4('crowd_cafe_street', 458, 0.16, {dur: 8, loop: true}), n4('shutter_click', 466.0, 0.7),
+];
 const MUSIC: {from: number; to: number; track: string; vol: number; startAt?: number}[] = [
-  {from: 0, to: 32, track: 'low', vol: 0.1}, {from: 35, to: 110, track: 'hope', vol: 0.14}, {from: 110, to: 192, track: 'routine', vol: 0.12}, {from: 192, to: 215, track: 'low', vol: 0.11},
-  {from: 215, to: 265, track: 'routine', vol: 0.11, startAt: 12}, {from: 265, to: 277, track: 'low', vol: 0.08}, {from: 282, to: 312, track: 'hope', vol: 0.12, startAt: 20},
-  {from: 312, to: 338, track: 'low', vol: 0.12}, {from: 338, to: 362, track: 'wonder', vol: 0.1}, {from: 362, to: 416, track: 'hope', vol: 0.15}, {from: 416, to: 437, track: 'wonder', vol: 0.12, startAt: 6},
-  {from: 440, to: 490, track: 'resolve', vol: 0.2},
+  {from: 0, to: 32, track: 'tf_cold', vol: 0.14}, {from: 35, to: 109, track: 'tf_guitar', vol: 0.15}, {from: 109, to: 185, track: 'tf_guitar', vol: 0.13, startAt: 0},
+  {from: 185, to: 262, track: 'tf_thin', vol: 0.13}, {from: 262, to: 277, track: 'tf_thin', vol: 0.09, startAt: 50}, {from: 282, to: 312, track: 'tf_guitar', vol: 0.12, startAt: 40},
+  {from: 312, to: 362, track: 'tf_return', vol: 0.14}, {from: 362, to: 416, track: 'tf_guitar', vol: 0.15, startAt: 0}, {from: 416, to: 437, track: 'tf_build', vol: 0.15},
+  {from: 440, to: 490, track: 'tf_end', vol: 0.2},
 ];
 
 const TwoFathersMain: React.FC = () => {

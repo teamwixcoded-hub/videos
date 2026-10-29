@@ -9,7 +9,7 @@ const comp = process.env.COMP || 'TwoFathers';
 const times = process.argv.slice(2).map(Number);
 (async () => {
   const pub = path.resolve('out/pub-fathers'); fs.mkdirSync(pub, {recursive: true});
-  for (const d of ['sfx3', 'sfx', 'music']) { fs.mkdirSync(path.join(pub, d), {recursive: true}); for (const f of fs.readdirSync(path.resolve('public', d), {withFileTypes: true})) if (f.isFile() && !fs.existsSync(path.join(pub, d, f.name))) fs.copyFileSync(path.resolve('public', d, f.name), path.join(pub, d, f.name)); }
+  for (const d of ['sfx3', 'sfx', 'sfx4', 'music']) { fs.mkdirSync(path.join(pub, d), {recursive: true}); for (const f of fs.readdirSync(path.resolve('public', d), {withFileTypes: true})) if (f.isFile() && !fs.existsSync(path.join(pub, d, f.name))) fs.copyFileSync(path.resolve('public', d, f.name), path.join(pub, d, f.name)); }
   fs.mkdirSync(path.join(pub, 'audio'), {recursive: true}); fs.copyFileSync(path.resolve('public/audio/two-fathers.mp3'), path.join(pub, 'audio/two-fathers.mp3'));
   const serveUrl = await bundle({entryPoint: path.resolve('src/index.ts'), publicDir: pub});
   const composition = await selectComposition({serveUrl, id: comp, logLevel: 'error'});
