@@ -21,3 +21,7 @@ frames/
 character-lab/pose-refs/
 character-lab/style-refs/
 out/
+
+# Two Fathers: still checks and the raw voice folder copy
+out/
+"Two fathers/"

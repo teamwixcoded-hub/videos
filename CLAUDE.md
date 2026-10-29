@@ -62,6 +62,24 @@ and `duck` = `speechDuck` (smoothly lowers effects under speech). Hook uses gain
 
 ---
 
+# VIDEO 2: "Two Fathers. Same Salary. 20 Years Later." (comp `TwoFathers`, `src/fathers/`)
+8:10 (14,700 frames). Built from the user's plan PDF ("Competitor-Format Plan"): cold open Sunday 8:00 at age 65 (only Sam's phone rings), rewind "30 YEARS EARLIER",
+the 6:00 PM laptops (MONEY vs TIME), gift pile vs photo wall growing every age, ages 5/10/15/16-20/25/65, split screen ONLY in the worst night and Friday morning,
+Adam is in no photo until the final freeze. Narration `public/audio/two-fathers.mp3` (3:36, user's own take) placed UNCHANGED in 20 pieces (`src/fathers/timeline.ts`, `P` = plan's voiceover timeline);
+`src/fathers/data/narration.srt` + `captions.json` (`node scripts/srt-fathers.cjs`). Dialogue lines ARE recorded (Adam/Leo), so no speech bubbles.
+**Theme (decided with the user): warm film look, NOT the Same Man digital/HUD look.** Serif titles (Playfair Display), handwriting (Caveat) for notes, Montserrat for phone/UI, paper-tag age labels,
+soft dark plates under text, grade by act (`theme.ts` GRADES: cold grey-blue cold open, soft white hospital, amber 6 PM, warm daylight, dusk/navy night, neutral city, golden sunset, grey -> gold after "Dad"), film grain, dust, vignette.
+Files: `People.tsx` (cast rig: Adam navy suit+tie, Sam rust cardigan+beard, Leo blue, Max green, aunt; `age` greys/stoops fathers and grows sons; `turn` for 3/4 faces; poses in `POSES`; `Baby`),
+`sets.tsx` (livingRoom cold/warm, street in one-point perspective, hospital, party, auditorium, office, Leo's door/room, stairs, tea stall in 4 seasons, park, kitchen),
+`props.tsx` (GiftPile, PhotoWall, PhotoArt, Kite, Cup, Laptop, Handset), `inserts.tsx` (phone/banking/call/gallery/viewfinder, payslip, letter, SundayFlip, Polaroid, EndCard),
+`kit.tsx` (shot vocabulary: `Z` camera, `stand/sit/Pe`, `SC.*` scene wrappers, `Split`), `shots1.tsx` (0-215 s) and `shots2.tsx` (215-490 s) = the shot lists `[startSec, fx, renderer]`, `Fathers.tsx` (main comp, sound, music).
+Reuses `src/same2d/Stage.tsx` (depth layers + camera) and `sound.tsx`. Style rules from Same Man still apply where relevant: fast ~2 s cutting, every phrase its own picture, sounds must never drown the voice (ducking), review in Studio.
+Check the look without Studio: `node scripts/still-fathers.cjs 1.2 41.5 ...` (half-size stills to `out/stills/`; bundles with a small public folder). **Do not run it while a long render is going: it crashed a chunk once.**
+Sound: existing `sfx3`/`sfx` are mapped in `Fathers.tsx` (CUES). New sounds are in `scripts/el-sfx4.mjs` (ElevenLabs, COSTS CREDITS, ask first) -> `public/sfx4/`, then flip `HAVE_SFX4` and add the listed cues. Music beds are placeholders (existing tracks); new warm guitar/piano beds would need ElevenLabs Music (ask first).
+Status: full first pass of all 15 beats is built and type-checks; stills of ~30 frames reviewed. Not yet reviewed by the user in Studio. Known to polish: faces are a bit stiff, hospital baby, auditorium framing, per-shot camera tuning, real sound effects (sfx4), new music.
+
+---
+
 # (Older) Project: Video 01, "One Scrolled. One Read."
 
 A 4:20 animated YouTube video built with **Remotion** (React), 1920x1080, 30 fps, `Video01` = 7797 frames. This file is the

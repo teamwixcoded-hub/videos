@@ -32,6 +32,7 @@ import {Demo01, DEMO_FRAMES} from './new/demo01';
 import {SameMan} from './same/SameMan';
 import {Same3D, SAME3D_FRAMES} from './three/Same3D';
 import {Same2D, SAME2D_TOTAL} from './same2d/Same2D';
+import {TwoFathers, FATHERS_FRAMES} from './fathers/Fathers';
 import {StickSheet} from './same/StickSheet';
 import {FrameSeqTest} from './same/FrameSeqTest';
 import {TOTAL_FRAMES as SAME_FRAMES} from './same/lib/timeline';
@@ -52,6 +53,7 @@ export const Root: React.FC = () => {
       <Composition id="Demo01" component={Demo01} durationInFrames={DEMO_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="SameMan" component={SameMan} durationInFrames={SAME_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="Same2D" component={Same2D} durationInFrames={SAME2D_TOTAL} fps={FPS} width={W} height={H} />
+      <Composition id="TwoFathers" component={TwoFathers} durationInFrames={FATHERS_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="Same3D" component={Same3D} durationInFrames={SAME3D_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="StickSheet" component={StickSheet} durationInFrames={30} fps={FPS} width={W} height={H} />
       <Composition id="FrameSeqTest" component={FrameSeqTest} durationInFrames={240} fps={FPS} width={W} height={H} />
