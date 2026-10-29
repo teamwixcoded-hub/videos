@@ -53,7 +53,7 @@ const mk = (set: SetOut, cam: Cam, chars: React.ReactNode, blurK = 0.5, extra?: 
   <Stage cam={cam} far={set.far} mid={set.mid} chars={<>{chars}{extra}</>} front={set.front} fg={set.fg} rim={set.rim} blurK={blurK} />
 );
 type CamArg = Cam | [Cam, Cam];
-const camOf = (c: Ctx, a: CamArg) => { const k = Array.isArray(a) ? mixCam(a[0], a[1], c.p) : a; return {cx: k.cx + Math.sin(c.t * 0.9) * 5, cy: k.cy + Math.sin(c.t * 1.3 + 1) * 4, z: k.z}; };
+const camOf = (c: Ctx, a: CamArg) => { const k = Array.isArray(a) ? mixCam(a[0], a[1], c.p) : a; const push = Array.isArray(a) ? 1 : 1 + 0.07 * ease(Math.min(1, c.p)); return {cx: k.cx + Math.sin(c.t * 0.9) * 9 + (Array.isArray(a) ? 0 : (c.p - 0.5) * 40), cy: k.cy + Math.sin(c.t * 1.3 + 1) * 6, z: k.z * push}; };
 export const SC = {
   liv: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof livingRoom>[0], 't'>, chars: React.ReactNode, blurK = 0.5) => mk(merge(livingRoom({t: c.t, ...o}), livingDetail({t: c.t, warm: o.warm})), camOf(c, cam), chars, blurK),
   str: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof street>[0], 't'>, chars: React.ReactNode = null) => mk(merge(street({t: c.t, ...o}), streetDetail({t: c.t, night: o.night})), camOf(c, cam), chars),

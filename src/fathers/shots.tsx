@@ -3,7 +3,7 @@ import {AbsoluteFill} from 'remotion';
 import {Baby, PersonProps, Who, bodyK, Person} from './People';
 import {Laptop, Kite, GiftPile, Handset} from './props';
 import {LR, FL, streetPoint} from './sets';
-import {Ctx, Entry, Z, stand, sit, Pe, faceCam, F, SC, Split} from './kit';
+import {Ctx, Entry, Z, stand, sit, Pe, faceCam, bodyCam, F, SC, Split} from './kit';
 import {ClockInsert, LaptopHand, Payslip, PromotionLetter, Chat, GiftsToClocks, PhoneDark, SundayFlip, Banking, LeoTransfer, CallScreen, Gallery, PhotoShadow, Viewfinder, Polaroid, EndCard} from './inserts';
 import {WatchInsert, Fork, SeatsCount, Blocks, OldCar, Newspaper} from './inserts3';
 import {KW, ramp} from './fx';
@@ -115,9 +115,9 @@ export const HITS_AT = [T('adam knocked once'), LEO_SAYS + 1.9, T("it's never to
 
 export const LIST: Entry[] = [
   // ================= THE HOOK =================
-  [0.0, undefined, (c) => SC.str(c, [Z(1600, 560, 0.95), Z(1600, 540, 1.14)], {})],
+  [0.0, undefined, (c) => SC.str(c, [Z(1050, 470, 1.0), Z(1010, 420, 1.35)], {}, Pe(c, stand('adam', 65, 1000 + c.l * 40, 0.95, {turn: 0.4, pose: 'stand', face: F.sad})))],
   [T('a full bank account'), 'w', () => <Banking t={0.05} digits="" typeFrom={99} />],
-  [T('and a son who loves him'), undefined, (c) => SC.liv(c, [Z(1900, 470, 1.5), Z(1980, 450, 1.8)], {}, adamAt(c, 65, {face: {...F.soft, gaze: [0.8, 0.2]}}), 0.4)],
+  [T('and a son who loves him'), undefined, (c) => SC.flat(c, [faceCam(stand('leo', 25, 1600, 0.9), 1.6, 160), faceCam(stand('leo', 25, 1600, 0.9), 2.1, 130)], Pe(c, stand('leo', 25, 1600, 0.9, {view: 'front', pose: 'stand', face: F.grin})))],
   [T('and every sunday at eight'), undefined, (c) => <ClockInsert t={c.l} min={60} label="8:00 AM" tone="cold" />],
   [T('he sits beside a phone'), undefined, (c) => SC.liv(c, [W0, Z(1500, 560, 1.5)], {clockMin: 60}, adamAt(c, 65, {face: {...F.sad, gaze: [0.6, 0.5]}}), 0.4)],
   [T("doesn't ring"), undefined, (c) => <PhoneDark t={c.l} light={0} />],
