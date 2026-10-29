@@ -1,0 +1,14 @@
+const fs=require('fs');
+let p=fs.readFileSync('src/fathers/People.tsx','utf8');
+const a="top: p.top ?? (VARIANTS[p.outfit ?? '']?.top ?? OUTFITS[who].top)};";
+if(!p.includes(a))console.log('MISSING outfit');
+p=p.replace(a,"top: p.top ?? (VARIANTS[p.outfit ?? '']?.top ?? OUTFITS[who].top), simple: true};");
+fs.writeFileSync('src/fathers/People.tsx',p);
+let h=fs.readFileSync('src/fathers/Human.tsx','utf8');
+const b="  return (\n    <g>\n      <Taper A={S} B={E} r1={31} r2={24} fill={o.top} />\n      <Taper A={E} B={wr} r1={23} r2={16} fill={slv} />\n      {o.style === 'suit' && (() => { const c0 = mix(E, wr, 0.78);";
+if(!h.includes(b))console.log('MISSING front arm');
+h=h.replace(b,"  if (o.simple) return (\n    <g>\n      <Noodle A={S} J={E} B={wr} w={44} fill={o.top} />\n      {held && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform={`translate(0 -6) ${upright ? `rotate(${-(fa - 90)})` : ''}`}>{held}</g></g>}\n      <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform=\"translate(0 -6)\"><Mitten curl={curl} s={s * 1.25} /></g></g>\n    </g>\n  );\n"+b);
+const c="      {legs === 'sit' && [-1, 1].map((s) => (\n        <g key={s}>\n          <Taper A={[s * 56, 40]} B={[s * 82, 160]} r1={52} r2={40} fill={o.pants} />\n          <Taper A={[s * 82, 160]} B={[s * 76, 268]} r1={36} r2={25} fill={o.pants} />";
+if(!h.includes(c))console.log('MISSING front leg');
+h=h.replace(c,"      {legs === 'sit' && [-1, 1].map((s) => o.simple ? (\n        <g key={s}>\n          <Noodle A={[s * 56, 40]} J={[s * 84, 150]} B={[s * 76, 268]} w={64} fill={o.pants} />\n          <g transform={`translate(${s * 78} 276)`}><path d=\"M -40,-14 Q -46,8 -38,24 L 44,24 Q 62,18 60,0 Q 56,-14 34,-18 Z\" fill={o.shoe} stroke={INK} strokeWidth={4.4} strokeLinejoin=\"round\" /></g>\n        </g>\n      ) : (\n        <g key={s}>\n          <Taper A={[s * 56, 40]} B={[s * 82, 160]} r1={52} r2={40} fill={o.pants} />\n          <Taper A={[s * 82, 160]} B={[s * 76, 268]} r1={36} r2={25} fill={o.pants} />");
+fs.writeFileSync('src/fathers/Human.tsx',h);

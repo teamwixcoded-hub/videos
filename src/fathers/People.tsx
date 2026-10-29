@@ -117,7 +117,7 @@ export const Person: React.FC<PersonProps> = (p) => {
   const view = p.view ?? (sitting && FRONTY.has(pose) ? 'front' : 'side');
   const k = bodyK(who, age), sc = scale * k * CHAR_K;
   const grey = isSon(who) ? 0 : clamp((age - 38) / 27, 0, 1);
-  const outfit: Outfit = {...(VARIANTS[p.outfit ?? ''] ?? OUTFITS[who]), top: p.top ?? (VARIANTS[p.outfit ?? '']?.top ?? OUTFITS[who].top)}, tee = p.top ?? TEES[who], sd = seed ?? (who === 'adam' ? 0.3 : who === 'sam' ? 0.7 : who === 'leo' ? 1.1 : who === 'max' ? 1.6 : 2.0);
+  const outfit: Outfit = {...(VARIANTS[p.outfit ?? ''] ?? OUTFITS[who]), top: p.top ?? (VARIANTS[p.outfit ?? '']?.top ?? OUTFITS[who].top), simple: true}, tee = p.top ?? TEES[who], sd = seed ?? (who === 'adam' ? 0.3 : who === 'sam' ? 0.7 : who === 'leo' ? 1.1 : who === 'max' ? 1.6 : 2.0);
   const f = p.face ?? {};
   const face: Face = {gaze: f.gaze, lids: f.lids, smile: f.smile, open: f.open, brow: f.brow, browTilt: f.tilt, wide: f.wide};
   const e = p.enter === undefined ? 1 : settle(p.enter);

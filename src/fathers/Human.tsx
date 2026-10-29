@@ -183,6 +183,13 @@ export type HumanFrontProps = {
 const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?: React.ReactNode; upright?: boolean}> = ({S, T, o, s, curl, held, upright}) => {
   const {J: E, H} = ik2(S, T, 198, 182, (c) => (c[0][1] > c[1][1] ? c[0] : c[1]));
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9), slv = o.sleeve === 'long' ? o.top : SKIN;
+  if (o.simple) return (
+    <g>
+      <Noodle A={S} J={E} B={wr} w={44} fill={o.top} />
+      {held && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform={`translate(0 -6) ${upright ? `rotate(${-(fa - 90)})` : ''}`}>{held}</g></g>}
+      <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>
+    </g>
+  );
   return (
     <g>
       <Taper A={S} B={E} r1={31} r2={24} fill={o.top} />
@@ -203,7 +210,12 @@ export const HumanFront: React.FC<HumanFrontProps> = ({x, y, scale = 1, flip, le
   return (
     <g transform={`translate(${x} ${y}) scale(${flip ? -scale : scale} ${scale})`} style={dim ? {filter: `brightness(${1 - dim})`} : undefined}>
       <defs><linearGradient id={'fg' + id} x1="0" y1="0" x2="1" y2="0.4"><stop offset="0" stopColor={topG} /><stop offset="0.55" stopColor={o.top} /><stop offset="1" stopColor={topD} /></linearGradient></defs>
-      {legs === 'sit' && [-1, 1].map((s) => (
+      {legs === 'sit' && [-1, 1].map((s) => o.simple ? (
+        <g key={s}>
+          <Noodle A={[s * 56, 40]} J={[s * 84, 150]} B={[s * 76, 268]} w={64} fill={o.pants} />
+          <g transform={`translate(${s * 78} 276)`}><path d="M -40,-14 Q -46,8 -38,24 L 44,24 Q 62,18 60,0 Q 56,-14 34,-18 Z" fill={o.shoe} stroke={INK} strokeWidth={4.4} strokeLinejoin="round" /></g>
+        </g>
+      ) : (
         <g key={s}>
           <Taper A={[s * 56, 40]} B={[s * 82, 160]} r1={52} r2={40} fill={o.pants} />
           <Taper A={[s * 82, 160]} B={[s * 76, 268]} r1={36} r2={25} fill={o.pants} />
