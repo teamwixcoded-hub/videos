@@ -1,6 +1,6 @@
 import React from 'react';
 import {INK, UI, HAND, SERIF} from './theme';
-import {shade, mixc} from './People';
+import {shade, mixc, Person} from './People';
 
 // ---------------- props for the stage (stage coordinates unless noted) ----------------
 const rnd = (i: number, k: number) => { const x = Math.sin(i * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
@@ -39,9 +39,18 @@ const giftTopOld = (n: number) => { let t = 0; for (let i = 0; i < Math.min(8, M
 export type PhotoKind = 'father' | 'boy' | 'four' | 'kite' | 'play' | 'stall' | 'grad' | 'wedding' | 'party' | 'walk' | 'shave' | 'cup' | 'sunset' | 'stairs' | 'baby';
 export const PhotoArt: React.FC<{kind: PhotoKind; w: number; h: number; x?: number; y?: number}> = ({kind, w, h, x, y}) => {
   const sky = kind === 'sunset' || kind === 'stall' || kind === 'four' ? '#bb6f12' : kind === 'play' ? '#22273c' : kind === 'party' ? '#d08515' : kind === 'wedding' ? '#c39b4b' : '#308fb9';
-  const person = (cx: number, by: number, sc: number, col: string, _hair?: string) => (
-    <g transform={`translate(${cx} ${by}) scale(${sc * 1.15})`}><rect x={-15} y={-48} width={30} height={48} rx={11} fill={col} stroke={INK} strokeWidth={2.4} /><circle cx={0} cy={-68} r={20} fill="#f4f2fb" stroke={INK} strokeWidth={2.4} /><circle cx={-6.5} cy={-70} r={2.8} fill={INK} /><circle cx={6.5} cy={-70} r={2.8} fill={INK} /><path d="M -6,-61 q 6,5 12,0" fill="none" stroke={INK} strokeWidth={2.2} strokeLinecap="round" /></g>
-  );
+  // the people in the photos are the real cast: Sam (orange cardigan, beard), Max (green, curls), Adam (suit), Leo (blue hoodie), drawn with the same rig
+  const cast = (col: string, sc: number): {who: 'adam' | 'sam' | 'leo' | 'max' | 'aunt'; age: number} => {
+    const kid = sc < 0.75;
+    if (col === '#6c351c' || col === '#6f7d93' || col === '#b7bdd6') return {who: 'sam', age: kid ? 8 : 38};
+    if (col === '#2e5c3b') return {who: 'max', age: kid ? 7 : 22};
+    if (col === '#171e2f' || col === '#254877' || col === '#1b1f30') return {who: 'adam', age: 38};
+    return {who: 'leo', age: kid ? 7 : 25};
+  };
+  const person = (cx: number, by: number, sc: number, col: string, _hair?: string) => {
+    const c = cast(col, sc), k = sc * 0.17;
+    return <g key={cx + '-' + by}><Person who={c.who} age={c.age} view="front" x={cx} y={by + 18} scale={k} t={0} idle={0} face={{smile: 0.7}} /></g>;
+  };
   return (
     <svg x={x} y={y} width={w} height={h} viewBox="0 0 200 150" style={{display: 'block'}}>
       <rect width={200} height={150} fill={sky} />

@@ -50,7 +50,7 @@ export type PersonProps = {
 // ---- side view (facing +x): near hand / far hand in the rig's hip space; torso lean and head pitch ----
 type H = {N: V; F: V; torso?: number; pitch?: number};
 const SIDE: Record<PoseName, (t: number, r: number) => H> = {
-  stand: () => ({N: [26, 66], F: [-26, 76]}),
+  stand: () => ({N: [30, 64], F: [14, 74]}),
   rest: () => ({N: [150, -40], F: [172, -30]}),
   desk: (t) => ({N: [250 + Math.sin(t * 9) * 8, -125 + Math.sin(t * 13) * 6], F: [214 + Math.sin(t * 11) * 8, -112], torso: 6, pitch: 16}),
   type: (t) => ({N: [250 + Math.sin(t * 9) * 8, -125 + Math.sin(t * 13) * 6], F: [214 + Math.sin(t * 11) * 8, -112], torso: 6, pitch: 16}),
