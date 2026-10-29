@@ -27,8 +27,10 @@ const MODE: Record<string, TextMode> = {
   'SAY SOMETHING.': 'whisper', 'FIGHTS END.': 'pop', 'WALKS CONTINUE.': 'slam', 'THE ONE WHO WAS THERE.': 'title', 'HE ISN\u2019T IN ANY OF THEM.': 'slam', 'NEVER THE WATCH.': 'slam', 'THE TIME HE NEVER HAD.': 'title',
   '25 YEARS OF FRIDAYS': 'title', 'NOT BECAUSE HE HAS TO.': 'title', 'THEY\u2019LL REMEMBER WHO SHOWED UP.': 'title', 'IT\u2019S NEVER TOO LATE.': 'title',
 };
-const WORDS: KWS[] = KWORDS.filter((w) => w.style === 'big' || w.style === 'quote').map((w) => { const mode: TextMode = w.style === 'quote' ? 'whisper' : MODE[w.text] ?? 'pop'; return {at: w.at, dur: w.dur, text: w.text, accent: w.accent, mode, big: mode === 'slam' || mode === 'title'}; });
-const TAGS = KWORDS.filter((w) => w.style === 'tag'), TIMES = KWORDS.filter((w) => w.style === 'time');
+// words an insert already shows (bank, payslip, clock, gifts-to-clocks) are not repeated on top of it
+const SHOWN = new Set(['FULL BANK ACCOUNT.', 'SAME SALARY', 'EXTRA SHIFTS · WEEKENDS', '6:00 PM', 'IT’S RARELY THE GIFTS.', 'IT’S THE TIME.']);
+const WORDS: KWS[] = KWORDS.filter((w) => !SHOWN.has(w.text)).filter((w) => w.style === 'big' || w.style === 'quote').map((w) => { const mode: TextMode = w.style === 'quote' ? 'whisper' : MODE[w.text] ?? 'pop'; return {at: w.at, dur: w.dur, text: w.text, accent: w.accent, mode, big: mode === 'slam' || mode === 'title'}; });
+const TAGS = KWORDS.filter((w) => w.style === 'tag'), TIMES = KWORDS.filter((w) => w.style === 'time' && !SHOWN.has(w.text));
 const pillsOf = (text: string): ('adam' | 'sam' | 'leo' | 'max')[] => (text === 'AGE 65' ? ['adam', 'sam'] : text === 'AGE 12' ? ['adam'] : text === 'AGE 5' || text === 'AGE 15' ? ['leo'] : ['leo', 'max']);
 
 // ---------------- sound ----------------

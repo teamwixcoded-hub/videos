@@ -1,0 +1,4 @@
+const fs=require('fs');let s=fs.readFileSync('src/fathers/Fathers.tsx','utf8');
+s=s.replace("const WORDS: KWS[] = KWORDS.filter((w) => w.style === 'big' || w.style === 'quote')","// words an insert already shows (bank, payslip, clock, gifts-to-clocks) are not repeated on top of it\nconst SHOWN = new Set(['FULL BANK ACCOUNT.', 'SAME SALARY', 'EXTRA SHIFTS · WEEKENDS', '6:00 PM', 'IT’S RARELY THE GIFTS.', 'IT’S THE TIME.']);\nconst WORDS: KWS[] = KWORDS.filter((w) => !SHOWN.has(w.text)).filter((w) => w.style === 'big' || w.style === 'quote')");
+s=s.replace("const TAGS = KWORDS.filter((w) => w.style === 'tag'), TIMES = KWORDS.filter((w) => w.style === 'time');","const TAGS = KWORDS.filter((w) => w.style === 'tag'), TIMES = KWORDS.filter((w) => w.style === 'time' && !SHOWN.has(w.text));");
+fs.writeFileSync('src/fathers/Fathers.tsx',s);
