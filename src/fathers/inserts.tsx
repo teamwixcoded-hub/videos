@@ -126,8 +126,8 @@ const Bar: React.FC<{title: string; sub?: string; color?: string}> = ({title, su
 );
 // the banking app: Adam types an amount out of habit, deletes it digit by digit, then his thumb goes to the call button and presses it
 export const Banking: React.FC<{t: number; to?: string; digits?: string; typeFrom?: number; delFrom?: number; press?: number; send?: boolean}> = ({t, to = 'Leo', digits = '2500', typeFrom = 0.4, delFrom = 3.4, press = 7.2, send = false}) => {
-  const typed = clamp(Math.floor((t - typeFrom) / 0.3) + 1, 0, digits.length), gone = t > delFrom ? clamp(Math.floor((t - delFrom) / 0.45) + 1, 0, digits.length) : 0, n = Math.max(0, typed - gone);
-  const amt = digits.slice(0, n), thumbK = ramp(t, delFrom + digits.length * 0.45 + 0.4, press - 0.3), pr = t > press ? 1 : 0;
+  const typed = clamp(Math.floor((t - typeFrom) / 0.3) + 1, 0, digits.length), gone = t > delFrom ? clamp(Math.floor((t - delFrom) / 0.3) + 1, 0, digits.length) : 0, n = Math.max(0, typed - gone);
+  const amt = digits.slice(0, n), thumbK = ramp(t, delFrom + 0.6, press - 0.3), pr = t > press ? 1 : 0;
   return (
     <InsertBG tone="cold">
       <Phone shake={t > press ? clamp(1 - (t - press) / 0.9, 0, 1) * 0.9 : 0} id="bk">
@@ -305,7 +305,7 @@ export const EndCard: React.FC<{t: number}> = ({t}) => (
       <text x={0} y={162} textAnchor="middle" fontFamily={HAND} fontWeight={600} fontSize={40} fill="#3a2a26">Friday. All four.</text>
     </g>
     <AbsoluteFill style={{alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 130}}>
-      <div style={{background: 'radial-gradient(ellipse at center, rgba(20,12,8,.7) 0%, rgba(20,12,8,0) 70%)', padding: '40px 120px', opacity: ramp(t, 2.4, 3.6), transform: `translateY(${(1 - ramp(t, 2.4, 3.6)) * 20}px)`}}>
+      <div style={{background: 'radial-gradient(ellipse at center, rgba(20,12,8,.7) 0%, rgba(20,12,8,0) 70%)', padding: '40px 120px', opacity: ramp(t, 0.3, 1.1), transform: `translateY(${(1 - ramp(t, 0.3, 1.1)) * 20}px)`}}>
         <div style={{fontFamily: SERIF, fontWeight: 800, fontSize: 76, color: '#fff7e8', textAlign: 'center', lineHeight: 1.15, textShadow: '0 4px 18px rgba(0,0,0,.8)'}}>What do you remember most<br /><span style={{color: GOLD}}>about your father?</span></div>
       </div>
     </AbsoluteFill>

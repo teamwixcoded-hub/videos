@@ -10,7 +10,7 @@ const BOXES: {w: number; h: number; c: string; r: string; tag?: string}[] = [
   {w: 250, h: 130, c: '#73221a', r: '#c09611', tag: 'CAR'}, {w: 230, h: 120, c: '#1a496e', r: '#e4b61c'}, {w: 300, h: 150, c: '#4a2c63', r: '#c09611', tag: 'COSTUME'}, {w: 240, h: 120, c: '#8d5315', r: '#ffc610'},
   {w: 270, h: 140, c: '#1c5c47', r: '#c09611', tag: 'PHONE'}, {w: 230, h: 120, c: '#6e2342', r: '#e4b61c'}, {w: 280, h: 140, c: '#232c54', r: '#c09611', tag: 'LAPTOP'}, {w: 220, h: 110, c: '#796117', r: '#ffc610'},
 ];
-export const GiftPile: React.FC<{x: number; y: number; n: number; dust?: number; s?: number}> = ({x, y, n, dust = 0, s = 1}) => {
+const GiftPileOld: React.FC<{x: number; y: number; n: number; dust?: number; s?: number}> = ({x, y, n, dust = 0, s = 1}) => {
   let top = 0;
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
@@ -33,7 +33,7 @@ export const GiftPile: React.FC<{x: number; y: number; n: number; dust?: number;
     </g>
   );
 };
-export const giftTop = (n: number) => { let t = 0; for (let i = 0; i < Math.min(8, Math.ceil(n)); i++) t += BOXES[i].h - 6; return t; };
+const giftTopOld = (n: number) => { let t = 0; for (let i = 0; i < Math.min(8, Math.ceil(n)); i++) t += BOXES[i].h - 6; return t; };
 
 // Miniature photographs for Sam's wall and the gallery
 export type PhotoKind = 'four' | 'kite' | 'play' | 'stall' | 'grad' | 'wedding' | 'party' | 'walk' | 'shave' | 'cup' | 'sunset' | 'stairs' | 'baby';
@@ -89,7 +89,7 @@ export const PhotoWall: React.FC<{x: number; y: number; n: number; kite?: boolea
 );
 
 // a paper kite. torn = a rip across it
-export const Kite: React.FC<{x: number; y: number; s?: number; rot?: number; torn?: number; tail?: number; t?: number}> = ({x, y, s = 1, rot = 0, torn = 0, tail = 1, t = 0}) => (
+const KiteOld: React.FC<{x: number; y: number; s?: number; rot?: number; torn?: number; tail?: number; t?: number}> = ({x, y, s = 1, rot = 0, torn = 0, tail = 1, t = 0}) => (
   <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}>
     {tail > 0 && <path d={`M 0,96 Q ${22 * Math.sin(t * 3)},150 ${-10 + 18 * Math.sin(t * 3 + 1)},200 T ${12 * Math.sin(t * 3 + 2)},300`} fill="none" stroke={INK} strokeWidth={1.8} />}
     {tail > 0 && [130, 190, 250].map((yy, i) => <path key={i} d={`M ${-14 + 8 * Math.sin(t * 3 + i)},${yy} l 14,-10 l 14,10 l -14,10 z`} fill={i % 2 ? '#c09611' : '#73221a'} stroke={INK} strokeWidth={1.6} />)}
@@ -101,7 +101,7 @@ export const Kite: React.FC<{x: number; y: number; s?: number; rot?: number; tor
 );
 
 // two tea cups / four cups on a bench top at (x, y)
-export const Cup: React.FC<{x: number; y: number; s?: number; steam?: number; t?: number}> = ({x, y, s = 1, steam = 1, t = 0}) => (
+const CupOld: React.FC<{x: number; y: number; s?: number; steam?: number; t?: number}> = ({x, y, s = 1, steam = 1, t = 0}) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}>
     {steam > 0 && [-8, 6].map((dx, i) => <path key={i} d={`M ${dx},-34 q 8,-14 0,-26 q -8,-12 2,-24`} fill="none" stroke="#fff" strokeWidth={2.4} strokeLinecap="round" opacity={steam * (0.35 + 0.2 * Math.sin(t * 3 + i))} />)}
     <path d="M -22,-30 L 22,-30 L 18,0 Q 0,8 -18,0 Z" fill="#e2cba1" stroke={INK} strokeWidth={2.2} strokeLinejoin="round" />
@@ -111,7 +111,7 @@ export const Cup: React.FC<{x: number; y: number; s?: number; steam?: number; t?
 );
 
 // open laptop seen from the side/back: lid toward the viewer; angle 0 = shut, 1 = open
-export const Laptop: React.FC<{x: number; y: number; s?: number; open?: number; glow?: number; screenToViewer?: boolean}> = ({x, y, s = 1, open = 1, glow = 1, screenToViewer = false}) => {
+const LaptopOld: React.FC<{x: number; y: number; s?: number; open?: number; glow?: number; screenToViewer?: boolean}> = ({x, y, s = 1, open = 1, glow = 1, screenToViewer = false}) => {
   const lid = 150 * open;
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
@@ -140,3 +140,5 @@ export const Handwriting: React.FC<{x: number; y: number; text: string; size?: n
   <text x={x} y={y} fontFamily={HAND} fontWeight={600} fontSize={size} fill={color} transform={`rotate(${rot} ${x} ${y})`}>{text}</text>
 );
 export {SERIF};
+
+export {GiftPile, giftTop, Laptop, Cup, Kite, Shadow} from './props2';

@@ -28,7 +28,7 @@ export type PoseName = 'stand' | 'rest' | 'desk' | 'phone' | 'ear' | 'cradle' | 
 export type PersonProps = {
   who: Who; age?: number; x: number; y: number; scale?: number; flip?: boolean; t: number; seed?: number; dim?: number; idle?: number;
   turn?: number; lean?: number; tilt?: number; slump?: number; face?: FaceP; legs?: 'stand' | 'sit' | 'none'; sitDrop?: number; walk?: number;
-  pose?: PoseName; outfit?: string; top?: string; raise?: number; view?: 'front' | 'side'; handL?: V; handR?: V;
+  pose?: PoseName; outfit?: string; top?: string; raise?: number; view?: 'front' | 'side'; handL?: V; handR?: V; enter?: number;
   children?: React.ReactNode;
 };
 
@@ -77,6 +77,9 @@ const SHIFT: Record<'side' | 'front', Partial<Record<PoseName, V>>> = {
   front: {cradle: [5, -72], ear: [14, -48], carry: [0, -40]},
 };
 const FRONTY = new Set<PoseName>(['clap', 'film', 'desk', 'type']);
+// ease into a pose with a little overshoot (anticipation and settle), so every cut starts with a move and not a freeze
+const settle = (k: number) => { const q = clamp(k, 0, 1) - 1; return 1 + 2.4 * q * q * q + 1.4 * q * q; };
+const mixV = (a: V, b: V, e: number): V => [lerp(a[0], b[0], e), lerp(a[1], b[1], e)];
 
 export const Person: React.FC<PersonProps> = (p) => {
   const {who, age = isSon(who) ? 30 : 40, x, y, scale = 1, t, seed, dim = 0, idle = 1, turn = 0, slump = 0, walk = 0} = p;
@@ -88,12 +91,13 @@ export const Person: React.FC<PersonProps> = (p) => {
   const tee = p.top ?? TEES[who], sd = seed ?? (who === 'adam' ? 0.3 : who === 'sam' ? 0.7 : who === 'leo' ? 1.1 : who === 'max' ? 1.6 : 2.0);
   const f = p.face ?? {};
   const face: Face = {gaze: f.gaze, lids: f.lids, smile: f.smile, open: f.open, brow: f.brow, browTilt: f.tilt, wide: f.wide};
+  const e = p.enter === undefined ? 1 : settle(p.enter);
   const raise = p.raise ?? 1, stoop = (who === 'adam' || who === 'sam') ? clamp((age - 50) / 15, 0, 1) * 5 : 0;
   const shift = SHIFT[view][pose] ?? [0, 0];
   const kids = p.children ? <g transform={`translate(${shift[0]} ${shift[1]})`}>{p.children}</g> : null;
   if (view === 'front') {
     const q = FRONT[pose](t, raise);
-    const L: V = p.handL ? [p.handL[0], p.handL[1] - 92] : q.L, R: V = p.handR ? [p.handR[0], p.handR[1] - 92] : q.R;
+    const s0 = FRONT.stand(t, 1), L: V = mixV(s0.L, p.handL ? [p.handL[0], p.handL[1] - 92] : q.L, e), R: V = mixV(s0.R, p.handR ? [p.handR[0], p.handR[1] - 92] : q.R, e);
     return (
       <Char x={x} y={y} scale={sc} flip={p.flip} lean={(p.lean ?? q.lean ?? 0) + stoop} head={{turn: clamp(turn, -1, 1), tilt: p.tilt}} face={face} handL={L} handR={R}
         slump={slump} legs={sitting ? 'sit' : 'none'} tee={tee} t={t} seed={sd} dim={dim} idle={idle} look={who} grey={grey} tie={who === 'adam'}>{kids}</Char>
@@ -105,9 +109,10 @@ export const Person: React.FC<PersonProps> = (p) => {
   const footN: V = sitting ? [230, 170] : walking ? [sw * 100, 392 - Math.max(0, -cw) * 46] : [44, 394];
   const footF: V = sitting ? [300, 172] : walking ? [-sw * 100, 392 - Math.max(0, cw) * 46] : [-36, 398];
   const arms = walking && pose === 'stand' ? sw * 70 : 0;
-  const handN: V = [q.N[0] + arms, q.N[1]], handF: V = [q.F[0] - arms, q.F[1]];
+  const s1 = SIDE.stand(t, 1), handN: V = mixV(s1.N, [q.N[0] + arms, q.N[1]], e), handF: V = mixV(s1.F, [q.F[0] - arms, q.F[1]], e);
+  const bob = walking ? Math.abs(Math.sin(walk * Math.PI * 2)) * 9 * sc : 0;
   return (
-    <SideChar x={x} y={y} scale={sc} flip={flip} torso={(p.lean ?? 0) + (q.torso ?? 0) + (sitting ? -6 : 0) + stoop} headPitch={(q.pitch ?? 8) + slump * 6} turn={clamp(0.85 + Math.abs(turn) * 0.15, 0.6, 1)} face={face}
+    <SideChar x={x} y={y - bob} scale={sc} flip={flip} torso={(p.lean ?? 0) + (q.torso ?? 0) * e + (sitting ? -6 : 0) + stoop + (walking ? 3 : 0)} headPitch={(q.pitch ?? 8) + slump * 6} turn={clamp(0.85 + Math.abs(turn) * 0.15, 0.6, 1)} face={face}
       handN={handN} handF={handF} footN={footN} footF={footF} look={who} tie={who === 'adam'} grey={grey} tee={tee} t={t} seed={sd} dim={dim} idle={idle} slump={slump}>{kids}</SideChar>
   );
 };

@@ -28,7 +28,13 @@ export const sit = (who: Who, age: number, x: number, sc = 0.7, o: Partial<Perso
   const front = o.view === 'front' || (!!o.pose && FRONTP.includes(o.pose));
   return {who, age, x, y: floor - (front ? 300 : 218) * sc * bodyK(who, age) * CHAR_K, scale: sc, legs: 'sit', ...o};
 };
-export const Pe = (c: Ctx, p: Pos, key?: string | number) => <Person key={key} t={c.t} {...p} />;
+// every person stands on a soft contact shadow and eases into the shot's pose over the first half second
+const ShadowE: React.FC<{x: number; rx: number}> = ({x, rx}) => (
+  <g><defs><radialGradient id="pshadow"><stop offset="0" stopColor="#05060f" stopOpacity="0.5" /><stop offset="0.6" stopColor="#05060f" stopOpacity="0.24" /><stop offset="1" stopColor="#05060f" stopOpacity="0" /></radialGradient></defs><ellipse cx={x} cy={FLOOR + 6} rx={rx} ry={rx * 0.13} fill="url(#pshadow)" /></g>
+);
+export const Pe = (c: Ctx, p: Pos, key?: string | number) => (
+  <g key={key}><ShadowE x={p.x} rx={190 * p.scale * bodyK(p.who, p.age) * CHAR_K} /><Person t={c.t} enter={c.l / 0.55} {...p} /></g>
+);
 // camera aimed at a person's face / upper body
 const headH = (p: Pos) => ((p.view === 'front' || (!!p.pose && FRONTP.includes(p.pose))) ? 500 : 440);
 export const faceCam = (p: Pos, z = 2.4, dy = 0): Cam => Z(p.x, p.y - headH(p) * p.scale * bodyK(p.who, p.age) * CHAR_K + dy, z);

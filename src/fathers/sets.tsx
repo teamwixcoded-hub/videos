@@ -85,6 +85,7 @@ export const livingRoom = (o: LivingOpts): SetOut => {
       <g>
         <Floor c1={w ? '#654931' : '#2e3653'} c2={w ? '#533a26' : '#24293f'} />
         <ellipse cx={1500} cy={940} rx={820} ry={86} fill={w ? '#81532b' : '#333b5b'} stroke={INK} strokeWidth={2.4} opacity={0.9} />
+        <ellipse cx={900} cy={846} rx={400} ry={22} fill="rgba(5,6,15,.42)" style={{filter: "blur(9px)"}} /><ellipse cx={1500} cy={842} rx={130} ry={14} fill="rgba(5,6,15,.42)" style={{filter: "blur(9px)"}} /><ellipse cx={LR.chairX} cy={846} rx={230} ry={22} fill="rgba(5,6,15,.42)" style={{filter: "blur(9px)"}} />
         {/* sofa */}
         <g transform="translate(900 0)">
           <rect x={-340} y={470} width={680} height={250} rx={46} fill={shade(sofa, -0.12)} stroke={INK} strokeWidth={3} />
@@ -110,7 +111,6 @@ export const livingRoom = (o: LivingOpts): SetOut => {
     ),
     front: (<g>
       <rect x={LR.chairX - 178} y={706} width={356} height={74} rx={28} fill={shade(sofa, -0.02)} stroke={INK} strokeWidth={3} /><path d={`M ${LR.chairX - 150},738 Q ${LR.chairX},758 ${LR.chairX + 150},738`} fill="none" stroke={INK} strokeWidth={1.8} opacity={0.4} />
-      <rect x={LR.sofaX - 300} y={712} width={600} height={64} rx={26} fill={shade(sofa, -0.02)} stroke={INK} strokeWidth={3} />
     </g>),
     fg: <g><Plant x={150} y={1100} s={2.2} c={w ? '#2d3553' : '#282f48'} /></g>,
     rim: w ? 'rgba(255,200,120,.9)' : 'rgba(170,200,235,.8)',
@@ -191,7 +191,7 @@ export const hospital = (o: {t: number; track?: number}): SetOut => {
       <g>
         <rect x={-400} y={-200} width={4000} height={1500} fill="#b1b8d3" />
         <polygon points="-400,-200 1450,430 1450,570 -400,1180" fill="#5e6ca4" stroke={INK} strokeWidth={3} />
-        <polygon points="3600,-200 1750,430 1750,570 3600,1180" fill="#c78f35" stroke={INK} strokeWidth={3} />
+        <polygon points="3600,-200 1750,430 1750,570 3600,1180" fill="#7a4a38" stroke={INK} strokeWidth={3} />
         <polygon points="-400,-200 3600,-200 1750,430 1450,430" fill="#b5bcd8" stroke={INK} strokeWidth={3} />
         <polygon points="-400,1180 1450,570 1750,570 3600,1180" fill="#546195" stroke={INK} strokeWidth={3} />
         <rect x={1450} y={430} width={300} height={140} fill="#9dceff" stroke={INK} strokeWidth={2.4} />
@@ -215,11 +215,11 @@ export const hospital = (o: {t: number; track?: number}): SetOut => {
 export const party = (o: {t: number; adamHere?: boolean}): SetOut => ({
   far: (
     <g>
-      <Wall c1="#e19e17" c2="#c5821d" />
+      <Wall c1="#3d2c60" c2="#2a2048" />
       <path d="M 300,150 Q 1600,330 2900,150" fill="none" stroke={INK} strokeWidth={2.4} />
       {Array.from({length: 17}, (_, i) => { const k = i / 16, x = lerp(300, 2900, k), y = 150 + 180 * Math.sin(k * Math.PI) * 0.97; return <polygon key={i} points={`${x - 28},${y} ${x + 28},${y} ${x},${y + 66}`} fill={['#9c2712', '#254877', '#c09611', '#2e5c3b'][i % 4]} stroke={INK} strokeWidth={1.8} />; })}
       <text x={1600} y={500} textAnchor="middle" fontFamily={HAND} fontWeight={600} fontSize={120} fill="#492319" opacity={0.85}>Happy Birthday Leo!</text>
-      <Floor c1="#70502d" c2="#563c22" />
+      <Floor c1="#4a3426" c2="#372419" />
     </g>
   ),
   mid: (
@@ -297,6 +297,7 @@ export const office = (o: {t: number; weekend?: boolean; clockMin?: number}): Se
   ),
   front: (
     <g>
+      <ellipse cx={1700} cy={846} rx={640} ry={24} fill="rgba(5,6,15,.42)" style={{filter: "blur(9px)"}} />
       <rect x={1120} y={690} width={1150} height={30} rx={8} fill="#5c422b" stroke={INK} strokeWidth={3} /><rect x={1150} y={720} width={1090} height={120} fill="#4c3422" stroke={INK} strokeWidth={3} />
       <rect x={1190} y={730} width={470} height={90} fill="#402c1d" stroke={INK} strokeWidth={2.4} /><circle cx={1425} cy={775} r={10} fill="#967222" />
       <g transform="translate(2040 690)"><path d="M -40,0 L 40,0 L 20,-110 L -20,-110 Z" fill="#191e30" stroke={INK} strokeWidth={2.4} /><path d="M 0,-110 L 70,-190" stroke={INK} strokeWidth={3.6} /><path d="M 40,-210 L 110,-190 L 90,-150 L 30,-170 Z" fill="#e29600" stroke={INK} strokeWidth={2.4} /><ellipse cx={80} cy={-100} rx={160} ry={60} fill="#e29600" opacity={0.12} /></g>
@@ -344,7 +345,7 @@ export const leoRoom = (o: {t: number}): SetOut => ({
 
 // the stairs of Sam's house, a warm lamp
 export const stairs = (o: {t: number}): SetOut => ({
-  far: (<g><Wall c1="#c78d2c" c2="#a06e31" />{[0, 1, 2, 3, 4].map((i) => <rect key={i} x={1100 + i * 220} y={300 + i * 110} width={2200} height={110} fill={i % 2 ? '#65492f' : '#70502d'} stroke={INK} strokeWidth={2.4} />)}<g transform="translate(700 340)"><rect x={-14} y={0} width={28} height={110} fill="#493625" stroke={INK} strokeWidth={1.8} /><path d="M -60,0 L 60,0 L 36,-80 L -36,-80 Z" fill="#f9b700" stroke={INK} strokeWidth={2.4} /><ellipse cx={0} cy={-30} rx={190} ry={150} fill="#f9b700" opacity={0.2} /></g></g>),
+  far: (<g><Wall c1="#6a4634" c2="#533527" />{[0, 1, 2, 3, 4].map((i) => <rect key={i} x={1100 + i * 220} y={300 + i * 110} width={2200} height={110} fill={i % 2 ? '#65492f' : '#70502d'} stroke={INK} strokeWidth={2.4} />)}<g transform="translate(700 340)"><rect x={-14} y={0} width={28} height={110} fill="#493625" stroke={INK} strokeWidth={1.8} /><path d="M -60,0 L 60,0 L 36,-80 L -36,-80 Z" fill="#f9b700" stroke={INK} strokeWidth={2.4} /><ellipse cx={0} cy={-30} rx={190} ry={150} fill="#f9b700" opacity={0.2} /></g></g>),
   mid: (<g><Floor c1="#65492f" c2="#533723" /><rect x={1240} y={720} width={1500} height={110} fill="#65492f" stroke={INK} strokeWidth={3} /><rect x={1460} y={610} width={1400} height={110} fill="#70502d" stroke={INK} strokeWidth={3} /></g>),
   rim: 'rgba(255,205,130,.9)',
 });
@@ -381,7 +382,7 @@ export const teaStall = (o: {t: number; season?: number; sunset?: number; cups?:
           <text x={0} y={490} textAnchor="middle" fontFamily={SERIF} fontWeight={800} fontSize={44} letterSpacing={6} fill="#eed59e" stroke={INK} strokeWidth={1.6}>CHAI</text>
         </g>
         <g>
-          <rect x={1260} y={640} width={1000} height={34} rx={8} fill="#533c2a" stroke={INK} strokeWidth={3} />
+          <ellipse cx={1760} cy={846} rx={560} ry={22} fill="rgba(5,6,15,.42)" style={{filter: "blur(9px)"}} /><rect x={1260} y={640} width={1000} height={34} rx={8} fill="#533c2a" stroke={INK} strokeWidth={3} />
           <rect x={1300} y={674} width={22} height={160} fill="#493625" stroke={INK} strokeWidth={2.4} /><rect x={2200} y={674} width={22} height={160} fill="#493625" stroke={INK} strokeWidth={2.4} />
         </g>
         {s === 3 && Array.from({length: 40}, (_, i) => <circle key={i} cx={(rnd(i, 1) * 3400 + o.t * 30) % 3400 - 100} cy={((rnd(i, 2) * 1100 + o.t * 90 * (0.5 + rnd(i, 3))) % 1100)} r={3 + rnd(i, 4) * 4} fill="#fff" opacity={0.85} />)}
@@ -411,7 +412,7 @@ export const park = (o: {t: number; season?: number}): SetOut => {
 
 // Sam's kitchen: a table, two chairs, a window
 export const kitchen = (o: {t: number; night?: boolean}): SetOut => ({
-  far: (<g><Wall c1="#cf952a" c2="#ab7c30" /><Window id="kt" x={1200} y={170} w={420} h={360} sky={o.night ? ['#101529', '#1b233b'] : ['#4995c2', '#b7d1de']} curtains="#794926" />
+  far: (<g><Wall c1="#6d4a3a" c2="#573a2e" /><Window id="kt" x={1200} y={170} w={420} h={360} sky={o.night ? ['#101529', '#1b233b'] : ['#4995c2', '#b7d1de']} curtains="#794926" />
     <rect x={2100} y={180} width={900} height={330} fill="#84512b" stroke={INK} strokeWidth={3} />{[0, 1, 2].map((i) => <rect key={i} x={2120 + i * 295} y={200} width={270} height={290} fill="#6f472c" stroke={INK} strokeWidth={2.4} />)}
     <Clock x={700} y={260} r={64} min={20} /><Floor c1="#755435" c2="#593e26" /></g>),
   mid: (<g><g transform="translate(1600 0)"><ellipse cx={0} cy={700} rx={260} ry={42} fill="#81532b" stroke={INK} strokeWidth={3} /><rect x={-20} y={700} width={40} height={130} fill="#533c2a" stroke={INK} strokeWidth={2.4} /></g>
