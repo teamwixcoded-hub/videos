@@ -1,6 +1,6 @@
 import React from 'react';
-import {Char, Face, V, shade as shade0} from '../same2d/Char';
-import {SideChar} from '../same2d/SideChar';
+import {Face, V, shade as shade0} from '../same2d/Char';
+import {HumanFront, HumanSide, Outfit} from './Human';
 
 // ============================================================================================
 // The cast of Two Fathers, drawn with the SAME rig as Same Man (glass bubble head, black oval eyes, thin black limbs, white gloves, white shoes):
@@ -18,6 +18,20 @@ const hex = (h: string): [number, number, number] => { const n = parseInt(h.slic
 export const mixc = (a: string, b: string, k: number) => { const A = hex(a), B = hex(b); return '#' + A.map((v, i) => Math.round(lerp(v, B[i], k)).toString(16).padStart(2, '0')).join(''); };
 
 const TEES: Record<Who, string> = {adam: '#34498f', sam: '#d2733c', leo: '#4a8bd8', max: '#47b57a', aunt: '#2fa39a'};
+const OUTFITS: Record<Who, Outfit> = {
+  adam: {style: 'suit', top: '#34498f', shirt: '#f3efe6', pants: '#232d52', shoe: '#1b1b22', sleeve: 'long', sole: '#2a2a33', watch: true},
+  sam: {style: 'cardigan', top: '#c8693a', shirt: '#efe3cf', pants: '#6b4b34', shoe: '#3a2a20', sleeve: 'long', sole: '#2a2018'},
+  leo: {style: 'hoodie', top: '#4a8bd8', shirt: '#e8eef8', pants: '#34456e', shoe: '#f2f0f8', sleeve: 'long'},
+  max: {style: 'tee', top: '#47b57a', shirt: '#e7f0e4', pants: '#5b6b3f', shoe: '#f2f0f8', sleeve: 'short'},
+  aunt: {style: 'tee', top: '#2fa39a', shirt: '#f0ece4', pants: '#5a4a78', shoe: '#3a2a20', sleeve: 'long', sole: '#2a2018'},
+};
+const VARIANTS: Record<string, Outfit> = {
+  work: {style: 'tee', top: '#6f7d93', shirt: '#c9ced8', pants: '#3f4a5a', shoe: '#2a2a33', sleeve: 'long', sole: '#1d1d24'},
+  kid: {style: 'tee', top: '#e0a63c', shirt: '#fff', pants: '#34456e', shoe: '#f2f0f8', sleeve: 'short'},
+  pjs: {style: 'tee', top: '#7a8fd0', shirt: '#fff', pants: '#5a6ab0', shoe: '#f2f0f8', sleeve: 'long'},
+};
+// how far the fingers curl for each pose (0 open .. 1 fist)
+const CURL: Partial<Record<PoseName, number>> = {stand: 0.3, rest: 0.4, desk: 0.35, type: 0.35, phone: 0.55, ear: 0.55, cradle: 0.5, clap: 0.1, knock: 0.9, wave: 0.05, film: 0.5, carry: 0.6, fold: 0.45, point: 0.2, hold: 0.5, raise: 0.8};
 const isSon = (w: Who) => w === 'leo' || w === 'max';
 // body scale by age (sons grow; fathers stay adult)
 export const bodyK = (w: Who, age: number) => (isSon(w) ? clamp(lerp(0.5, 1, (age - 4) / 18), 0.5, 1) : 1);
@@ -40,7 +54,7 @@ const SIDE: Record<PoseName, (t: number, r: number) => H> = {
   desk: (t) => ({N: [250 + Math.sin(t * 9) * 8, -125 + Math.sin(t * 13) * 6], F: [214 + Math.sin(t * 11) * 8, -112], torso: 6, pitch: 16}),
   type: (t) => ({N: [250 + Math.sin(t * 9) * 8, -125 + Math.sin(t * 13) * 6], F: [214 + Math.sin(t * 11) * 8, -112], torso: 6, pitch: 16}),
   phone: () => ({N: [150, -250], F: [96, -122], pitch: 28}),
-  ear: () => ({N: [4, -434], F: [-20, 64]}),
+  ear: () => ({N: [26, 66], F: [-6, -436]}),
   cradle: () => ({N: [160, -112], F: [118, -100], torso: -4, pitch: 24}),
   clap: (t) => { const k = (Math.sin(t * 16) + 1) / 2; return {N: [212 - 30 * k, -235], F: [176 + 30 * k, -228]}; },
   knock: (t) => ({N: [300 + Math.max(0, Math.sin(t * 14)) * 26, -250], F: [20, 66]}),
@@ -66,7 +80,7 @@ const FRONT: Record<PoseName, (t: number, r: number) => {L: V; R: V; lean?: numb
   wave: (t) => ({L: [-100, -80], R: [172, -480 + Math.sin(t * 9) * 30]}),
   film: (t) => ({L: [-56, -420], R: [56, -420 + Math.sin(t * 2) * 3]}),
   carry: () => ({L: [-80, -120], R: [80, -120]}),
-  fold: () => ({L: [34, -170], R: [-34, -172]}),
+  fold: () => ({L: [-20, -160], R: [20, -164]}),
   point: () => ({L: [-100, -80], R: [200, -320]}),
   hold: () => ({L: [-80, -100], R: [80, -100]}),
   raise: (t, r) => ({L: [-100, -80], R: [lerp(100, 160, r), lerp(-80, -300, r) + Math.sin(t * 31) * 2 * r]}),
@@ -88,7 +102,7 @@ export const Person: React.FC<PersonProps> = (p) => {
   const view = p.view ?? (sitting && FRONTY.has(pose) ? 'front' : 'side');
   const k = bodyK(who, age), sc = scale * k * CHAR_K;
   const grey = isSon(who) ? 0 : clamp((age - 38) / 27, 0, 1);
-  const tee = p.top ?? TEES[who], sd = seed ?? (who === 'adam' ? 0.3 : who === 'sam' ? 0.7 : who === 'leo' ? 1.1 : who === 'max' ? 1.6 : 2.0);
+  const outfit: Outfit = {...(VARIANTS[p.outfit ?? ''] ?? OUTFITS[who]), top: p.top ?? (VARIANTS[p.outfit ?? '']?.top ?? OUTFITS[who].top)}, tee = p.top ?? TEES[who], sd = seed ?? (who === 'adam' ? 0.3 : who === 'sam' ? 0.7 : who === 'leo' ? 1.1 : who === 'max' ? 1.6 : 2.0);
   const f = p.face ?? {};
   const face: Face = {gaze: f.gaze, lids: f.lids, smile: f.smile, open: f.open, brow: f.brow, browTilt: f.tilt, wide: f.wide};
   const e = p.enter === undefined ? 1 : settle(p.enter);
@@ -99,8 +113,8 @@ export const Person: React.FC<PersonProps> = (p) => {
     const q = FRONT[pose](t, raise);
     const s0 = FRONT.stand(t, 1), L: V = mixV(s0.L, p.handL ? [p.handL[0], p.handL[1] - 92] : q.L, e), R: V = mixV(s0.R, p.handR ? [p.handR[0], p.handR[1] - 92] : q.R, e);
     return (
-      <Char x={x} y={y} scale={sc} flip={p.flip} lean={(p.lean ?? q.lean ?? 0) + stoop} head={{turn: clamp(turn, -1, 1), tilt: p.tilt}} face={face} handL={L} handR={R}
-        slump={slump} legs={sitting ? 'sit' : 'none'} tee={tee} t={t} seed={sd} dim={dim} idle={idle} look={who} grey={grey} tie={who === 'adam'}>{kids}</Char>
+      <HumanFront x={x} y={y} scale={sc} flip={p.flip} lean={(p.lean ?? q.lean ?? 0) + stoop} head={{turn: clamp(turn, -1, 1), tilt: p.tilt}} face={face} handL={L} handR={R}
+        slump={slump} legs={sitting ? 'sit' : 'none'} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} look={who} grey={grey} tie={who === 'adam' && !p.outfit} curl={CURL[pose] ?? 0.35}>{kids}</HumanFront>
     );
   }
   const q = SIDE[pose](t, raise), flip = p.flip ?? turn < 0;
@@ -112,8 +126,8 @@ export const Person: React.FC<PersonProps> = (p) => {
   const s1 = SIDE.stand(t, 1), handN: V = mixV(s1.N, [q.N[0] + arms, q.N[1]], e), handF: V = mixV(s1.F, [q.F[0] - arms, q.F[1]], e);
   const bob = walking ? Math.abs(Math.sin(walk * Math.PI * 2)) * 9 * sc : 0;
   return (
-    <SideChar x={x} y={y - bob} scale={sc} flip={flip} torso={(p.lean ?? 0) + (q.torso ?? 0) * e + (sitting ? -6 : 0) + stoop + (walking ? 3 : 0)} headPitch={(q.pitch ?? 8) + slump * 6} turn={clamp(0.85 + Math.abs(turn) * 0.15, 0.6, 1)} face={face}
-      handN={handN} handF={handF} footN={footN} footF={footF} look={who} tie={who === 'adam'} grey={grey} tee={tee} t={t} seed={sd} dim={dim} idle={idle} slump={slump}>{kids}</SideChar>
+    <HumanSide x={x} y={y - bob} scale={sc} flip={flip} torso={(p.lean ?? 0) + (q.torso ?? 0) * e + (sitting ? -6 : 0) + stoop + (walking ? 3 : 0)} headPitch={(q.pitch ?? 8) + slump * 6} turn={clamp(0.85 + Math.abs(turn) * 0.15, 0.6, 1)} face={face}
+      handN={handN} handF={handF} footN={footN} footF={footF} look={who} tie={who === 'adam' && !p.outfit} grey={grey} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} slump={slump} curlN={CURL[pose] ?? 0.35} curlF={0.3}>{kids}</HumanSide>
   );
 };
 

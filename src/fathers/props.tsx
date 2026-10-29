@@ -36,11 +36,11 @@ const GiftPileOld: React.FC<{x: number; y: number; n: number; dust?: number; s?:
 const giftTopOld = (n: number) => { let t = 0; for (let i = 0; i < Math.min(8, Math.ceil(n)); i++) t += BOXES[i].h - 6; return t; };
 
 // Miniature photographs for Sam's wall and the gallery
-export type PhotoKind = 'four' | 'kite' | 'play' | 'stall' | 'grad' | 'wedding' | 'party' | 'walk' | 'shave' | 'cup' | 'sunset' | 'stairs' | 'baby';
+export type PhotoKind = 'father' | 'boy' | 'four' | 'kite' | 'play' | 'stall' | 'grad' | 'wedding' | 'party' | 'walk' | 'shave' | 'cup' | 'sunset' | 'stairs' | 'baby';
 export const PhotoArt: React.FC<{kind: PhotoKind; w: number; h: number; x?: number; y?: number}> = ({kind, w, h, x, y}) => {
   const sky = kind === 'sunset' || kind === 'stall' || kind === 'four' ? '#bb6f12' : kind === 'play' ? '#22273c' : kind === 'party' ? '#d08515' : kind === 'wedding' ? '#c39b4b' : '#308fb9';
-  const person = (cx: number, by: number, sc: number, col: string, skin = '#99582b') => (
-    <g transform={`translate(${cx} ${by}) scale(${sc})`}><rect x={-14} y={-46} width={28} height={46} rx={10} fill={col} stroke={INK} strokeWidth={1.8} /><circle cx={0} cy={-62} r={15} fill={skin} stroke={INK} strokeWidth={1.8} /></g>
+  const person = (cx: number, by: number, sc: number, col: string) => (
+    <g transform={`translate(${cx} ${by}) scale(${sc * 1.15})`}><rect x={-15} y={-48} width={30} height={48} rx={11} fill={col} stroke={INK} strokeWidth={2.4} /><circle cx={0} cy={-68} r={20} fill="#f4f2fb" stroke={INK} strokeWidth={2.4} /><circle cx={-6.5} cy={-70} r={2.8} fill={INK} /><circle cx={6.5} cy={-70} r={2.8} fill={INK} /><path d="M -6,-61 q 6,5 12,0" fill="none" stroke={INK} strokeWidth={2.2} strokeLinecap="round" /></g>
   );
   return (
     <svg x={x} y={y} width={w} height={h} viewBox="0 0 200 150" style={{display: 'block'}}>
@@ -51,6 +51,8 @@ export const PhotoArt: React.FC<{kind: PhotoKind; w: number; h: number; x?: numb
       {kind === 'party' && <g><rect y={104} width={200} height={46} fill="#70502d" /><circle cx={40} cy={36} r={16} fill="#9c2712" stroke={INK} strokeWidth={1.8} /><circle cx={80} cy={26} r={16} fill="#254877" stroke={INK} strokeWidth={1.8} /><circle cx={160} cy={34} r={16} fill="#c09611" stroke={INK} strokeWidth={1.8} />{person(100, 118, 0.9, '#254877', '#af6228')}<rect x={130} y={92} width={44} height={28} rx={4} fill="#e4b61c" stroke={INK} strokeWidth={1.8} /></g>}
       {kind === 'stall' && <g><rect x={16} y={40} width={64} height={64} fill="#533623" stroke={INK} strokeWidth={1.8} /><path d="M 8,40 L 48,16 L 88,40 Z" fill="#73221a" stroke={INK} strokeWidth={1.8} />{person(130, 120, 0.85, '#6c351c')}{person(160, 122, 0.8, '#2e5c3b')}</g>}
       {kind === 'four' && <g>{person(52, 124, 0.9, '#171e2f', '#af6228')}{person(88, 126, 0.9, '#6c351c')}{person(124, 126, 0.9, '#254877', '#af6228')}{person(160, 126, 0.9, '#2e5c3b')}<rect x={10} y={40} width={50} height={64} fill="#533623" stroke={INK} strokeWidth={1.8} opacity={0.0} /></g>}
+      {kind === 'father' && <g><rect y={104} width={200} height={46} fill="#5b6070" />{person(70, 126, 1.05, '#6f7d93')}{person(124, 128, 0.72, '#e0a63c')}</g>}
+      {kind === 'boy' && <g>{person(100, 128, 0.9, '#e0a63c')}</g>}
       {kind === 'grad' && <g>{person(100, 124, 1, '#171e2f', '#af6228')}<rect x={74} y={44} width={52} height={8} fill="#222" stroke={INK} strokeWidth={1.6} /><path d="M 70,48 L 100,36 L 130,48 L 100,58 Z" fill="#222" stroke={INK} strokeWidth={1.6} /><path d="M 168,128 q 8,-14 20,-6" fill="none" stroke="#0e1019" strokeWidth={3.6} opacity={0.55} /></g>}
       {kind === 'wedding' && <g><rect y={110} width={200} height={40} fill="#9f8346" />{person(70, 124, 0.95, '#b7bdd6', '#99582b')}{person(100, 124, 1.0, '#6c351c')}{person(132, 124, 0.95, '#1b1f30', '#af6228')}</g>}
       {kind === 'walk' && <g>{person(80, 124, 0.9, '#6c351c')}{person(118, 124, 0.9, '#2e5c3b')}</g>}

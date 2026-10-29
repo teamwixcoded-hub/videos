@@ -252,7 +252,7 @@ const Spectator: React.FC<{x: number; y: number; i: number; t: number; sc: numbe
       <ellipse cx={-6} cy={-176} rx={34} ry={13} fill="#fff" stroke={hair} strokeWidth={4} />
       <ellipse cx={-17} cy={-136} rx={6} ry={9} fill={INK} /><ellipse cx={17} cy={-136} rx={6} ry={9} fill={INK} />
       <path d="M -14,-112 q 14,12 28,0" fill="none" stroke={INK} strokeWidth={4} strokeLinecap="round" />
-      {applause && [-1, 1].map((s) => <circle key={s} cx={s * 22} cy={-70 - up} r={15} fill="#fff" stroke={INK} strokeWidth={3} />)}
+      {applause && [-1, 1].map((s) => <circle key={s} cx={s * 20} cy={-54 - up * 0.5} r={15} fill="#fff" stroke={INK} strokeWidth={3} />)}
     </g>
   );
 };
@@ -291,10 +291,8 @@ export const auditorium = (o: {t: number; curtain?: number; spot?: number; leoOn
     ),
     front: (
       <g>
-        {/* Adam's seat in the front row: the only empty one, with the costume tag taped on */}
-        <g transform={`translate(${AUD.seatX} 0)`}>
-          <g transform="translate(-20 760) rotate(-6)"><path d="M 0,-24 L 0,0" stroke={INK} strokeWidth={2.4} /><rect x={-120} y={0} width={240} height={78} rx={8} fill="#f0dcae" stroke={INK} strokeWidth={3} /><circle cx={-100} cy={14} r={6} fill="#cfc4aa" stroke={INK} strokeWidth={2} /><text x={0} y={50} textAnchor="middle" fontFamily={HAND} fontWeight={600} fontSize={36} fill="#7a3a2a">{o.tag ?? 'BEST COSTUME'}</text></g>
-        </g>
+        {/* Sam's seat: the cushion in front of his lap, so he sits IN the chair; Adam's seat beside it stays plainly empty */}
+        <rect x={AUD.samX - 104 * ROW_S[2]} y={ROW_Y[2] - 28 * ROW_S[2]} width={208 * ROW_S[2]} height={44 * ROW_S[2]} rx={16} fill="#7e3642" stroke={INK} strokeWidth={3} />
       </g>
     ),
     rim: 'rgba(255,230,170,.75)',
@@ -379,7 +377,7 @@ export const stairs = (o: {t: number}): SetOut => ({
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------
 // the tea stall at the corner, with its bench, in four seasons. sunset = 0..1 golden light
-export const teaStall = (o: {t: number; season?: number; sunset?: number; cups?: number; snow?: boolean}): SetOut => {
+export const teaStall = (o: {t: number; season?: number; sunset?: number; cups?: number; snow?: boolean; milk?: boolean}): SetOut => {
   const s = o.season ?? 1, sun = o.sunset ?? 0, leaf = [['#c02f52', '#8a3951'], ['#313a5c', '#264924'], ['#8a531b', '#6d3d13'], ['#5d6ba4', '#4d5989']][s % 4];
   const sky: [string, string] = sun > 0.2 ? ['#bb660f', '#ffa304'] : s === 3 ? ['#5b69a2', '#b6bcd6'] : ['#2f8ec2', '#a1d2ed'];
   return {
@@ -417,6 +415,7 @@ export const teaStall = (o: {t: number; season?: number; sunset?: number; cups?:
     ),
     front: (
       <g>
+        {o.milk && <g transform="translate(1760 640)"><path d="M -16,-62 L 16,-62 L 13,0 L -13,0 Z" fill="#f4f6ff" stroke={INK} strokeWidth={2.4} opacity={0.95} /><path d="M -14,-44 L 14,-44 L 13,0 L -13,0 Z" fill="#fff" /><ellipse cx={0} cy={-62} rx={16} ry={4} fill="#e6e8f6" stroke={INK} strokeWidth={2} /></g>}
         {Array.from({length: o.cups ?? 2}, (_, i) => <Cup key={i} x={1600 + (i - ((o.cups ?? 2) - 1) / 2) * 190 + 20} y={640} s={0.8} t={o.t} steam={1} />)}
       </g>
     ),

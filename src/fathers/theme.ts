@@ -1,6 +1,7 @@
 import {loadFont as loadPlayfair} from '@remotion/google-fonts/PlayfairDisplay';
 import {loadFont as loadCaveat} from '@remotion/google-fonts/Caveat';
 import {loadFont as loadUI} from '@remotion/google-fonts/Montserrat';
+import {T} from './timeline';
 
 // Two Fathers is a warm human story: serif titles, handwriting for notes, a clean UI face for phones and documents. No HUD, no glitch.
 export const SERIF = loadPlayfair('normal', {weights: ['600', '800']}).fontFamily;
@@ -17,29 +18,20 @@ export type GradeKey = {t: number; c: [number, number, number]; a: number; sat: 
 const COLD: [number, number, number] = [120, 150, 190], SOFT: [number, number, number] = [255, 250, 240], AMBER: [number, number, number] = [255, 160, 70];
 const DAY: [number, number, number] = [255, 190, 110], NAVYG: [number, number, number] = [40, 60, 120], CITY: [number, number, number] = [235, 235, 235];
 const GOLDG: [number, number, number] = [255, 170, 70], GREY: [number, number, number] = [130, 150, 175], MORN: [number, number, number] = [255, 215, 150];
-export const GRADES: GradeKey[] = [
-  {t: 0, c: COLD, a: 0.30, sat: 0.8, br: 0.97},        // the street and the Sunday cold open: pale grey-blue morning
-  {t: 18.4, c: COLD, a: 0.30, sat: 0.8, br: 0.97},
-  {t: 20, c: SOFT, a: 0.18, sat: 0.92, br: 1.03},      // hospital: soft white
-  {t: 30.5, c: SOFT, a: 0.18, sat: 0.92, br: 1.03},
-  {t: 31.8, c: AMBER, a: 0.26, sat: 1.05, br: 1.0},    // 6:00 PM amber
-  {t: 58, c: DAY, a: 0.20, sat: 1.08, br: 1.02},       // warm daylight, ages 5 and 10
-  {t: 106, c: DAY, a: 0.20, sat: 1.08, br: 1.02},
-  {t: 112, c: [210, 140, 110], a: 0.26, sat: 0.98, br: 0.94},   // dusk, age 15
-  {t: 134, c: NAVYG, a: 0.34, sat: 0.9, br: 0.86},     // the worst night
-  {t: 148, c: NAVYG, a: 0.34, sat: 0.9, br: 0.86},
-  {t: 150, c: CITY, a: 0.12, sat: 1.0, br: 1.02},      // age 25: neutral city daylight
-  {t: 165, c: CITY, a: 0.12, sat: 1.0, br: 1.02},
-  {t: 166.5, c: COLD, a: 0.30, sat: 0.8, br: 0.97},    // back to the cold Sunday
-  {t: 181.5, c: COLD, a: 0.30, sat: 0.8, br: 0.97},
-  {t: 183.5, c: GOLDG, a: 0.30, sat: 1.12, br: 1.0},   // golden sunset at the stall
-  {t: 192, c: GOLDG, a: 0.30, sat: 1.12, br: 1.0},
-  {t: 193.5, c: GREY, a: 0.30, sat: 0.74, br: 0.95},   // the call: cold grey
-  {t: 204.5, c: GREY, a: 0.30, sat: 0.74, br: 0.95},
-  {t: 207.5, c: [255, 175, 80], a: 0.30, sat: 1.12, br: 1.03},  // warms to gold after "Dad"
-  {t: 210, c: MORN, a: 0.18, sat: 1.08, br: 1.04},     // Friday morning
-  {t: 220, c: MORN, a: 0.18, sat: 1.08, br: 1.04},
-];
+export const GRADES: GradeKey[] = (() => {
+  const k = (t: number, c: [number, number, number], a: number, sat: number, br: number): GradeKey => ({t, c, a, sat, br});
+  const end = T('thirty years ago') - 0.5, hosp = T('these two men'), father = T('to understand adam'), six = T('and every evening at six'), sam = T('sam worked too'), fifteen = T('at 15'), night = T('one night');
+  const city = T('leo grew up successful'), spring = T('then last spring'), back = T('which brings us back'), sunset = T('across the street', 1), call = T('that sunday adam picks up'), friday = T('that friday');
+  return [
+    k(0, COLD, 0.30, 0.8, 0.97), k(end, COLD, 0.30, 0.8, 0.97), k(hosp, SOFT, 0.18, 0.92, 1.03), k(father - 0.3, SOFT, 0.18, 0.92, 1.03),
+    k(father + 0.5, [255, 200, 140], 0.26, 0.85, 0.97), k(six - 0.3, [255, 200, 140], 0.26, 0.85, 0.97),
+    k(six + 0.5, AMBER, 0.26, 1.05, 1.0), k(sam - 0.3, AMBER, 0.26, 1.05, 1.0), k(sam + 1.5, DAY, 0.2, 1.08, 1.02), k(fifteen - 1, DAY, 0.2, 1.08, 1.02),
+    k(fifteen + 0.5, [210, 140, 110], 0.26, 0.98, 0.94), k(night, [210, 140, 110], 0.26, 0.98, 0.94), k(night + 2, NAVYG, 0.34, 0.9, 0.86), k(city - 1, NAVYG, 0.34, 0.9, 0.86),
+    k(city + 0.5, CITY, 0.12, 1.0, 1.02), k(spring + 3, CITY, 0.12, 1.0, 1.02), k(back - 1, COLD, 0.30, 0.8, 0.97), k(sunset - 1, COLD, 0.30, 0.8, 0.97),
+    k(sunset + 0.5, GOLDG, 0.30, 1.12, 1.0), k(call - 1, GOLDG, 0.30, 1.12, 1.0), k(call + 0.5, GREY, 0.30, 0.74, 0.95), k(383, GREY, 0.30, 0.74, 0.95),
+    k(385, [255, 175, 80], 0.30, 1.12, 1.03), k(friday + 0.5, MORN, 0.18, 1.08, 1.04), k(430, MORN, 0.18, 1.08, 1.04),
+  ];
+})();
 export const gradeAt = (t: number): GradeKey => {
   let i = 0; while (i < GRADES.length - 1 && GRADES[i + 1].t <= t) i++;
   const a = GRADES[i], b = GRADES[Math.min(i + 1, GRADES.length - 1)], k = b.t === a.t ? 0 : Math.min(1, Math.max(0, (t - a.t) / (b.t - a.t)));

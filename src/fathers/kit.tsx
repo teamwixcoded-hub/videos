@@ -4,6 +4,7 @@ import {Stage, Cam, camAt} from '../same2d/Stage';
 import {Person, PersonProps, Who, bodyK, FaceP, CHAR_K} from './People';
 import {SetOut, FL, livingRoom, street, hospital, party, auditorium, office, leoDoor, leoRoom, stairs, teaStall, park, kitchen, leoFlat} from './sets';
 import {ease} from './fx';
+import {factory, drive} from './sets3';
 
 // Shot-list vocabulary. A shot is [startSec, fx?, renderer]; the renderer gets the clock of the shot (Ctx).
 export type Ctx = {t: number; l: number; d: number; p: number; from: number};
@@ -29,11 +30,11 @@ export const sit = (who: Who, age: number, x: number, sc = 0.7, o: Partial<Perso
   return {who, age, x, y: floor - (front ? 300 : 218) * sc * bodyK(who, age) * CHAR_K, scale: sc, legs: 'sit', ...o};
 };
 // every person stands on a soft contact shadow and eases into the shot's pose over the first half second
-const ShadowE: React.FC<{x: number; rx: number}> = ({x, rx}) => (
-  <g><defs><radialGradient id="pshadow"><stop offset="0" stopColor="#05060f" stopOpacity="0.5" /><stop offset="0.6" stopColor="#05060f" stopOpacity="0.24" /><stop offset="1" stopColor="#05060f" stopOpacity="0" /></radialGradient></defs><ellipse cx={x} cy={FLOOR + 6} rx={rx} ry={rx * 0.13} fill="url(#pshadow)" /></g>
+const ShadowE: React.FC<{x: number; rx: number; floor?: number}> = ({x, rx, floor = FLOOR}) => (
+  <g><defs><radialGradient id="pshadow"><stop offset="0" stopColor="#05060f" stopOpacity="0.5" /><stop offset="0.6" stopColor="#05060f" stopOpacity="0.24" /><stop offset="1" stopColor="#05060f" stopOpacity="0" /></radialGradient></defs><ellipse cx={x} cy={floor + 6} rx={rx} ry={rx * 0.13} fill="url(#pshadow)" /></g>
 );
 export const Pe = (c: Ctx, p: Pos, key?: string | number) => (
-  <g key={key}><ShadowE x={p.x} rx={190 * p.scale * bodyK(p.who, p.age) * CHAR_K} /><Person t={c.t} enter={c.l / 0.55} {...p} /></g>
+  <g key={key}><ShadowE x={p.x} floor={(p as {floor?: number}).floor} rx={190 * p.scale * bodyK(p.who, p.age) * CHAR_K} /><Person t={c.t} enter={c.l / 0.55} {...p} /></g>
 );
 // camera aimed at a person's face / upper body
 const headH = (p: Pos) => ((p.view === 'front' || (!!p.pose && FRONTP.includes(p.pose))) ? 500 : 440);
@@ -66,6 +67,8 @@ export const SC = {
   park: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof park>[0], 't'>, chars: React.ReactNode = null, extra?: React.ReactNode) => mk(park({t: c.t, ...o}), camOf(c, cam), chars, 1, extra),
   kit: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof kitchen>[0], 't'>, chars: React.ReactNode = null) => mk(kitchen({t: c.t, ...o}), camOf(c, cam), chars),
   flat: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(leoFlat({t: c.t}), camOf(c, cam), chars),
+  fac: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(factory({t: c.t}), camOf(c, cam), chars),
+  drv: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(drive({t: c.t}), camOf(c, cam), chars),
 };
 
 // two scenes in one frame with a divider that wipes in from the right (used only for the worst night and for Friday morning)

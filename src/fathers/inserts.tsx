@@ -125,13 +125,13 @@ const Bar: React.FC<{title: string; sub?: string; color?: string}> = ({title, su
   <g><rect x={-228} y={-478} width={456} height={150} fill={color} /><text x={-190} y={-390} fontFamily={UI} fontWeight={700} fontSize={36} fill="#fff">{title}</text>{sub && <text x={-190} y={-348} fontFamily={UI} fontWeight={500} fontSize={24} fill="#d6dcec">{sub}</text>}</g>
 );
 // the banking app: Adam types an amount out of habit, deletes it digit by digit, then his thumb goes to the call button and presses it
-export const Banking: React.FC<{t: number; to?: string; digits?: string; typeFrom?: number; delFrom?: number; press?: number; send?: boolean}> = ({t, to = 'Leo', digits = '2500', typeFrom = 0.4, delFrom = 3.4, press = 7.2, send = false}) => {
+export const Banking: React.FC<{t: number; to?: string; digits?: string; typeFrom?: number; delFrom?: number; press?: number; send?: boolean; balance?: string}> = ({t, to = 'Leo', digits = '2500', typeFrom = 0.4, delFrom = 3.4, press = 7.2, send = false, balance = '$48,310'}) => {
   const typed = clamp(Math.floor((t - typeFrom) / 0.3) + 1, 0, digits.length), gone = t > delFrom ? clamp(Math.floor((t - delFrom) / 0.3) + 1, 0, digits.length) : 0, n = Math.max(0, typed - gone);
   const amt = digits.slice(0, n), thumbK = ramp(t, delFrom + 0.6, press - 0.3), pr = t > press ? 1 : 0;
   return (
     <InsertBG tone="cold">
       <Phone shake={t > press ? clamp(1 - (t - press) / 0.9, 0, 1) * 0.9 : 0} id="bk">
-        <Bar title="Send money" sub="Savings  ·  $48,310" />
+        <Bar title="Send money" sub={`Savings  ·  ${balance}`} />
         <rect x={-190} y={-290} width={380} height={80} rx={40} fill="#eef2f8" stroke="#cfd8e6" strokeWidth={3} /><circle cx={-148} cy={-250} r={26} fill="#3f78c4" /><text x={-148} y={-240} textAnchor="middle" fontFamily={UI} fontWeight={700} fontSize={28} fill="#fff">{to[0]}</text><text x={-100} y={-240} fontFamily={UI} fontWeight={700} fontSize={32} fill="#26324f">{to}</text>
         <text x={0} y={-60} textAnchor="middle" fontFamily={UI} fontWeight={700} fontSize={96} fill="#26324f">${amt ? Number(amt).toLocaleString('en-US') : ''}<tspan fill="#9aa8c0" opacity={Math.sin(t * 7) > 0 ? 1 : 0}>|</tspan></text>
         <text x={0} y={-6} textAnchor="middle" fontFamily={UI} fontWeight={500} fontSize={24} fill="#8a96ac">Monthly transfer</text>
