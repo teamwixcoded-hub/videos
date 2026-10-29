@@ -121,7 +121,9 @@ export const HumanSide: React.FC<HumanSideProps> = ({x, y, scale = 1, flip, tors
   const shiftX = Math.sin(t * 0.5 + seed * 2) * 5 * idle, sway = Math.sin(t * 0.55 + seed * 2) * 1.0 * idle;
   const th = torso + sway;
   const lag = Math.sin(t * 0.9 + seed * 1.7 - 0.5) * 1.6 * idle;
-  const SH = rot([6, -276 + slump * 18 - inh * 2.4 * idle], th), SHF = rot([-12, -278 + slump * 18 - inh * 2.4 * idle], th);
+  // shoulders roll forward when the hands work in front of the body, so the upper arm points forward and the elbow does not trail behind
+  const pro = (hx: number) => clamp((hx - 110) / 160, 0, 1) * 46;
+  const SH = rot([6 + pro(handN[0]), -276 + slump * 18 - inh * 2.4 * idle], th), SHF = rot([-12 + pro(handF[0]), -278 + slump * 18 - inh * 2.4 * idle], th);
   const NECK = rot([2, -312 + slump * 12], th);
   const jit = (a: number, b: number): V => [Math.sin(t * 1.3 + seed + a) * 2.2 * idle, Math.cos(t * 1.1 + seed * 2 + b) * 2.2 * idle];
   const hN: V = [handN[0] + jit(0, 1)[0], handN[1] + jit(0, 1)[1]], hF: V = [handF[0] + jit(2, 3)[0], handF[1] + jit(2, 3)[1]];
