@@ -136,15 +136,16 @@ export const Person: React.FC<PersonProps> = (p) => {
   const q = SIDE[pose](t, raise), flip = p.flip ?? turn < 0;
   const sw = Math.sin(walk * Math.PI * 2), cw = Math.cos(walk * Math.PI * 2);
   const walking = !sitting && walk !== 0;
-  const footN: V = sitting ? [230, 170] : walking ? [sw * 100, 392 - Math.max(0, -cw) * 46] : [44, 394];
-  const footF: V = sitting ? [300, 172] : walking ? [-sw * 100, 392 - Math.max(0, cw) * 46] : [-36, 398];
-  const arms = walking && pose === 'stand' ? sw * 70 : 0;
+  const rest = Math.sin(t * 0.3 + sd * 4) * 9;
+  const footN: V = sitting ? [230, 170] : walking ? [sw * 112, 392 - Math.max(0, -cw) * 52] : [60 + rest, 390];
+  const footF: V = sitting ? [300, 172] : walking ? [-sw * 112, 392 - Math.max(0, cw) * 52] : [-54 - rest * 0.5, 395];
+  const arms = walking && pose === 'stand' ? -sw * 64 : 0;
   const s1 = SIDE.stand(t, 1), handN0: V = mixV(s1.N, [q.N[0] + arms, q.N[1]], e), handF0: V = mixV(s1.F, [q.F[0] - arms, q.F[1]], e);
   const [lvN, lvF, lvT] = walking ? [[0, 0], [0, 0], 0] as [V, V, number] : lively(t, sd, pose, e);
   const handN: V = [handN0[0] + lvN[0], handN0[1] + lvN[1]], handF: V = [handF0[0] + lvF[0], handF0[1] + lvF[1]];
-  const bob = walking ? Math.abs(Math.sin(walk * Math.PI * 2)) * 9 * sc : 0;
+  const bob = walking ? Math.abs(Math.sin(walk * Math.PI * 2)) * 12 * sc : 0;
   return (
-    <HumanSide x={x} y={y - bob} scale={sc} flip={flip} torso={(p.lean ?? 0) + lvT + (q.torso ?? 0) * e + (sitting ? -6 : 0) + stoop + (walking ? 3 : 0)} headPitch={(q.pitch ?? 8) + slump * 6 + Math.sin(t * 0.7 + sd) * 2} turn={clamp(0.85 + Math.abs(turn) * 0.15, 0.6, 1)} face={face}
+    <HumanSide x={x} y={y - bob} scale={sc} flip={flip} torso={(p.lean ?? 0) + lvT + (q.torso ?? 0) * e + (sitting ? -6 : 0) + stoop + (walking ? 2 + Math.abs(cw) * 1.5 : 0)} headPitch={(q.pitch ?? 8) + slump * 6 + Math.sin(t * 0.7 + sd) * 2} turn={clamp(0.85 + Math.abs(turn) * 0.15, 0.6, 1)} face={face}
       handN={handN} handF={handF} footN={footN} footF={footF} look={who} tie={who === 'adam' && !p.outfit} grey={grey} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} slump={slump} curlN={CURL[pose] ?? 0.35} curlF={0.3} heldN={heldNode} heldUp={holds === 'cup'}>{kids}</HumanSide>
   );
 };

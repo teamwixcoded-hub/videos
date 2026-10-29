@@ -83,7 +83,7 @@ export const Laptop: React.FC<{x: number; y: number; s?: number; open?: number; 
         : <g>
             <path d={`M -130,2 L 130,2 L 120,${-lid} L -120,${-lid} Z`} fill={`url(#lm${id})`} stroke={INK} strokeWidth={3.4} strokeLinejoin="round" />
             <path d={`M -118,-6 L -104,-6 L -96,${-lid + 10} L -110,${-lid + 10} Z`} fill="#fff" opacity={0.22} />
-            <circle cx={0} cy={-lid / 2} r={11} fill="#e9eeff" opacity={0.65} stroke={INK} strokeWidth={1.6} /><circle cx={0} cy={-lid / 2} r={20} fill="#bcd0ff" opacity={0.14} />
+            <path d={`M -120,${-lid} L 120,${-lid}`} stroke="#fff" strokeWidth={3} opacity={0.35} /><circle cx={0} cy={-lid / 2} r={10} fill="#f4f7ff" opacity={0.8} stroke={INK} strokeWidth={1.6} /><path d={`M 3,${-lid / 2 - 12} q 7,-3 8,-9`} stroke="#f4f7ff" strokeWidth={2.4} fill="none" strokeLinecap="round" />
             <rect x={-112} y={-3} width={224} height={7} rx={3} fill="#4b5378" stroke={INK} strokeWidth={2} />
           </g>)}
     </g>

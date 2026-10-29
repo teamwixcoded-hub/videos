@@ -46,7 +46,7 @@ const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9);
   const slv = o.sleeve === 'long' ? o.top : SKIN, cuff = o.style === 'suit' ? o.shirt : null;
   return (
-    <g style={dim ? {filter: 'brightness(0.78)'} : undefined}>
+    <g style={dim ? {filter: 'brightness(0.9)'} : undefined}>
       <Taper A={S} B={E} r1={31} r2={24} fill={o.top} />
       <Taper A={E} B={wr} r1={23} r2={16} fill={slv} />
       {o.sleeve === 'short' && <circle cx={E[0]} cy={E[1]} r={24} fill={o.top} stroke="none" />}
@@ -63,7 +63,7 @@ const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s
 const HumanLeg: React.FC<{HJ: V; T: V; o: Outfit; dim?: boolean; up?: boolean; lift?: number}> = ({HJ, T, o, dim, up, lift = 0}) => {
   const a = 200, b = 190;
   const {J: K, H: A} = ik2(HJ, T, a, b, up ? (c) => (c[0][1] < c[1][1] ? c[0] : c[1]) : (c) => (c[0][0] > c[1][0] ? c[0] : c[1]));
-  const ang = clamp(((A[1] - K[1]) / 40) * 0, -1, 1);
+  const ang = A[1] > 300 ? clamp((393 - A[1]) * 0.8, 0, 38) : 0;
   return (
     <g style={dim ? {filter: 'brightness(0.8)'} : undefined}>
       <Taper A={HJ} B={K} r1={44} r2={31} fill={o.pants} />

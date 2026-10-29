@@ -39,7 +39,7 @@ export const livingDetail = (o: {warm?: boolean; t: number}): Detail => {
           <rect x={170} y={186} width={70} height={62} rx={6} fill="#e8dcc0" stroke={INK} strokeWidth={2.6} /><circle cx={205} cy={217} r={18} fill="#c9954a" stroke={INK} strokeWidth={2.2} />
         </g>
         {/* the lamp's pool of light on the wall */}
-        <ellipse cx={1300} cy={470} rx={300} ry={400} fill={lamp} opacity={w ? 0.2 : 0.1} />
+        <ellipse cx={2250} cy={470} rx={300} ry={400} fill={lamp} opacity={w ? 0.2 : 0.1} />
         {/* curtain rod */}
         <rect x={2060} y={96} width={700} height={10} rx={5} fill="#5a4a3a" stroke={INK} strokeWidth={2.4} /><circle cx={2058} cy={101} r={10} fill="#8a6a3a" stroke={INK} strokeWidth={2.4} /><circle cx={2762} cy={101} r={10} fill="#8a6a3a" stroke={INK} strokeWidth={2.4} />
         {/* ceiling lamp */}
@@ -49,7 +49,7 @@ export const livingDetail = (o: {warm?: boolean; t: number}): Detail => {
     mid: (
       <g>
         {/* standing lamp between the sofa and the table */}
-        <g transform="translate(1290 0)">
+        <g transform="translate(2250 0)">
           <ellipse cx={0} cy={838} rx={50} ry={9} fill="rgba(5,6,15,.4)" style={{filter: 'blur(5px)'}} />
           <rect x={-5} y={470} width={10} height={360} fill="#2a2a38" stroke={INK} strokeWidth={2.6} /><ellipse cx={0} cy={832} rx={40} ry={8} fill="#2a2a38" stroke={INK} strokeWidth={2.6} />
           <path d="M -58,470 L 58,470 L 38,380 L -38,380 Z" fill={w ? '#ffe6a8' : '#dbe6ff'} stroke={INK} strokeWidth={3.2} strokeLinejoin="round" /><path d="M -58,470 Q 0,492 58,470" fill="none" stroke={INK} strokeWidth={3} />
