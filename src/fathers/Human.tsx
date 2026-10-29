@@ -55,7 +55,8 @@ export const HumanHand: React.FC<{curl?: number; s?: number; dim?: boolean}> = (
 };
 
 const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s: number; held?: React.ReactNode; upright?: boolean}> = ({S, T, o, dim, curl = 0.35, s, held, upright}) => {
-  const {J: E, H} = ik2(S, T, 185, 170, (c) => (c[0][1] > c[1][1] ? c[0] : c[1]));
+  const hang = T[1] > S[1] + 200;
+  const {J: E, H} = ik2(S, T, 185, 170, hang ? (c) => (c[0][0] > c[1][0] ? c[0] : c[1]) : (c) => (c[0][1] > c[1][1] ? c[0] : c[1]));
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9);
   const slv = o.sleeve === 'long' ? o.top : SKIN, cuff = o.style === 'suit' ? o.shirt : null;
   return (

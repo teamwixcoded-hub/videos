@@ -52,7 +52,7 @@ type H = {N: V; F: V; torso?: number; pitch?: number};
 // a sip every few seconds: 0 at rest, 1 with the cup at the lips
 const sip = (t: number) => { const p = (t * 0.2) % 1; return p < 0.3 ? Math.sin((p / 0.3) * Math.PI) : 0; };
 const SIDE: Record<PoseName, (t: number, r: number) => H> = {
-  stand: () => ({N: [30, 64], F: [14, 74]}),
+  stand: () => ({N: [22, 92], F: [8, 98]}),
   rest: () => ({N: [150, -40], F: [172, -30]}),
   desk: (t) => ({N: [250 + Math.sin(t * 9) * 14, -125 + Math.max(0, Math.sin(t * 13)) * -16], F: [214 + Math.sin(t * 11) * 14, -112 + Math.max(0, Math.sin(t * 12 + 1)) * -14], torso: 6 + Math.sin(t * 1.3) * 1.5, pitch: 16 + Math.sin(t * 0.8) * 4}),
   type: (t) => ({N: [250 + Math.sin(t * 9) * 14, -125 + Math.max(0, Math.sin(t * 13)) * -16], F: [214 + Math.sin(t * 11) * 14, -112 + Math.max(0, Math.sin(t * 12 + 1)) * -14], torso: 6 + Math.sin(t * 1.3) * 1.5, pitch: 16 + Math.sin(t * 0.8) * 4}),
