@@ -128,3 +128,31 @@ export const Counter: React.FC<{n: number; o: number; label: string}> = ({n, o, 
     <div style={{fontSize: 44, letterSpacing: 8}}>{label}</div>
   </div>
 );
+
+// ---------------- MONEY. / TIME.: banknotes and coins fall, or clocks and hearts rise, behind the key word ----------------
+export const Rain: React.FC<{t: number; from: number; to: number; kind: 'money' | 'time'}> = ({t, from, to, kind}) => {
+  const o = Math.min(ramp(t, from, from + 0.3), 1 - ramp(t, to - 0.4, to));
+  if (o <= 0) return null;
+  const l = t - from;
+  return (
+    <AbsoluteFill style={{pointerEvents: 'none', opacity: o}}>
+      <svg width={1920} height={1080} viewBox="0 0 1920 1080">
+        {Array.from({length: 26}, (_, i) => {
+          const x = rnd(i, 1) * 1920, sp = 160 + rnd(i, 2) * 220, y0 = rnd(i, 3) * 1300, rot = rnd(i, 4) * 360 + l * (60 + rnd(i, 5) * 120) * (i % 2 ? 1 : -1), sc = 0.7 + rnd(i, 6) * 0.9;
+          const y = kind === 'money' ? ((y0 + l * sp) % 1300) - 120 : 1200 - ((y0 + l * sp) % 1300);
+          return (
+            <g key={i} transform={`translate(${x} ${y}) rotate(${rot}) scale(${sc})`} opacity={0.9}>
+              {kind === 'money'
+                ? (i % 3 === 0
+                  ? <g><circle r={26} fill="#f5c542" stroke="#1d1a2e" strokeWidth={4} /><circle r={17} fill="none" stroke="#c99a1d" strokeWidth={3} /><text y={9} textAnchor="middle" fontFamily={UI} fontWeight={700} fontSize={26} fill="#a87a10">$</text></g>
+                  : <g><rect x={-44} y={-24} width={88} height={48} rx={6} fill="#4fb36e" stroke="#1d1a2e" strokeWidth={4} /><circle r={14} fill="#d9f2e0" stroke="#1d1a2e" strokeWidth={2.4} /><text y={7} textAnchor="middle" fontFamily={UI} fontWeight={700} fontSize={20} fill="#1d1a2e">$</text></g>)
+                : (i % 3 === 0
+                  ? <g><path d="M 0,18 C -40,-6 -30,-34 0,-16 C 30,-34 40,-6 0,18 Z" fill="#ff6a8a" stroke="#1d1a2e" strokeWidth={4} strokeLinejoin="round" /></g>
+                  : <g><circle r={28} fill="#fbf1d2" stroke="#1d1a2e" strokeWidth={4} /><path d="M 0,-16 L 0,0 L 12,8" fill="none" stroke="#1d1a2e" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" /></g>)}
+            </g>
+          );
+        })}
+      </svg>
+    </AbsoluteFill>
+  );
+};

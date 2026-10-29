@@ -40,7 +40,7 @@ const SIDE: Record<PoseName, (t: number, r: number) => H> = {
   desk: (t) => ({N: [250 + Math.sin(t * 9) * 8, -125 + Math.sin(t * 13) * 6], F: [214 + Math.sin(t * 11) * 8, -112], torso: 6, pitch: 16}),
   type: (t) => ({N: [250 + Math.sin(t * 9) * 8, -125 + Math.sin(t * 13) * 6], F: [214 + Math.sin(t * 11) * 8, -112], torso: 6, pitch: 16}),
   phone: () => ({N: [150, -250], F: [96, -122], pitch: 28}),
-  ear: () => ({N: [72, -386], F: [-20, 64]}),
+  ear: () => ({N: [4, -434], F: [-20, 64]}),
   cradle: () => ({N: [160, -112], F: [118, -100], torso: -4, pitch: 24}),
   clap: (t) => { const k = (Math.sin(t * 16) + 1) / 2; return {N: [212 - 30 * k, -235], F: [176 + 30 * k, -228]}; },
   knock: (t) => ({N: [300 + Math.max(0, Math.sin(t * 14)) * 26, -250], F: [20, 66]}),
@@ -59,7 +59,7 @@ const FRONT: Record<PoseName, (t: number, r: number) => {L: V; R: V; lean?: numb
   desk: (t) => ({L: [-76 + Math.sin(t * 9) * 4, -76 + Math.sin(t * 13) * 5], R: [76 + Math.sin(t * 11) * 4, -76 + Math.cos(t * 10) * 5], lean: 4}),
   type: (t) => ({L: [-76 + Math.sin(t * 9) * 4, -76 + Math.sin(t * 13) * 5], R: [76 + Math.sin(t * 11) * 4, -76 + Math.cos(t * 10) * 5], lean: 4}),
   phone: () => ({L: [-100, -80], R: [70, -270], lean: 3}),
-  ear: () => ({L: [-100, -80], R: [112, -430]}),
+  ear: () => ({L: [-100, -80], R: [150, -505]}),
   cradle: () => ({L: [-50, -130], R: [60, -140]}),
   clap: (t) => { const k = (Math.sin(t * 16) + 1) / 2; return {L: [-98 + 34 * k, -240], R: [98 - 34 * k, -240]}; },
   knock: (t) => ({L: [-100, -80], R: [160 + Math.max(0, Math.sin(t * 14)) * 12, -300]}),
@@ -73,8 +73,8 @@ const FRONT: Record<PoseName, (t: number, r: number) => {L: V; R: V; lean?: numb
 };
 // where a held prop (drawn by the shot in the old hip space) must sit for each pose
 const SHIFT: Record<'side' | 'front', Partial<Record<PoseName, V>>> = {
-  side: {cradle: [150, -40], ear: [-24, -14], carry: [190, -20], film: [150, -10]},
-  front: {cradle: [5, -72], ear: [14, -48], carry: [0, -40]},
+  side: {cradle: [150, -40], ear: [-92, -60], carry: [190, -20], film: [150, -10]},
+  front: {cradle: [5, -72], ear: [54, -128], carry: [0, -40]},
 };
 const FRONTY = new Set<PoseName>(['clap', 'film', 'desk', 'type']);
 // ease into a pose with a little overshoot (anticipation and settle), so every cut starts with a move and not a freeze

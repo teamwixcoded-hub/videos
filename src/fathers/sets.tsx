@@ -86,6 +86,7 @@ export const livingRoom = (o: LivingOpts): SetOut => {
         <Floor c1={w ? '#654931' : '#2e3653'} c2={w ? '#533a26' : '#24293f'} />
         <ellipse cx={1500} cy={940} rx={820} ry={86} fill={w ? '#81532b' : '#333b5b'} stroke={INK} strokeWidth={2.4} opacity={0.9} />
         <ellipse cx={900} cy={846} rx={400} ry={22} fill="rgba(5,6,15,.42)" style={{filter: "blur(9px)"}} /><ellipse cx={1500} cy={842} rx={130} ry={14} fill="rgba(5,6,15,.42)" style={{filter: "blur(9px)"}} /><ellipse cx={LR.chairX} cy={846} rx={230} ry={22} fill="rgba(5,6,15,.42)" style={{filter: "blur(9px)"}} />
+        <PhotoWall x={1000} y={340} n={w ? o.photoN ?? 12 : 0} kite s={0.95} glow={w ? 1 : 0} />
         {/* sofa */}
         <g transform="translate(900 0)">
           <rect x={-340} y={470} width={680} height={250} rx={46} fill={shade(sofa, -0.12)} stroke={INK} strokeWidth={3} />
@@ -97,8 +98,9 @@ export const livingRoom = (o: LivingOpts): SetOut => {
         <g transform="translate(1500 0)">
           <rect x={-100} y={640} width={200} height={20} rx={6} fill="#533c2a" stroke={INK} strokeWidth={2.6} /><rect x={-80} y={660} width={14} height={170} fill="#533c2a" stroke={INK} strokeWidth={2.2} /><rect x={66} y={660} width={14} height={170} fill="#533c2a" stroke={INK} strokeWidth={2.2} />
           <path d="M 36,640 L 40,590 L 76,590 L 80,640 Z" fill="#e2cba1" stroke={INK} strokeWidth={2} />
-          <rect x={-70} y={626} width={86} height={14} rx={4} fill={(o.phoneLit ?? 0) > 0 ? '#0d8aff' : '#0e1019'} stroke={INK} strokeWidth={1.8} />
-          {(o.phoneLit ?? 0) > 0 && <ellipse cx={-27} cy={620} rx={90} ry={34} fill="#0d8aff" opacity={0.3 * (o.phoneLit ?? 0)} />}
+          <g transform={`translate(${-26 + ((o.phoneLit ?? 0) > 0 ? Math.sin(o.t * 60) * 3 : 0)} 626)`}><rect x={-62} y={-8} width={124} height={22} rx={7} fill={(o.phoneLit ?? 0) > 0 ? '#2a9bff' : '#0e1019'} stroke={INK} strokeWidth={2.2} /><rect x={-54} y={-4} width={108} height={12} rx={4} fill={(o.phoneLit ?? 0) > 0 ? '#bfe0ff' : '#1b1f33'} />
+            {(o.phoneLit ?? 0) > 0 && [0, 1, 2].map((k) => <path key={k} d={`M ${-86 - k * 22},${-10 - k * 10} q -14,16 0,32 M ${86 + k * 22},${-10 - k * 10} q 14,16 0,32`} fill="none" stroke="#bfe0ff" strokeWidth={4} strokeLinecap="round" opacity={0.7 - k * 0.2} />)}
+          </g>
         </g>
         {/* the armchair by the window */}
         <g transform={`translate(${LR.chairX} 0)`}>
@@ -237,8 +239,24 @@ export const party = (o: {t: number; adamHere?: boolean}): SetOut => ({
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------
 // the school auditorium: stage and curtains up top, rows of seat backs in the dark below. The seat at (seatX, 880) is Adam's, empty, with a costume tag
-export const AUD = {seatX: 1180, samX: 2180};
-export const auditorium = (o: {t: number; curtain?: number; spot?: number; leoOn?: boolean; tag?: string}): SetOut => {
+export const AUD = {seatX: 1260, samX: 2160};
+const SPEC_C = ['#e0455a', '#4a8bd8', '#47b57a', '#d2733c', '#8a56b8', '#2fa39a', '#e8b030', '#c94a7e'];
+const ROW_Y = [600, 740, 880], ROW_S = [0.8, 0.92, 1.04];
+const Spectator: React.FC<{x: number; y: number; i: number; t: number; sc: number; applause?: boolean}> = ({x, y, i, t, sc, applause}) => {
+  const bob = Math.sin(t * 1.3 + i * 1.7) * 3, col = SPEC_C[i % SPEC_C.length], hair = ['#2b2634', '#4a2d1d', '#9a9aa8', '#8a5a36'][i % 4], up = applause ? Math.abs(Math.sin(t * 9 + i)) * 46 : 0;
+  return (
+    <g transform={`translate(${x} ${y + bob}) scale(${sc})`}>
+      <rect x={-52} y={-90} width={104} height={100} rx={38} fill={col} stroke={INK} strokeWidth={3.4} />
+      <path d="M -36,-72 q -9,24 -2,50" stroke="#fff" strokeWidth={6} opacity={0.25} strokeLinecap="round" fill="none" />
+      <circle cx={0} cy={-136} r={48} fill="#f4f2fb" stroke={INK} strokeWidth={4} />
+      <ellipse cx={-6} cy={-176} rx={34} ry={13} fill="#fff" stroke={hair} strokeWidth={4} />
+      <ellipse cx={-17} cy={-136} rx={6} ry={9} fill={INK} /><ellipse cx={17} cy={-136} rx={6} ry={9} fill={INK} />
+      <path d="M -14,-112 q 14,12 28,0" fill="none" stroke={INK} strokeWidth={4} strokeLinecap="round" />
+      {applause && [-1, 1].map((s) => <circle key={s} cx={s * 22} cy={-70 - up} r={15} fill="#fff" stroke={INK} strokeWidth={3} />)}
+    </g>
+  );
+};
+export const auditorium = (o: {t: number; curtain?: number; spot?: number; leoOn?: boolean; tag?: string; applause?: boolean}): SetOut => {
   const c = o.curtain ?? 1;
   return {
     far: (
@@ -255,19 +273,28 @@ export const auditorium = (o: {t: number; curtain?: number; spot?: number; leoOn
     ),
     mid: (
       <g>
-        {[0, 1, 2].map((r) => <g key={r} transform={`translate(0 ${r * 150})`} opacity={1 - r * 0.0}>
-          {Array.from({length: 9}, (_, i) => { const x = 360 + i * 300, sc = 1 + r * 0.18; return <g key={i}><rect x={x - 110 * sc} y={620 + r * 20} width={220 * sc} height={150 * sc} rx={22} fill={['#421c23', '#37171d', '#492026'][r]} stroke={INK} strokeWidth={2.6} />{r === 0 && i !== 4 && i !== 7 && <circle cx={x + (rnd(i, 2) - 0.5) * 40} cy={590} r={42} fill="#0f111a" stroke={INK} strokeWidth={1.8} />}</g>; })}
-        </g>)}
+        {[0, 1, 2].map((r) => (
+          <g key={r}>
+            {Array.from({length: 9}, (_, i) => {
+              const x = 360 + i * 300, sc = ROW_S[r], y = ROW_Y[r], empty = r === 2 && (Math.abs(x - AUD.seatX) < 5 || Math.abs(x - AUD.samX) < 5);
+              return (
+                <g key={i}>
+                  <rect x={x - 112 * sc} y={y - 190 * sc} width={224 * sc} height={200 * sc} rx={24} fill={['#4c1a22', '#531f26', '#5a2430'][r]} stroke={INK} strokeWidth={3} />
+                  {!empty && <Spectator x={x} y={y} i={i + r * 3} t={o.t} sc={sc} applause={o.applause} />}
+                  <rect x={x - 104 * sc} y={y - 28 * sc} width={208 * sc} height={44 * sc} rx={16} fill={['#6a2a34', '#732f3a', '#7e3642'][r]} stroke={INK} strokeWidth={3} />
+                </g>
+              );
+            })}
+          </g>
+        ))}
       </g>
     ),
     front: (
       <g>
-        {/* Adam's empty seat, folded up, with the costume tag taped on */}
+        {/* Adam's seat in the front row: the only empty one, with the costume tag taped on */}
         <g transform={`translate(${AUD.seatX} 0)`}>
-          <rect x={-120} y={760} width={240} height={190} rx={24} fill="#531f26" stroke={INK} strokeWidth={3} /><rect x={-100} y={830} width={200} height={20} rx={10} fill="#65292f" opacity={0.6} />
-          <path d="M -20,780 L -20,740" stroke={INK} strokeWidth={1.8} /><g transform="translate(-20 810) rotate(-6)"><rect x={-110} y={0} width={220} height={74} rx={8} fill="#e0ca9c" stroke={INK} strokeWidth={2.4} /><circle cx={-90} cy={12} r={6} fill="#515e91" stroke={INK} strokeWidth={1.6} /><text x={0} y={46} textAnchor="middle" fontFamily={HAND} fontWeight={600} fontSize={34} fill="#492319">{o.tag ?? 'BEST COSTUME'}</text></g>
+          <g transform="translate(-20 760) rotate(-6)"><path d="M 0,-24 L 0,0" stroke={INK} strokeWidth={2.4} /><rect x={-120} y={0} width={240} height={78} rx={8} fill="#f0dcae" stroke={INK} strokeWidth={3} /><circle cx={-100} cy={14} r={6} fill="#cfc4aa" stroke={INK} strokeWidth={2} /><text x={0} y={50} textAnchor="middle" fontFamily={HAND} fontWeight={600} fontSize={36} fill="#7a3a2a">{o.tag ?? 'BEST COSTUME'}</text></g>
         </g>
-        <g transform={`translate(${AUD.samX} 0)`}><rect x={-120} y={760} width={240} height={190} rx={24} fill="#531f26" stroke={INK} strokeWidth={3} /></g>
       </g>
     ),
     rim: 'rgba(255,230,170,.75)',

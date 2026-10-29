@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
 import {Entry, Ctx} from './kit';
 import {LIST, KWORDS} from './shots';
-import {ramp, bell, GRAIN, AgeTag, Counter, RewindCard} from './fx';
+import {ramp, bell, GRAIN, AgeTag, Counter, RewindCard, Rain} from './fx';
 import {KineticWord, IconTag, Cinema, Shafts, SpeedLines, Bridge, Dust, kwCues, KW as KWS, TextMode} from '../same2d/fx';
 import {gradeAt} from './theme';
 import {PIECES, AUDIO_FILE, TOTAL, FPS, speechDuck} from './timeline';
@@ -48,11 +48,11 @@ const CUES: Cue3[] = [
   ...TAGS.map((w): Cue3 => ({file: 'tag_whoosh', at: w.at, vol: 0.25})), ...TIMES.map((w): Cue3 => ({file: 'tag_whoosh', at: w.at, vol: 0.2})),
 ];
 const CUES4: Cue3[] = [
-  n4('phone_ring_far', 17.0, 0.5), n4('hospital_amb', 19.8, 0.2, {dur: 11.4, loop: true}), n4('baby_coo', 30.4, 0.35), n4('laptop_lid', 50.3, 0.6), n4('laptop_lid', 33.0, 0.4),
+  n4('phone_ring_close', 16.9, 0.6, {dur: 1.0}), n4('hospital_amb', 19.8, 0.2, {dur: 11.4, loop: true}), n4('baby_coo', 30.4, 0.35), n4('laptop_lid', 50.3, 0.6), n4('laptop_lid', 33.0, 0.4),
   n4('party_noise', 58.9, 0.18, {dur: 10, loop: true}), n4('kite_wind', 69.8, 0.2, {dur: 11, loop: true}), n4('kite_tear', 75.6, 0.5),
   n4('applause_hall', 95.2, 0.45), n4('door_knock', 114.5, 0.7), n4('door_knock', 120.8, 0.4), n4('chair_slam', 125.4, 0.55),
   n4('footsteps_walk', 128.0, 0.2, {dur: 2.8, loop: true}), n4('crowd_cafe_street', 130.8, 0.16, {dur: 3, loop: true}), n4('footsteps_walk', 182.8, 0.2, {dur: 3.1, loop: true}), n4('crowd_cafe_street', 185.9, 0.16, {dur: 7, loop: true}),
-  n4('transfer_chime', 156.7, 0.55), n4('phone_ring_close', 158.5, 0.5, {dur: 2.7}), n4('phone_ring_far', 161.0, 0.3, {dur: 0.6}),
+  n4('transfer_chime', 156.7, 0.55), n4('phone_ring_far', 158.5, 0.35, {dur: 1.4}), n4('phone_ring_close', 160.0, 0.55, {dur: 1.4}),
   n4('phone_ring_far', 197.0, 0.4, {dur: 0.9}), n4('footsteps_walk', 209.8, 0.18, {dur: 2.5, loop: true}), n4('crowd_cafe_street', 210.6, 0.16, {dur: 5, loop: true}), n4('shutter_click', 215.5, 0.7),
 ];
 const MUSIC: {from: number; to: number; track: string; vol: number; startAt?: number}[] = [
@@ -91,6 +91,7 @@ const TwoFathersMain: React.FC = () => {
       {!paperCard && <Dust t={t} dense={!warm} />}
       {paperCard && <RewindCard p={(t - REWIND[0]) / (REWIND[1] - REWIND[0])} f={(t - REWIND[0]) * FPS} />}
 
+      <Rain t={t} from={7.9} to={9.8} kind="money" /><Rain t={t} from={12.7} to={14.5} kind="time" /><Rain t={t} from={37.6} to={39.3} kind="money" /><Rain t={t} from={51.5} to={53.4} kind="time" />
       <KineticWord t={t} words={WORDS} />
       {TAGS.map((w) => <AgeTag key={w.at} t={t} from={w.at} to={w.at + w.dur} text={w.text} pills={pillsOf(w.text)} />)}
       {TIMES.map((w) => <IconTag key={w.at} t={t} from={w.at} to={w.at + w.dur} text={w.text} icon={w.text.startsWith('SUNDAY') ? 'sun' : 'clock'} color="#fff" />)}

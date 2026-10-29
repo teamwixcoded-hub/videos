@@ -47,13 +47,13 @@ export const F = {
   talk: (t: number): FaceP => ({smile: 0.1, open: 0.25 + 0.25 * Math.abs(Math.sin(t * 9))}), worried: {tilt: 12, brow: 0.35, smile: 0} as FaceP,
 };
 
-const mk = (set: SetOut, cam: Cam, chars: React.ReactNode, blurK = 1, extra?: React.ReactNode) => (
+const mk = (set: SetOut, cam: Cam, chars: React.ReactNode, blurK = 0.5, extra?: React.ReactNode) => (
   <Stage cam={cam} far={set.far} mid={set.mid} chars={<>{chars}{extra}</>} front={set.front} fg={set.fg} rim={set.rim} blurK={blurK} />
 );
 type CamArg = Cam | [Cam, Cam];
 const camOf = (c: Ctx, a: CamArg) => { const k = Array.isArray(a) ? mixCam(a[0], a[1], c.p) : a; return {cx: k.cx + Math.sin(c.t * 0.9) * 5, cy: k.cy + Math.sin(c.t * 1.3 + 1) * 4, z: k.z}; };
 export const SC = {
-  liv: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof livingRoom>[0], 't'>, chars: React.ReactNode, blurK = 1) => mk(livingRoom({t: c.t, ...o}), camOf(c, cam), chars, blurK),
+  liv: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof livingRoom>[0], 't'>, chars: React.ReactNode, blurK = 0.5) => mk(livingRoom({t: c.t, ...o}), camOf(c, cam), chars, blurK),
   str: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof street>[0], 't'>, chars: React.ReactNode = null) => mk(street({t: c.t, ...o}), camOf(c, cam), chars),
   hos: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof hospital>[0], 't'>, chars: React.ReactNode = null) => mk(hospital({t: c.t, ...o}), camOf(c, cam), chars),
   pty: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof party>[0], 't'>, chars: React.ReactNode = null) => mk(party({t: c.t, ...o}), camOf(c, cam), chars),
