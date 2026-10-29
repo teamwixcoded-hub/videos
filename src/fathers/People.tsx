@@ -100,6 +100,14 @@ const HELD: Partial<Record<PoseName, 'phone' | 'cup'>> = {ear: 'phone', phone: '
 const settle = (k: number) => { const q = clamp(k, 0, 1) - 1; return 1 + 2.4 * q * q * q + 1.4 * q * q; };
 const mixV = (a: V, b: V, e: number): V => [lerp(a[0], b[0], e), lerp(a[1], b[1], e)];
 
+// living hands: a slow sway, and, for relaxed poses, a talking gesture that lifts a hand now and then (never a frozen hanging arm)
+const FREE = new Set<PoseName>(['stand', 'rest']);
+const lively = (t: number, sd: number, pose: PoseName, e: number): [V, V, number] => {
+  const a = FREE.has(pose) ? 1 : 0.3, g = Math.pow(Math.max(0, Math.sin(t * 0.85 + sd * 7)), 3) * (FREE.has(pose) ? 1 : 0), g2 = Math.pow(Math.max(0, Math.sin(t * 0.6 + sd * 3 + 2)), 4) * (FREE.has(pose) ? 1 : 0);
+  const dN: V = [(Math.sin(t * 1.3 + sd) * 9 + g * 70) * a * e, (Math.sin(t * 1.9 + sd * 2) * 7 - g * 150) * a * e];
+  const dF: V = [(Math.sin(t * 1.1 + sd * 3) * 8 + g2 * 40) * a * e, (Math.sin(t * 1.7 + sd) * 6 - g2 * 90) * a * e];
+  return [dN, dF, Math.sin(t * 0.55 + sd * 2) * 1.6 + g * 1.5];
+};
 export const Person: React.FC<PersonProps> = (p) => {
   const {who, age = isSon(who) ? 30 : 40, x, y, scale = 1, t, seed, dim = 0, idle = 1, turn = 0, slump = 0, walk = 0} = p;
   const pose: PoseName = p.pose ?? 'stand';
@@ -117,9 +125,11 @@ export const Person: React.FC<PersonProps> = (p) => {
   const kids = p.children && pose !== 'ear' ? <g transform={`translate(${shift[0]} ${shift[1]})`}>{p.children}</g> : null;
   if (view === 'front') {
     const q = FRONT[pose](t, raise);
-    const s0 = FRONT.stand(t, 1), L: V = mixV(s0.L, p.handL ? [p.handL[0], p.handL[1] - 92] : q.L, e), R: V = mixV(s0.R, p.handR ? [p.handR[0], p.handR[1] - 92] : q.R, e);
+    const [lvN, lvF, lvT] = lively(t, sd, pose, e);
+    const s0 = FRONT.stand(t, 1), L0: V = mixV(s0.L, p.handL ? [p.handL[0], p.handL[1] - 92] : q.L, e), R0: V = mixV(s0.R, p.handR ? [p.handR[0], p.handR[1] - 92] : q.R, e);
+    const L: V = [L0[0] + lvF[0], L0[1] + lvF[1]], R: V = [R0[0] + lvN[0], R0[1] + lvN[1]];
     return (
-      <HumanFront x={x} y={y} scale={sc} flip={p.flip} lean={(p.lean ?? q.lean ?? 0) + stoop} head={{turn: clamp(turn, -1, 1), tilt: p.tilt}} face={face} handL={L} handR={R}
+      <HumanFront x={x} y={y} scale={sc} flip={p.flip} lean={(p.lean ?? q.lean ?? 0) + stoop + lvT} head={{turn: clamp(turn, -1, 1), tilt: p.tilt}} face={face} handL={L} handR={R}
         slump={slump} legs={sitting ? 'sit' : 'none'} heldR={heldNode} heldUp={holds === 'cup'} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} look={who} grey={grey} tie={who === 'adam' && !p.outfit} curl={CURL[pose] ?? 0.35}>{kids}</HumanFront>
     );
   }
@@ -129,10 +139,12 @@ export const Person: React.FC<PersonProps> = (p) => {
   const footN: V = sitting ? [230, 170] : walking ? [sw * 100, 392 - Math.max(0, -cw) * 46] : [44, 394];
   const footF: V = sitting ? [300, 172] : walking ? [-sw * 100, 392 - Math.max(0, cw) * 46] : [-36, 398];
   const arms = walking && pose === 'stand' ? sw * 70 : 0;
-  const s1 = SIDE.stand(t, 1), handN: V = mixV(s1.N, [q.N[0] + arms, q.N[1]], e), handF: V = mixV(s1.F, [q.F[0] - arms, q.F[1]], e);
+  const s1 = SIDE.stand(t, 1), handN0: V = mixV(s1.N, [q.N[0] + arms, q.N[1]], e), handF0: V = mixV(s1.F, [q.F[0] - arms, q.F[1]], e);
+  const [lvN, lvF, lvT] = walking ? [[0, 0], [0, 0], 0] as [V, V, number] : lively(t, sd, pose, e);
+  const handN: V = [handN0[0] + lvN[0], handN0[1] + lvN[1]], handF: V = [handF0[0] + lvF[0], handF0[1] + lvF[1]];
   const bob = walking ? Math.abs(Math.sin(walk * Math.PI * 2)) * 9 * sc : 0;
   return (
-    <HumanSide x={x} y={y - bob} scale={sc} flip={flip} torso={(p.lean ?? 0) + (q.torso ?? 0) * e + (sitting ? -6 : 0) + stoop + (walking ? 3 : 0)} headPitch={(q.pitch ?? 8) + slump * 6} turn={clamp(0.85 + Math.abs(turn) * 0.15, 0.6, 1)} face={face}
+    <HumanSide x={x} y={y - bob} scale={sc} flip={flip} torso={(p.lean ?? 0) + lvT + (q.torso ?? 0) * e + (sitting ? -6 : 0) + stoop + (walking ? 3 : 0)} headPitch={(q.pitch ?? 8) + slump * 6 + Math.sin(t * 0.7 + sd) * 2} turn={clamp(0.85 + Math.abs(turn) * 0.15, 0.6, 1)} face={face}
       handN={handN} handF={handF} footN={footN} footF={footF} look={who} tie={who === 'adam' && !p.outfit} grey={grey} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} slump={slump} curlN={CURL[pose] ?? 0.35} curlF={0.3} heldN={heldNode} heldUp={holds === 'cup'}>{kids}</HumanSide>
   );
 };

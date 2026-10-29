@@ -246,7 +246,9 @@ export const LIST: Entry[] = [
   [T('but every friday'), 'w', (c) => SC.tea(c, [Z(1100, 560, 1.0), Z(1700, 560, 1.15)], {season: 1, sunset: 0.1}, walkers(c, [45, 16], 700, 120))],
   [T('they still walked to the tea stall'), undefined, (c) => SC.tea(c, [Z(1700, 600, 1.3), Z(1700, 590, 1.5)], {season: 1, sunset: 0.1}, benchPair(c, [45, 16]))],
   // ================= THE WORST NIGHT =================
-  [T('one night'), undefined, (c) => <Split left={leoNight(c)} right={samDoor(c)} wipe={ramp(c.l, 0, 1.0)} />],
+  [T('one night'), undefined, (c) => SC.str(c, [Z(1600, 560, 0.95), Z(1600, 540, 1.25)], {night: true, adamLit: 1, samLit: 1})],
+  [T('leo locked his door'), 'w', (c) => leoNight(c)],
+  [T('max knocked on'), 'w', (c) => <Split left={leoNight(c)} right={samDoor(c)} wipe={ramp(c.l, 0, 0.8)} />],
   [T("sam didn't fix anything"), undefined, (c) => <Split left={leoNight(c)} right={stairsSm(c)} wipe={1 + ramp(c.l, 0, 1.2)} divider={1 - ramp(c.l, 0.5, 1.2)} />],
   [T('he just sat on the stairs') + 1.2, undefined, (c) => SC.stairs(c, [Z(1700, 520, 1.3), Z(1700, 500, 1.6)], <>{Pe(c, sit('sam', 50, 1800, 0.62, {turn: -0.3, face: F.soft}, 840))}{Pe(c, sit('max', 16, 2060, 0.62, {turn: -0.3, face: F.sad}, 840))}</>)],
   [T('until it was late'), undefined, (c) => <AbsoluteFill>{SC.stairs(c, [Z(1700, 500, 1.6), Z(1700, 500, 1.8)], <>{Pe(c, sit('sam', 50, 1800, 0.62, {turn: -0.3, face: F.soft}, 840))}{Pe(c, sit('max', 16, 2060, 0.62, {turn: -0.3, face: {...F.sad, lids: 0.45}}, 840))}</>)}{tint('rgba(30,50,130,.9)', 'rgba(30,50,130,.9)', ramp(c.l, 0, 2.6))}</AbsoluteFill>],
