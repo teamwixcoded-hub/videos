@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill} from 'remotion';
 import {Stage, Cam, camAt} from '../same2d/Stage';
-import {Person, PersonProps, Who, bodyK, FaceP} from './People';
+import {Person, PersonProps, Who, bodyK, FaceP, CHAR_K} from './People';
 import {SetOut, FL, livingRoom, street, hospital, party, auditorium, office, leoDoor, leoRoom, stairs, teaStall, park, kitchen, leoFlat} from './sets';
 import {ease} from './fx';
 
@@ -21,12 +21,18 @@ export const path = (t: number, keys: [number, Cam][]): Cam => {
 };
 
 type Pos = {who: Who; age: number; x: number; y: number; scale: number} & Partial<Omit<PersonProps, 'who' | 't' | 'x' | 'y' | 'scale' | 'age'>>;
-export const stand = (who: Who, age: number, x: number, sc = 0.7, o: Partial<PersonProps> = {}): Pos => ({who, age, x, y: FLOOR - 350 * sc * bodyK(who, age), scale: sc, ...o});
-export const sit = (who: Who, age: number, x: number, sc = 0.7, o: Partial<PersonProps> = {}, floor = FLOOR): Pos => ({who, age, x, y: floor - 284 * sc * bodyK(who, age), scale: sc, legs: 'sit', sitDrop: 250, ...o});
+const FRONTP = ['clap', 'film', 'desk', 'type'];
+export const stand = (who: Who, age: number, x: number, sc = 0.7, o: Partial<PersonProps> = {}): Pos => ({who, age, x, y: FLOOR - 425 * sc * bodyK(who, age) * CHAR_K, scale: sc, ...o});
+// side-view sitters have their hips 218 above the floor, front-view sitters (desk, clapping, filming) 300
+export const sit = (who: Who, age: number, x: number, sc = 0.7, o: Partial<PersonProps> = {}, floor = FLOOR): Pos => {
+  const front = o.view === 'front' || (!!o.pose && FRONTP.includes(o.pose));
+  return {who, age, x, y: floor - (front ? 300 : 218) * sc * bodyK(who, age) * CHAR_K, scale: sc, legs: 'sit', ...o};
+};
 export const Pe = (c: Ctx, p: Pos, key?: string | number) => <Person key={key} t={c.t} {...p} />;
 // camera aimed at a person's face / upper body
-export const faceCam = (p: Pos, z = 2.4, dy = 0): Cam => Z(p.x, p.y - 390 * p.scale * bodyK(p.who, p.age) + dy, z);
-export const bodyCam = (p: Pos, z = 1.5): Cam => Z(p.x, p.y - 230 * p.scale * bodyK(p.who, p.age), z);
+const headH = (p: Pos) => ((p.view === 'front' || (!!p.pose && FRONTP.includes(p.pose))) ? 500 : 440);
+export const faceCam = (p: Pos, z = 2.4, dy = 0): Cam => Z(p.x, p.y - headH(p) * p.scale * bodyK(p.who, p.age) * CHAR_K + dy, z);
+export const bodyCam = (p: Pos, z = 1.5): Cam => Z(p.x, p.y - 250 * p.scale * bodyK(p.who, p.age) * CHAR_K, z);
 
 // faces
 export const F = {
@@ -39,7 +45,7 @@ const mk = (set: SetOut, cam: Cam, chars: React.ReactNode, blurK = 1, extra?: Re
   <Stage cam={cam} far={set.far} mid={set.mid} chars={<>{chars}{extra}</>} front={set.front} fg={set.fg} rim={set.rim} blurK={blurK} />
 );
 type CamArg = Cam | [Cam, Cam];
-const camOf = (c: Ctx, a: CamArg) => (Array.isArray(a) ? mixCam(a[0], a[1], c.p) : a);
+const camOf = (c: Ctx, a: CamArg) => { const k = Array.isArray(a) ? mixCam(a[0], a[1], c.p) : a; return {cx: k.cx + Math.sin(c.t * 0.9) * 5, cy: k.cy + Math.sin(c.t * 1.3 + 1) * 4, z: k.z}; };
 export const SC = {
   liv: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof livingRoom>[0], 't'>, chars: React.ReactNode, blurK = 1) => mk(livingRoom({t: c.t, ...o}), camOf(c, cam), chars, blurK),
   str: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof street>[0], 't'>, chars: React.ReactNode = null) => mk(street({t: c.t, ...o}), camOf(c, cam), chars),

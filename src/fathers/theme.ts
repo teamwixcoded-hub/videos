@@ -9,7 +9,7 @@ export const HAND = loadCaveat('normal', {weights: ['600']}).fontFamily;
 export const UI = loadUI('normal', {weights: ['500', '700']}).fontFamily;
 export const W = 1920, H = 1080;
 
-export const INK = '#3a2a26';          // every outline is warm dark brown, never black
+export const INK = '#1d1a2e';          // the Same Man ink: dark navy outlines
 export const PAPER = '#f4ecdc', CREAM = '#fbf5e8', GOLD = '#e9a93b', RUST = '#b4592f', NAVY = '#26324f';
 
 // ---- grades by act (video seconds). Each key: tint colour + strength (soft-light overlay), saturation, brightness ----

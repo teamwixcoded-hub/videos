@@ -40,6 +40,7 @@ export type CharProps = {
   thumbL?: boolean; thumbR?: boolean;   // false when the thumb is hidden behind a held phone or book
   elbowL?: 'low' | 'out'; elbowR?: 'low' | 'out';
   tee?: string; t: number; seed?: number; dim?: number; idle?: number;
+  look?: Look; grey?: number; tie?: boolean;
   children?: React.ReactNode;            // props in hip space (phone, book, mug), drawn behind the gloves
 };
 
@@ -89,7 +90,8 @@ const Arm: React.FC<{S: V; T: V; s: number; tee: string; thumb?: boolean; pref?:
   );
 };
 
-export type Look = 'man' | 'mom' | 'manager' | 'colleague' | 'friend';
+export type Look = 'man' | 'mom' | 'manager' | 'colleague' | 'friend' | 'adam' | 'sam' | 'leo' | 'max' | 'aunt';
+const greyOf = (g: number) => { const n = (h: string) => parseInt(h, 16), a = [0x2b, 0x26, 0x34], b = [0xd6, 0xd4, 0xdc]; return '#' + a.map((v, i) => Math.round(v + (b[i] - v) * g).toString(16).padStart(2, '0')).join(''); };
 // other people use the same rig with different hair, glasses and clothes, so the cast stays one family of characters
 const Hair: React.FC<{look: Look; turn: number}> = ({look, turn}) => (
   <g transform={`translate(${turn * 30} 0)`}>
@@ -100,7 +102,8 @@ const Hair: React.FC<{look: Look; turn: number}> = ({look, turn}) => (
   </g>
 );
 
-export const Head: React.FC<{face: Face; turn: number; t: number; seed: number; idle: number; look?: Look}> = ({face, turn, t, seed, idle, look = 'man'}) => {
+export const Head: React.FC<{face: Face; turn: number; t: number; seed: number; idle: number; look?: Look; grey?: number}> = ({face, turn, t, seed, idle, look = 'man', grey = 0}) => {
+  const hairC = greyOf(grey);
   const {gaze = [0, 0], lids = 0.05, smile = 0, open = 0, brow = 0, browTilt = 0, wide = 0} = face;
   const mid = useId().replace(/:/g, '');
   // irregular blink with the odd double blink
@@ -134,12 +137,16 @@ export const Head: React.FC<{face: Face; turn: number; t: number; seed: number; 
       <circle cx={-106} cy={-34} r={7} fill="#fff" opacity={0.8} />
       <circle cx={104} cy={-70} r={5} fill="#fff" opacity={0.5} />
       {/* hair: a glassy lens with a dark swoosh across the forehead */}
-      {look !== 'man' && <Hair look={look} turn={turn} />}
-      {look === 'man' && <g transform={`translate(${turn * 30} 0)`}>
-        <ellipse cx={-22} cy={-144} rx={90} ry={40} transform="rotate(-12 -22 -144)" fill="url(#hg)" stroke={HAIR} strokeWidth={8} />
+      {(look === 'mom' || look === 'manager' || look === 'colleague' || look === 'friend') && <Hair look={look} turn={turn} />}
+      {(look === 'man' || look === 'adam' || look === 'sam' || look === 'leo' || look === 'aunt') && <g transform={`translate(${turn * 30} 0)`}>
+        <ellipse cx={-22} cy={look === 'leo' ? -138 : -144} rx={look === 'leo' ? 78 : 90} ry={look === 'leo' ? 34 : 40} transform="rotate(-12 -22 -144)" fill="url(#hg)" stroke={hairC} strokeWidth={8} />
         <ellipse cx={-52} cy={-156} rx={34} ry={9} transform="rotate(-14 -52 -156)" fill="#fff" opacity={0.85} />
-        <path d="M -84,-98 Q -30,-142 62,-110" fill="none" stroke={HAIR} strokeWidth={13} strokeLinecap="round" />
+        <path d="M -84,-98 Q -30,-142 62,-110" fill="none" stroke={hairC} strokeWidth={look === 'leo' ? 10 : 13} strokeLinecap="round" />
+        {look === 'aunt' && <circle cx={30} cy={-190} r={36} fill={hairC} stroke={INK} strokeWidth={6} />}
+        {look === 'leo' && <path d="M -50,-168 l 10,-26 l 14,22 l 14,-28 l 12,26" fill="none" stroke={hairC} strokeWidth={9} strokeLinecap="round" strokeLinejoin="round" />}
       </g>}
+      {look === 'max' && <g transform={`translate(${turn * 30} 0)`} fill={hairC} stroke={INK} strokeWidth={6}>{[[-70, -128, 30], [-30, -160, 34], [18, -168, 36], [62, -146, 32], [92, -108, 26], [-92, -84, 22], [-6, -134, 34]].map(([x, y, r], i) => <circle key={i} cx={x} cy={y} r={r} />)}</g>}
+      {look === 'sam' && <g transform={`translate(${turn * 58} 0)`} fill={hairC} stroke={INK} strokeWidth={6} strokeLinejoin="round"><path d="M -112,36 Q -92,132 0,146 Q 92,132 112,36 Q 74,98 0,104 Q -74,98 -112,36 Z" /><path d="M -42,60 Q 0,42 42,60 Q 0,72 -42,60 Z" /></g>}
       <g transform={`translate(${turn * 58} 0) scale(${1 - Math.abs(turn) * 0.16} 1)`}>
         <ellipse cx={-96} cy={34} rx={26} ry={15} fill="#f2a6b8" opacity={0.2 + sm * 0.25} />
         <ellipse cx={96} cy={34} rx={26} ry={15} fill="#f2a6b8" opacity={0.2 + sm * 0.25} />
@@ -180,7 +187,7 @@ export const Head: React.FC<{face: Face; turn: number; t: number; seed: number; 
   );
 };
 
-export const Char: React.FC<CharProps> = ({x, y, scale = 1, flip, lean = 0, head = {}, face = {}, handL = [-88, -150], handR = [88, -150], slump = 0, legs = 'none', thumbL = true, thumbR = true, elbowL = 'low', elbowR = 'low', tee = TEE, t, seed = 0, dim = 0, idle = 1, children}) => {
+export const Char: React.FC<CharProps> = ({x, y, scale = 1, flip, lean = 0, head = {}, face = {}, handL = [-88, -150], handR = [88, -150], slump = 0, legs = 'none', thumbL = true, thumbR = true, elbowL = 'low', elbowR = 'low', tee = TEE, t, seed = 0, dim = 0, idle = 1, look = 'man', grey = 0, tie = false, children}) => {
   const inh = Math.sin(t * 1.9 + seed);                     // breathing: chest rises, shoulders lift, head follows a beat late
   const sy = slump * 30 - inh * 2.6 * idle;
   const sway = Math.sin(t * 0.55 + seed * 2) * 0.9 * idle;   // weight shift, the head counter-rotates
@@ -214,9 +221,10 @@ export const Char: React.FC<CharProps> = ({x, y, scale = 1, flip, lean = 0, head
         <path d="M -20,-20 Q 0,-6 22,-22" fill="none" stroke={shade(tee, -0.35)} strokeWidth={5} strokeLinecap="round" opacity={0.35} />
         <path d={`M -52,${-338 + sy} Q 0,${-300 + sy} 52,${-338 + sy}`} fill="none" stroke={TEE_DK} strokeWidth={14} strokeLinecap="round" />
         <rect x={-23} y={-372 + sy} width={46} height={44} rx={12} fill={LIMB} stroke={INK} strokeWidth={6} />
+        {tie && <path d={`M -16,${-336 + sy} L 16,${-336 + sy} L 24,-210 L 0,-170 L -24,-210 Z`} fill="#e0455a" stroke={INK} strokeWidth={5} strokeLinejoin="round" />}
         <ellipse cx={0} cy={-326 + sy} rx={104} ry={34} fill="#000" opacity={0.2} />
         <g transform={`translate(0 ${-352 + sy}) rotate(${(head.tilt ?? 0) + (Math.sin(t * 0.71 + seed * 1.7) * 1.3 - sway * 0.6) * idle}) translate(${(head.dx ?? 0) + Math.sin(t * 0.43 + seed) * 4 * idle} ${-172 + (head.dy ?? 0) + inh * 1.2 * idle})`}>
-          <Head face={face} turn={head.turn ?? 0} t={t} seed={seed} idle={idle} />
+          <Head face={face} turn={head.turn ?? 0} t={t} seed={seed} idle={idle} look={look} grey={grey} />
         </g>
         {children}
         <Arm S={SL} T={hl} s={-1} tee={tee} thumb={thumbL} pref={elbowL} />

@@ -1,6 +1,8 @@
 import React from 'react';
 import {AbsoluteFill} from 'remotion';
 import {SERIF, SERIF_I, UI, PAPER, INK, GOLD} from './theme';
+import {AnimText} from '../same2d/fx';
+import {MONT, DIGI, FPS as FPS_} from '../same2d/theme';
 
 export const ease = (x: number) => x * x * (3 - 2 * x);
 export const ramp = (t: number, a: number, b: number) => ease(Math.min(1, Math.max(0, (t - a) / (b - a))));
@@ -65,7 +67,7 @@ export const RewindCard: React.FC<{p: number; f: number}> = ({p, f}) => {
         return <div key={i} style={{position: 'absolute', left: 50 + Math.cos(ang) * d * 100 + '%', top: 50 + Math.sin(ang) * d * 100 + '%', width: 60 + rnd(i, 3) * 90, height: 40 + rnd(i, 4) * 70, background: i % 3 === 0 ? '#e2d3b0' : '#c9c2b0', opacity: 0.8 * (1 - p * 0.6), transform: `rotate(${rnd(i, 5) * 360 + burst * 80}deg)`, boxShadow: '0 4px 10px rgba(0,0,0,.2)'}} />;
       })}
       <AbsoluteFill style={{alignItems: 'center', justifyContent: 'center'}}>
-        <div style={{fontFamily: SERIF, fontWeight: 800, fontSize: 118, letterSpacing: 6, fontVariantNumeric: 'lining-nums', color: '#3a2a26', opacity: Math.min(1, f / 8), transform: `scale(${0.94 + 0.06 * Math.min(1, f / 12)})`}}>30 YEARS <span style={{color: '#b4592f'}}>EARLIER</span></div>
+        <div style={{fontFamily: MONT, fontWeight: 800, fontSize: 112, letterSpacing: 4, color: '#2a2a35', opacity: Math.min(1, f / 8), transform: `scale(${0.94 + 0.06 * Math.min(1, f / 12)})`}}>30 YEARS <span style={{color: '#d98f1f'}}>EARLIER</span></div>
       </AbsoluteFill>
     </AbsoluteFill>
   );
@@ -93,5 +95,36 @@ export const BigCount: React.FC<{label: string; n: number; o: number; x?: number
   <div style={{position: 'absolute', left: x, top: y, opacity: o, textAlign: 'right', transform: 'translateX(-100%)'}}>
     <div style={{fontFamily: UI, fontWeight: 700, fontSize: 30, letterSpacing: 10, color: '#fff6e6', textShadow: '0 2px 10px rgba(0,0,0,.8)'}}>{label}</div>
     <div style={{fontFamily: SERIF, fontWeight: 800, fontSize: 150, lineHeight: 1, color: '#fff7e8', textShadow: '0 6px 24px rgba(0,0,0,.7)', WebkitTextStroke: '3px rgba(40,22,14,.8)', paintOrder: 'stroke fill'} as React.CSSProperties}>{n.toLocaleString('en-US')}</div>
+  </div>
+);
+
+// ---------------- whose age is it? (same pills as the Same Man day tags, one per person) ----------------
+const WHO4 = {
+  adam: {label: 'ADAM', c1: '#6a97ff', c2: '#2f55c7', glow: 'rgba(100,150,255,.65)'}, sam: {label: 'SAM', c1: '#ffa24f', c2: '#d0561d', glow: 'rgba(255,160,80,.65)'},
+  leo: {label: 'LEO', c1: '#45c2ff', c2: '#1f7fd0', glow: 'rgba(70,190,255,.65)'}, max: {label: 'MAX', c1: '#3ddc84', c2: '#1f9a58', glow: 'rgba(61,220,132,.65)'},
+};
+export const AgeTag: React.FC<{t: number; from: number; to: number; text: string; pills: ('adam' | 'sam' | 'leo' | 'max')[]}> = ({t, from, to, text, pills}) => {
+  const o = Math.min(ramp(t, from, from + 0.25), 1 - ramp(t, to - 0.3, to));
+  if (o <= 0) return null;
+  const fr = (t - from) * FPS_;
+  return (
+    <div style={{position: 'absolute', top: 54 - (1 - o) * 14, left: 0, right: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, opacity: Math.min(1, o * 1.4)}}>
+      <div style={{display: 'flex', alignItems: 'center', gap: 20}}>
+        <svg width="60" height="60" viewBox="0 0 48 48" style={{filter: 'drop-shadow(0 0 14px #fff)', transform: `scale(${0.6 + 0.4 * o}) rotate(${(1 - o) * -40}deg)`}}><g fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round"><rect x="6" y="9" width="36" height="32" rx="5" /><path d="M6 19h36M15 5v8M33 5v8" /></g></svg>
+        <AnimText text={text} f={fr} size={82} mode="pop" tint="#fff" />
+      </div>
+      <div style={{display: 'flex', gap: 22}}>
+        {pills.map((w, i) => { const q = WHO4[w], p = Math.min(1, Math.max(0, (fr - 6 - i * 3) / 10)), e = 1 - Math.pow(1 - p, 3); return (
+          <div key={w} style={{padding: '10px 28px', borderRadius: 999, background: `linear-gradient(180deg, ${q.c1}, ${q.c2})`, border: '4px solid #fff', boxShadow: `0 0 34px ${q.glow}, 0 8px 22px rgba(0,0,0,.5)`, transform: `translateX(${(i % 2 ? 1 : -1) * (1 - e) * 140}px) scale(${0.6 + 0.4 * e})`, opacity: p, fontFamily: DIGI, fontWeight: 700, fontSize: 34, letterSpacing: 4, color: '#fff'}}>{q.label}</div>
+        ); })}
+      </div>
+    </div>
+  );
+};
+export const Counter: React.FC<{n: number; o: number; label: string}> = ({n, o, label}) => (
+  <div style={{position: 'absolute', right: 170, top: 110, opacity: o, display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: MONT, fontWeight: 800, color: '#ffc94d', textShadow: '0 0 28px rgba(255,201,77,.45), 0 6px 18px rgba(0,0,0,.6)'}}>
+    <svg width="64" height="64" viewBox="0 0 48 48"><g fill="none" stroke="#ffc94d" strokeWidth="3.5" strokeLinecap="round"><rect x="6" y="9" width="36" height="32" rx="5" /><path d="M6 19h36M15 5v8M33 5v8" /></g></svg>
+    <div style={{fontSize: 170, lineHeight: 1}}>{n.toLocaleString('en-US')}</div>
+    <div style={{fontSize: 44, letterSpacing: 8}}>{label}</div>
   </div>
 );

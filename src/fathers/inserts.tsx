@@ -14,10 +14,13 @@ const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
 const rnd = (i: number, k: number) => { const x = Math.sin(i * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
 
 export const InsertBG: React.FC<{tone?: 'cold' | 'warm' | 'dark' | 'paper'; children: React.ReactNode}> = ({tone = 'warm', children}) => {
-  const bg = {cold: ['#c3cfdc', '#8b9bb0'], warm: ['#f2d9ae', '#c9955f'], dark: ['#242a40', '#10142a'], paper: ['#efe6d2', '#d8c9a8']}[tone];
+  const glow = {cold: '#4aa8ff', warm: '#ffb25a', dark: '#4aa8ff', paper: '#ffb25a'}[tone];
   return (
-    <AbsoluteFill style={{background: `radial-gradient(ellipse at 50% 40%, ${bg[0]} 0%, ${bg[1]} 100%)`}}>
-      <svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{position: 'absolute', inset: 0}}>{children}</svg>
+    <AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 45%, #1b2150 0%, #0a0d20 75%)', overflow: 'hidden'}}>
+      <svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{position: 'absolute', inset: 0}}>
+        {Array.from({length: 16}, (_, i) => <circle key={i} cx={(i * 263) % 1920} cy={(i * 191) % 1080} r={30 + (i % 4) * 22} fill={glow} opacity={0.06 + (i % 3) * 0.03} style={{filter: 'blur(14px)'}} />)}
+        {children}
+      </svg>
     </AbsoluteFill>
   );
 };
@@ -34,7 +37,7 @@ export const Phone: React.FC<{x?: number; y?: number; s?: number; rot?: number; 
 );
 const Thumb: React.FC<{x: number; y: number; press?: number}> = ({x, y, press = 0}) => (
   <g transform={`translate(${x} ${y + press * 10}) rotate(-24)`} style={{filter: 'drop-shadow(0 10px 12px rgba(0,0,0,.4))'}}>
-    <path d="M -34,160 L -30,10 Q -30,-36 0,-38 Q 30,-36 30,10 L 38,160 Z" fill="#e3ad84" stroke={INK} strokeWidth={5} strokeLinejoin="round" /><ellipse cx={0} cy={-8} rx={20} ry={14} fill="#f1c9a6" opacity={0.7} />
+    <path d="M -34,160 L -30,10 Q -30,-36 0,-38 Q 30,-36 30,10 L 38,160 Z" fill="#ffffff" stroke={INK} strokeWidth={5} strokeLinejoin="round" /><ellipse cx={0} cy={-8} rx={20} ry={14} fill="#e8e4f6" opacity={0.7} />
   </g>
 );
 
@@ -63,7 +66,7 @@ export const ClockInsert: React.FC<{t: number; min: number; hourOffset?: number;
 // ---------------------------------------------------------------- laptops on the evening desk: Sam's lid closes at `closeAt`, Adam's stays open
 export const LaptopHand: React.FC<{t: number; who: 'adam' | 'sam'; closeAt?: number}> = ({t, who, closeAt = 1.6}) => {
   const warm = who === 'sam', k = who === 'sam' ? 1 - ramp(t, closeAt, closeAt + 0.22) : 1, lid = 220 * k;
-  const skin = warm ? '#d79a70' : '#e3ad84', sleeve = warm ? '#b4592f' : '#26324f';
+  const skin = '#ffffff', sleeve = warm ? '#b4592f' : '#26324f';
   const type = Math.sin(t * 14) * 4;
   return (
     <InsertBG tone={warm ? 'warm' : 'cold'}>

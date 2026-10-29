@@ -16,11 +16,11 @@ const samAt = (c: Ctx, age: number, o: Partial<PersonProps> = {}) => Pe(c, sit('
 // a person on the street pavement: floorY is where the feet are, sc is the perspective size
 const at = (who: Who, age: number, x: number, floorY: number, sc: number, o: Partial<PersonProps> = {}) => ({who, age, x, y: floorY - 350 * sc * bodyK(who, age), scale: sc, ...o});
 const walkers = (c: Ctx, f: number, ages: [number, number], x0: number, sp: number, sc = 0.78, sam = true) => (
-  <>{Pe(c, stand(sam ? 'sam' : 'adam', ages[0], x0 + c.l * sp, sc, {turn: 0.85, walk: c.l * 0.7, face: F.smile, handL: [-96 + Math.sin(c.l * 4.4) * 34, 70], handR: [96 - Math.sin(c.l * 4.4) * 34, 70]}))}
-  {Pe(c, stand('max', ages[1], x0 + 260 + c.l * sp, sc, {turn: 0.85, walk: c.l * 0.7 + 0.25, face: F.grin, handL: [-96 + Math.sin(c.l * 4.4) * 34, 70], handR: [96 - Math.sin(c.l * 4.4) * 34, 70]}))}</>
+  <>{Pe(c, stand(sam ? 'sam' : 'adam', ages[0], x0 + c.l * sp, sc, {turn: 0.85, walk: c.l * 0.7, face: F.smile}))}
+  {Pe(c, stand('max', ages[1], x0 + 260 + c.l * sp, sc, {turn: 0.85, walk: c.l * 0.7 + 0.25, face: F.grin}))}</>
 );
 const benchPair = (c: Ctx, ages: [number, number], face = F.smile, flip = false) => (
-  <>{Pe(c, sit('sam', ages[0], 1620, 0.62, {turn: 0.25, face}))}{Pe(c, sit('max', ages[1], 1900, 0.62, {turn: -0.25, face: F.smile}))}</>
+  <>{Pe(c, sit('sam', ages[0], 1620, 0.62, {turn: 0.25, face, view: 'front', pose: 'fold'}))}{Pe(c, sit('max', ages[1], 1900, 0.62, {turn: -0.25, face: F.smile, view: 'front', pose: 'fold'}))}</>
 );
 const diorama = (c: Ctx, g: number, w: number) => (
   <AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 40%, #242a40 0%, #10142a 100%)'}}>
@@ -58,14 +58,14 @@ const friday = (c: Ctx, side: 'adam' | 'sam') => {
   return SC.str(c, Z(px + (side === 'adam' ? 209 : -209), 590, 2.3), {samLit: 1}, c.l > 0.8 ? <Person t={c.t} {...base} /> : null);
 };
 const four = (c: Ctx, cups = 4) => SC.tea(c, [Z(1760, 580, 1.25), Z(1760, 570, 1.35)], {season: 1, cups}, <>
-  {Pe(c, sit('adam', 65, 1440, 0.6, {turn: 0.2, face: F.soft}))}{Pe(c, sit('sam', 65, 1660, 0.6, {turn: 0.1, face: F.smile}))}{Pe(c, sit('leo', 30, 1880, 0.6, {turn: -0.1, face: F.smile}))}{Pe(c, sit('max', 30, 2100, 0.6, {turn: -0.2, face: F.grin}))}</>);
+  {Pe(c, sit('adam', 65, 1440, 0.6, {turn: 0.2, face: F.soft, view: 'front', pose: 'fold'}))}{Pe(c, sit('sam', 65, 1660, 0.6, {turn: 0.1, face: F.smile, view: 'front', pose: 'fold'}))}{Pe(c, sit('leo', 30, 1880, 0.6, {turn: -0.1, face: F.smile, view: 'front', pose: 'fold'}))}{Pe(c, sit('max', 30, 2100, 0.6, {turn: -0.2, face: F.grin, view: 'front', pose: 'fold'}))}</>);
 
 export const LIST2: Entry[] = [
   // ---------------- Max and his father argue; Fridays continue ----------------
   [215.0, undefined, (c) => SC.kit(c, faceCam(stand('sam', 45, 1250, 0.8), 2.3, 30), {}, Pe(c, stand('sam', 45, 1250, 0.8, {turn: 0.5, face: {...F.angry, open: 0.3 + 0.3 * Math.abs(Math.sin(c.t * 10))}})))],
   [216.4, undefined, (c) => SC.kit(c, faceCam(stand('max', 16, 1950, 0.85), 2.3, 30), {}, Pe(c, stand('max', 16, 1950, 0.85, {turn: -0.5, face: {...F.angry, open: 0.3 + 0.3 * Math.abs(Math.sin(c.t * 11))}})))],
-  [217.6, undefined, (c) => SC.kit(c, [Z(1600, 560, 1.05), Z(1600, 540, 1.2)], {}, <>{Pe(c, stand('sam', 45, 1250, 0.8, {turn: 0.5, face: F.angry, handR: [150, -220]}))}{Pe(c, stand('max', 16 + 0, 1980 + ramp(c.l, 0.3, 0.7) * 120, 0.85, {turn: -0.5, face: F.angry, lean: -ramp(c.l, 0.2, 0.6) * 12}))}</>)],
-  [219.0, undefined, (c) => SC.kit(c, faceCam(sit('sam', 45, 1250, 0.7, {}, FL + 20), 2.0, 40), {}, Pe(c, sit('sam', 45, 1250, 0.7, {turn: 0.4, face: {...F.sad, lids: 0.45}}, FL + 20)))],
+  [217.6, undefined, (c) => SC.kit(c, [Z(1600, 560, 1.05), Z(1600, 540, 1.2)], {}, <>{Pe(c, stand('sam', 45, 1250, 0.8, {turn: 0.5, face: F.angry, pose: 'point'}))}{Pe(c, stand('max', 16 + 0, 1980 + ramp(c.l, 0.3, 0.7) * 120, 0.85, {turn: -0.5, face: F.angry, lean: -ramp(c.l, 0.2, 0.6) * 12}))}</>)],
+  [219.0, undefined, (c) => SC.kit(c, faceCam(sit('sam', 45, 1250, 0.7, {}, FL + 76), 2.0, 40), {}, Pe(c, sit('sam', 45, 1250, 0.7, {turn: 0.4, face: {...F.sad, lids: 0.45}}, FL + 76)))],
   [220.6, 'w', (c) => SC.tea(c, [Z(1100, 560, 1.0), Z(1700, 560, 1.15)], {season: 1, sunset: 0.1}, walkers(c, 0, [45, 16], 700, 120))],
   [223.5, undefined, (c) => SC.tea(c, [Z(1700, 600, 1.3), Z(1700, 590, 1.5)], {season: 1, sunset: 0.1}, benchPair(c, [45, 16]))],
   // ---------------- M2 years: age match cuts every 2 s ----------------
@@ -74,9 +74,9 @@ export const LIST2: Entry[] = [
     const beats: ((c: Ctx) => React.ReactNode)[] = [
       (c) => SC.tea(c, faceCam(sit('max', ageM, 1900, 0.62), 2.2, 30), {season}, benchPair(c, [ageS, ageM], F.grin)),
       null as any,
-      (c) => SC.kit(c, [Z(1500, 540, 1.3), Z(1500, 540, 1.5)], {}, <>{Pe(c, stand('max', ageM, 1500, 0.85, {turn: 0.3, face: F.smile, handR: [40, -330]}))}{Pe(c, stand('sam', ageS, 1900, 0.8, {turn: -0.4, face: {...F.grin, open: 0.7}}))}</>),
+      (c) => SC.kit(c, [Z(1500, 540, 1.3), Z(1500, 540, 1.5)], {}, <>{Pe(c, stand('max', ageM, 1500, 0.85, {turn: 0.3, face: F.smile, pose: 'wave'}))}{Pe(c, stand('sam', ageS, 1900, 0.8, {turn: -0.4, face: {...F.grin, open: 0.7}}))}</>),
       (c) => SC.aud(c, [Z(1180, 780, 1.5), Z(1180, 780, 1.8)], {tag: 'PARENTS’ EVENING'}),
-      (c) => SC.aud(c, [Z(1500, 520, 1.3), Z(1500, 520, 1.5)], {}, <>{Pe(c, stand('leo', ageM, 1500, 0.9, {turn: 0.2, face: F.smile, handR: [70, -330], handL: [-70, -330]}))}{Pe(c, stand('aunt', 45, 1900, 0.85, {pose: 'film', turn: -0.4, face: F.smile}))}</>),
+      (c) => SC.aud(c, [Z(1500, 520, 1.3), Z(1500, 520, 1.5)], {}, <>{Pe(c, stand('leo', ageM, 1500, 0.9, {turn: 0.2, face: F.smile, pose: 'wave'}))}{Pe(c, stand('aunt', 45, 1900, 0.85, {pose: 'film', turn: -0.4, face: F.smile}))}</>),
     ];
     const beat = [beats[0], beats[2], beats[4], beats[3], beats[0]][k];
     return [
@@ -92,7 +92,7 @@ export const LIST2: Entry[] = [
   [282.0, undefined, (c) => split(c, leoNight(c), stairsSm(c), 1 + ramp(c.l, 0, 1.4), 1 - ramp(c.l, 0.6, 1.4))],
   [287.0, undefined, (c) => SC.room(c, [faceCam(sit('leo', 16, 1360, 0.8), 2.5, 20), Z(1600, 540, 0.95)], Pe(c, sit('leo', 16, 1360, 0.8, {pose: 'phone', face: {...F.sad, gaze: [0, 0.6]}, turn: 0.2})))],
   // ---------------- AGE 25 ----------------
-  [291.0, 'f', (c) => SC.off(c, [Z(1600, 520, 1.0), Z(1700, 530, 1.3)], {clockMin: 480}, <>{Pe(c, sit('leo', 25, 1700, 0.7, {pose: 'desk', face: F.calm, turn: 0.1}, FL + 20))}<Laptop x={1700} y={690} s={0.9} open={1} /></>)],
+  [291.0, 'f', (c) => SC.off(c, [Z(1600, 520, 1.0), Z(1700, 530, 1.3)], {clockMin: 480}, <>{Pe(c, sit('leo', 25, 1700, 0.7, {pose: 'desk', face: F.calm, turn: 0.1}, FL + 76))}<Laptop x={1700} y={690} s={0.9} open={1} /></>)],
   [294.0, undefined, (c) => <LeoTransfer t={c.l} />],
   [297.0, undefined, (c) => <PhoneDark t={c.l} light={ramp(c.l, 0.1, 0.4)} />],
   [299.7, undefined, (c) => <SundayFlip t={c.l} who="sam" week={0} />],

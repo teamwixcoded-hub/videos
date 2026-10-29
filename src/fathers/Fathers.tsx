@@ -3,7 +3,8 @@ import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remoti
 import {Entry, Ctx} from './kit';
 import {LIST1, KW1} from './shots1';
 import {LIST2, KW2, sundayCount} from './shots2';
-import {KineticWords, KW, ramp, bell, Dust, GRAIN, BigCount, PhotoFlash} from './fx';
+import {KW, ramp, bell, GRAIN, AgeTag, Counter, RewindCard} from './fx';
+import {KineticWord, IconTag, Cinema, Shafts, SpeedLines, Bridge, Dust, kwCues, KW as KWS, TextMode} from '../same2d/fx';
 import {gradeAt} from './theme';
 import {PIECES, AUDIO_FILE, TOTAL, FPS, speechDuck, S} from './timeline';
 import {Sfx3, Cue3} from '../same2d/sound';
@@ -25,7 +26,18 @@ const ctxOf = (s: Shot, t: number): Ctx => ({t, l: t - s.from, d: s.to - s.from,
 // Effects that exist today (public/sfx3, public/sfx). New ones for this story (ring, knock, applause, kite wind...) are in scripts/el-sfx4.mjs -> public/sfx4/ and
 // switched on with HAVE_SFX4 once they have been generated.
 const HAVE_SFX4 = true;
-const kwCue = (w: KW): Cue3 | null => (w.style === 'tag' ? {file: 'stamp_hit', at: w.at, vol: 0.28} : w.style === 'time' ? {file: 'phone_tap', at: w.at, vol: 0.22} : w.style === 'quote' ? {file: 'text_whisper', at: w.at, vol: 0.3} : {file: 'text_title', at: w.at, vol: 0.3});
+// key words: the quiet ones whisper (typing), the hard truths slam, titles get the HUD
+const MODE: Record<string, TextMode> = {
+  'TWO FATHERS': 'title', 'SAME STREET': 'pop', 'SAME SALARY': 'pop', 'SAME LOVE.': 'slam', 'MONEY.': 'slam', 'TIME.': 'slam', 'ONLY ONE RINGS.': 'slam', 'EXTRA SHIFTS \u00B7 WEEKENDS': 'pop', 'NEXT TIME.': 'slam',
+  'IT\u2019S RARELY THE GIFTS.': 'pop', 'IT\u2019S THE TIME.': 'slam', 'SAY SOMETHING.': 'whisper', 'FIGHTS END.': 'pop', 'WALKS CONTINUE.': 'slam', 'THE ONE WHO WAS THERE.': 'title',
+  'HE ISN\u2019T IN ANY OF THEM.': 'slam', '25 YEARS OF FRIDAYS': 'title', 'NOT TO SEND MONEY.': 'slam', 'THEY\u2019LL REMEMBER WHO SHOWED UP.': 'title',
+};
+const WORDS: KWS[] = KWORDS.filter((w) => w.style === 'big' || w.style === 'quote').map((w) => { const mode = w.style === 'quote' ? 'whisper' : MODE[w.text] ?? 'pop'; return {at: w.at, dur: w.dur, text: w.text, accent: w.accent, mode, big: mode === 'slam' || mode === 'title'}; });
+const TAGS = KWORDS.filter((w) => w.style === 'tag'), TIMES = KWORDS.filter((w) => w.style === 'time');
+const pillsOf = (text: string): ('adam' | 'sam' | 'leo' | 'max')[] => (text === 'AGE 65' ? ['adam', 'sam'] : text === 'AGE 5' || text === 'AGE 15' ? ['leo'] : ['leo', 'max']);
+const kwCue = (w: KW): Cue3 | null => null;
+const WORD_CUES: Cue3[] = WORDS.flatMap((w) => kwCues(w));
+const TAG_CUES: Cue3[] = [...TAGS.map((w): Cue3 => ({file: 'tag_whoosh', at: w.at, vol: 0.25})), ...TIMES.map((w): Cue3 => ({file: 'tag_whoosh', at: w.at, vol: 0.2}))];
 const CUES: Cue3[] = [
   // cold open: room tone, the clock
   {file: 'room_tone', old: true, at: 0, vol: 0.2, dur: 31, loop: true, fadeOut: 1.2}, {file: 'clock_tick', at: 0.3, vol: 0.3, dur: 5.4, loop: true}, {file: 'tick', old: true, at: 3.3, vol: 0.35},
@@ -54,7 +66,7 @@ const CUES: Cue3[] = [
   // the photo
   {file: 'shimmer', at: 466.0, vol: 0.3},
   ...SHOTS.filter((s) => s.fx).map((s): Cue3 => (s.fx === 'w' ? {file: 'whip', at: s.from - 0.05, vol: 0.32} : s.fx === 'f' ? {file: 'shimmer', at: s.from - 0.02, vol: 0.3} : {file: 'whoosh_soft', at: s.from - 0.1, vol: 0.3})),
-  ...KWORDS.map(kwCue).filter((c): c is Cue3 => !!c),
+  ...WORD_CUES, ...TAG_CUES,
 ];
 const n4 = (file: string, at: number, vol: number, extra: Partial<Cue3> = {}): Cue3 => ({file, at, vol, dir: 'sfx4', ...extra});
 const CUES4: Cue3[] = !HAVE_SFX4 ? [] : [
@@ -79,30 +91,38 @@ const TwoFathersMain: React.FC = () => {
   const prev = SHOTS[si - 1], dissolve = prev && shot.from < 32 && !shot.fx && t - shot.from < 0.35 ? ramp(t - shot.from, 0, 0.35) : 1;
   let whip = 0, whipDir = 0;
   for (const b of WHIP_AT) { const w = bell(t - b, 0.14); if (w > whip) { whip = w; whipDir = Math.sign(t - b) || 1; } }
-  const fl = (() => { const f = FLASH_AT.find((b) => t >= b - 0.04 && t < b + 0.35); return f === undefined ? 0 : Math.max(0, 1 - (t - f) / 0.35); })();
-  const bridge = BRIDGE_AT.reduce((m, b) => Math.max(m, bell(t - b, 0.22)), 0);
-  const g = gradeAt(t), paperCard = t >= 32 && t < 35;
+  const HITS = [...FLASH_AT, 198.3, 217.8, 441.7, 466.0];
+  const shk = 9 * HITS.reduce((m, h) => (t >= h && t < h + 0.45 ? Math.max(m, Math.exp(-(t - h) * 9)) : m), 0);
+  const fl = (() => { const f = FLASH_AT.find((b) => t >= b - 0.04 && t < b + 0.4); return f === undefined ? 0 : Math.max(0, 1 - (t - f) / 0.4); })();
+  const g = gradeAt(t), paperCard = t >= 32 && t < 35, warm = g.c[0] > 200;
   const burst = bell(t - 441.75, 0.4);
-  const fadeIn = 1 - ramp(t, 0, 1.4), fadeOut = ramp(t, 488.4, 490);
+  const fadeIn = 1 - ramp(t, 0.5, 1.4), fadeOut = ramp(t, 488.4, 490);
   const friday = t >= 120 && t < 142, sundays = t >= 386 && t < 416;
   const fridayN = Math.min(12, Math.floor((t - 120) / 1.7) + 1);
   return (
-    <AbsoluteFill style={{background: '#000'}}>
-      <AbsoluteFill style={{transform: `translateX(${whipDir * whip * whip * 90}px) scale(${1 + whip * 0.04})`, filter: `saturate(${paperCard ? 1 : g.sat}) brightness(${paperCard ? 1 : g.br}) contrast(1.03)${whip > 0.02 ? ` blur(${whip * 16}px)` : ''}`}}>
+    <AbsoluteFill style={{background: '#05060b'}}>
+      <AbsoluteFill style={{transform: `translate(${whipDir * whip * whip * 90 + Math.sin(t * 83) * shk}px, ${Math.cos(t * 67) * shk}px) scale(${1 + whip * 0.04 + shk * 0.002})`, filter: `contrast(1.06) saturate(${paperCard ? 1 : 1.05 * g.sat})${whip > 0.02 ? ` blur(${whip * 16}px)` : ''}`}}>
         {dissolve < 1 && prev.C(ctxOf(prev, Math.min(t, prev.to - 0.001)))}
         <AbsoluteFill style={{opacity: dissolve}}>{shot.C(c)}</AbsoluteFill>
       </AbsoluteFill>
       {!paperCard && <AbsoluteFill style={{background: `rgb(${g.c[0]},${g.c[1]},${g.c[2]})`, opacity: g.a, mixBlendMode: 'soft-light'}} />}
-      <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(20,10,4,.5) 100%)'}} />
+      {!paperCard && <Shafts t={t} warm={warm} />}
+      {!paperCard && <Cinema t={t} />}
+      <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 52%, rgba(0,0,0,.55) 100%)'}} />
       <AbsoluteFill style={{backgroundImage: GRAIN, backgroundPosition: `${(frame * 37) % 220}px ${(frame * 91) % 220}px`, mixBlendMode: 'overlay', opacity: 0.12, pointerEvents: 'none'}} />
-      {!paperCard && <Dust t={t} />}
-      {bridge > 0.02 && <AbsoluteFill style={{background: 'radial-gradient(circle at 50% 50%, rgba(255,236,190,.9), rgba(255,236,190,0) 70%)', opacity: bridge * 0.7}} />}
-      {fl > 0 && <PhotoFlash o={fl * 0.95} />}
+      {BRIDGE_AT.map((b) => <Bridge key={b} t={t} at={b} />)}
+      {fl > 0 && <><AbsoluteFill style={{background: '#fff', opacity: fl * 0.9}} /><SpeedLines o={Math.min(1, fl * 1.6)} /></>}
       {burst > 0.01 && <AbsoluteFill style={{background: 'radial-gradient(circle at 50% 46%, rgba(255,244,210,.98) 0%, rgba(255,214,140,.6) 30%, rgba(255,214,140,0) 62%)', opacity: burst}} />}
-      <KineticWords t={t} words={KWORDS} />
-      {friday && <BigCount label="FRIDAY" n={fridayN} o={ramp(t, 120.1, 120.6) * (1 - ramp(t, 141.2, 141.8))} x={1860} y={60} />}
-      {sundays && <BigCount label="SUNDAYS" n={sundayCount(t)} o={ramp(t, 386.2, 386.8) * (1 - ramp(t, 415, 415.8))} x={1860} y={60} />}
-      <AbsoluteFill style={{background: '#000', opacity: Math.max(fadeIn, fadeOut)}} />
+      <AbsoluteFill style={{background: '#000', opacity: fadeIn}} />
+      {!paperCard && <Dust t={t} dense={!warm} />}
+      {paperCard && <RewindCard p={(t - 32) / 3} f={(t - 32) * FPS} />}
+
+      <KineticWord t={t} words={WORDS} />
+      {TAGS.map((w) => <AgeTag key={w.at} t={t} from={w.at} to={w.at + w.dur} text={w.text} pills={pillsOf(w.text)} />)}
+      {TIMES.map((w) => <IconTag key={w.at} t={t} from={w.at} to={w.at + w.dur} text={w.text} icon={w.text.startsWith('SUNDAY') ? 'sun' : 'clock'} color="#fff" />)}
+      {friday && <Counter label="FRIDAY" n={fridayN} o={ramp(t, 120.1, 120.6) * (1 - ramp(t, 141.2, 141.8))} />}
+      {sundays && <Counter label="SUNDAYS" n={sundayCount(t)} o={ramp(t, 386.2, 386.8) * (1 - ramp(t, 415, 415.8))} />}
+      <AbsoluteFill style={{background: '#000', opacity: fadeOut}} />
 
       {PIECES.map((p, i) => (
         <Sequence key={i} from={Math.round(p.at * FPS)} durationInFrames={Math.round(p.dur * FPS)}>

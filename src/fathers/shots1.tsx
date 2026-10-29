@@ -23,7 +23,7 @@ const hosp = (c: Ctx, cam: Parameters<typeof SC.hos>[1], track: number, who: 'ad
   return SC.hos(c, cam, {track}, Pe(c, stand(who, 35, x, sc, {pose: 'cradle', turn: who === 'adam' ? 0.3 : -0.3, face, children: baby ? <Baby grip={grip} skin={who === 'adam' ? '#e8b793' : '#d9a07a'} /> : null})));
 };
 const deskScene = (c: Ctx, cam: Parameters<typeof SC.off>[1], age: number, o: Partial<PersonProps> = {}, clockMin = 0, laptop = true) =>
-  SC.off(c, cam, {clockMin}, <>{Pe(c, sit('adam', age, 1700, 0.7, {pose: 'desk', face: F.tired, turn: 0.1, ...o}, FL + 20))}{laptop && <Laptop x={1700} y={690} s={0.9} open={1} />}</>);
+  SC.off(c, cam, {clockMin}, <>{Pe(c, sit('adam', age, 1700, 0.7, {pose: 'desk', face: F.tired, turn: 0.1, ...o}, FL + 76))}{laptop && <Laptop x={1700} y={690} s={0.9} open={1} />}</>);
 
 export const KW1: KW[] = [
   {at: 0.8, dur: 3.8, text: 'SUNDAY · 8:00 AM', style: 'time'},
@@ -45,7 +45,7 @@ const kiteShot = (n: number): ((c: Ctx) => React.ReactNode) => (c) => {
   const wob = Math.sin(c.t * 2.2 + n), ky = 250 - n * 6 + wob * 20, kx = 1500 + (n % 3) * 130;
   const sx = 1100 + (n % 4) * 60;
   return SC.park(c, [Z(1500 + (n % 3 - 1) * 120, 500, 1.1), Z(1550 + (n % 3 - 1) * 120, 470, 1.25)], {season: 1},
-    <>{Pe(c, stand('sam', 40, sx, 0.62, {turn: 0.7, pose: 'point', face: F.grin, handR: [150, -330]}))}{Pe(c, stand('max', 5 + n * 0.05, sx + 220, 0.62, {turn: 0.7, face: F.grin, handR: [150, -280], handL: [-60, -10]}))}</>,
+    <>{Pe(c, stand('sam', 40, sx, 0.62, {turn: 0.7, pose: 'point', face: F.grin}))}{Pe(c, stand('max', 5 + n * 0.05, sx + 220, 0.62, {turn: 0.7, face: F.grin, pose: 'wave'}))}</>,
     <g><path d={`M ${sx + 130},${520} Q ${(sx + kx) / 2},${ky + 280} ${kx},${ky + 96}`} fill="none" stroke="#3a2a26" strokeWidth={2.4} /><Kite x={kx} y={ky} s={0.8} rot={-14 + wob * 6} t={c.t} /></g>);
 };
 
@@ -98,12 +98,12 @@ export const LIST1: Entry[] = [
   [61.0, undefined, (c) => deskScene(c, [Z(1750, 500, 1.4), Z(1700, 480, 1.2)], 35, {face: F.tired, tilt: 3}, 0)],
   [62.9, 'w', (c) => <Payslip t={c.l} who="adam" />],
   [64.8, undefined, (c) => SC.liv(c, [Z(900, 620, 1.7), Z(900, 600, 2.0)], {}, <g transform="translate(900 640)"><Baby x={0} y={0} rot={-4} /></g>)],
-  [66.8, undefined, (c) => deskScene(c, faceCam(sit('adam', 35, 1700, 0.7, {}, FL + 20), 2.1), 35, {face: {...F.tired, gaze: [0, 0.5]}}, 330)],
+  [66.8, undefined, (c) => deskScene(c, faceCam(sit('adam', 35, 1700, 0.7, {}, FL + 76), 2.1), 35, {face: {...F.tired, gaze: [0, 0.5]}}, 330)],
   [68.5, undefined, (c) => deskScene(c, [Z(1600, 520, 1.1), Z(1700, 520, 1.5)], 35, {face: F.tired}, 540)],
-  [70.2, undefined, (c) => deskScene(c, [faceCam(sit('adam', 35, 1700, 0.7, {}, FL + 20), 2.3), faceCam(sit('adam', 35, 1700, 0.7, {}, FL + 20), 2.8)], 35, {face: {lids: 0.35, smile: 0.25, tilt: 8, gaze: [0, 0.3]}, turn: 0}, 600, false)],
+  [70.2, undefined, (c) => deskScene(c, [faceCam(sit('adam', 35, 1700, 0.7, {}, FL + 76), 2.3), faceCam(sit('adam', 35, 1700, 0.7, {}, FL + 76), 2.8)], 35, {face: {lids: 0.35, smile: 0.25, tilt: 8, gaze: [0, 0.3]}, turn: 0}, 600, false)],
   [74.0, undefined, (c) => deskScene(c, [Z(1500, 600, 1.5), Z(1620, 560, 1.9)], 40, {face: {...F.tired, gaze: [0, 0.6]}}, 660)],
   // ---------------- Sam: closes the laptop at six ----------------
-  [80.0, undefined, (c) => SC.kit(c, [Z(1500, 540, 1.0), Z(1450, 520, 1.25)], {}, <>{Pe(c, sit('sam', 35, 1280, 0.7, {pose: 'desk', turn: 0.5, face: F.calm, handL: [120, 50], handR: [230, 56]}, FL + 20))}<Laptop x={1620} y={690} s={0.8} open={1} /></>)],
+  [80.0, undefined, (c) => SC.kit(c, [Z(1500, 540, 1.0), Z(1450, 520, 1.25)], {}, <>{Pe(c, sit('sam', 35, 1280, 0.7, {pose: 'desk', turn: 0.5, face: F.calm}, FL + 76))}<Laptop x={1620} y={690} s={0.8} open={1} /></>)],
   [82.3, undefined, (c) => <LaptopHand t={c.l} who="sam" closeAt={0.45} />],
   [83.6, undefined, (c) => SC.liv(c, [Z(900, 520, 1.1), Z(900, 500, 1.35)], {warm: true}, Pe(c, sit('sam', 35, 900, 0.62, {pose: 'cradle', turn: 0.3, face: F.soft, children: <Baby grip={0.5} />})))],
   [85.4, undefined, (c) => <ClockInsert t={c.l} min={660 + c.l * 20} tone="warm" />],
@@ -130,7 +130,7 @@ export const LIST1: Entry[] = [
   // ---------------- M1 Fridays: 12 Fridays at the beat, then August ----------------
   ...Array.from({length: 12}, (_, i): Entry => [120 + i * 1.7, i === 0 ? 'w' : undefined, kiteShot(i)]),
   [140.4, undefined, (c) => SC.park(c, [Z(1550, 400, 1.3), Z(1550, 420, 1.7)], {season: 1}, null, <Kite x={1560} y={260 + c.l * 18} s={1} rot={-10 + c.l * 14} torn={ramp(c.l, 0.3, 1.5)} t={c.t * 0.35} />)],
-  [142.4, undefined, (c) => SC.park(c, [Z(1500, 560, 1.5), Z(1500, 540, 1.8)], {season: 1}, <>{Pe(c, stand('max', 5, 1600, 0.85, {face: F.sad, turn: -0.3, handL: [-60, -150], handR: [-20, -150]}))}{Pe(c, stand('sam', 40, 1330, 0.85, {face: {...F.grin, open: 0.7}, turn: 0.3}))}</>)],
+  [142.4, undefined, (c) => SC.park(c, [Z(1500, 560, 1.5), Z(1500, 540, 1.8)], {season: 1}, <>{Pe(c, stand('max', 5, 1600, 0.85, {face: F.sad, turn: -0.3}))}{Pe(c, stand('sam', 40, 1330, 0.85, {face: {...F.grin, open: 0.7}, turn: 0.3}))}</>)],
   [144.4, undefined, (c) => SC.liv(c, [Z(1000, 340, 1.8), Z(1000, 330, 2.2)], {warm: true, photoN: 2}, null, 0.3)],
   [146.4, 'w', (c) => SC.room(c, [Z(1300, 760, 2.0), Z(1250, 780, 2.4)], <g transform={`translate(${1180 + ramp(c.l, 0.2, 1.2) * 60} 800)`}><rect x={-60} y={-24} width={120} height={36} rx={14} fill="#c0392b" stroke="#3a2a26" strokeWidth={5} /><circle cx={-34} cy={14} r={14} fill="#2a2a32" stroke="#3a2a26" strokeWidth={4} /><circle cx={34} cy={14} r={14} fill="#2a2a32" stroke="#3a2a26" strokeWidth={4} /></g>)],
   [148.2, undefined, (c) => SC.liv(c, [Z(330, 700, 1.6), Z(330, 600, 1.8)], {giftN: 2}, null, 0.4)],
@@ -164,8 +164,8 @@ export const LIST1: Entry[] = [
   [202.4, undefined, (c) => SC.door(c, [Z(1700, 640, 1.8), Z(1700, 640, 2.0)], {boxes: 4, glow: 1.3})],
   [204.3, undefined, (c) => SC.door(c, [Z(1500, 520, 1.1), Z(1500, 520, 1.25)], {boxes: 4}, Pe(c, stand('adam', 50, 1300, 0.9, {turn: 0.8, face: F.sad})))],
   // ---------------- midpoint: Adam almost says more ----------------
-  [205.0, undefined, (c) => SC.door(c, [Z(1500, 540, 1.3), Z(1560, 520, 1.55)], {boxes: 4}, Pe(c, stand('adam', 50, 1300, 0.9, {turn: 0.8, face: {...F.sad, gaze: [0.8, 0]}, handR: [140 + (c.l > 6 ? -ramp(c.l, 6, 6.4) * 30 : 0), -240 + (c.l > 6 ? ramp(c.l, 6, 6.4) * 330 : 0)], handL: [-122, 110]})))],
-  [211.2, undefined, (c) => deskScene(c, [Z(1700, 540, 1.3), Z(1700, 520, 1.4)], 50, {face: F.sad, pose: 'rest', handR: [90, 40], handL: [-70, 40]}, 660)],
+  [205.0, undefined, (c) => SC.door(c, [Z(1500, 540, 1.3), Z(1560, 520, 1.55)], {boxes: 4}, Pe(c, stand('adam', 50, 1300, 0.9, {turn: 0.8, face: {...F.sad, gaze: [0.8, 0]}, pose: 'raise', raise: c.l > 6 ? 1 - ramp(c.l, 6, 6.4) : 1})))],
+  [211.2, undefined, (c) => deskScene(c, [Z(1700, 540, 1.3), Z(1700, 520, 1.4)], 50, {face: F.sad, pose: 'rest'}, 660)],
 ];
 export const S1_END = 215;
 export {Clock, bodyCam, mixCam, Split, Cup, giftTop, Handset, NoteCard, PhoneDark, S};

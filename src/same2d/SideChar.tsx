@@ -33,7 +33,7 @@ export type SideProps = {
   handN: V; handF: V;            // near / far hand targets
   footN: V; footF: V;            // near / far ankle targets
   legUp?: boolean;               // lying down: knees bend upward
-  look?: Look; tie?: boolean;    // who it is: hair, glasses, a tie
+  look?: Look; tie?: boolean; grey?: number;    // who it is: hair, glasses, a tie, how grey
   tee?: string; t: number; seed?: number; dim?: number; idle?: number; slump?: number;
   children?: React.ReactNode;    // props in hip space, drawn above the body and below the near arm
 };
@@ -86,7 +86,7 @@ const SideLeg: React.FC<{HJ: V; T: V; dim?: boolean; up?: boolean}> = ({HJ, T, d
   );
 };
 
-export const SideChar: React.FC<SideProps> = ({x, y, scale = 1, flip, torso, headPitch = 10, turn = 0.85, face = {}, handN, handF, footN, footF, legUp, look = 'man', tie, tee = TEE, t, seed = 0, dim = 0, idle = 1, slump = 0, children}) => {
+export const SideChar: React.FC<SideProps> = ({x, y, scale = 1, flip, torso, headPitch = 10, turn = 0.85, face = {}, handN, handF, footN, footF, legUp, look = 'man', tie, grey = 0, tee = TEE, t, seed = 0, dim = 0, idle = 1, slump = 0, children}) => {
   const inh = Math.sin(t * 1.9 + seed);
   const sway = Math.sin(t * 0.55 + seed * 2) * 0.8 * idle;
   const th = torso + sway;
@@ -115,7 +115,7 @@ export const SideChar: React.FC<SideProps> = ({x, y, scale = 1, flip, torso, hea
         {tie && <path d="M 54,-300 L 82,-300 L 90,-196 L 68,-168 L 50,-196 Z" fill="#c0392b" stroke={INK} strokeWidth={5} strokeLinejoin="round" />}
       </g>
       <g transform={`translate(${NECK[0]} ${NECK[1]}) rotate(${headRot}) translate(26 -130)`}>
-        <Head face={face} turn={turn} t={t} seed={seed} idle={idle} look={look} />
+        <Head face={face} turn={turn} t={t} seed={seed} idle={idle} look={look} grey={grey} />
       </g>
       <SideLeg HJ={HJ} T={footN} up={legUp} />
       {children}
