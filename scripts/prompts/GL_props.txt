@@ -1,0 +1,4 @@
+A prop design sheet in the same glossy glass-plastic rendering style as the reference (soft specular highlights, translucent frosted lavender glass accents, thin dark outlines), clean pure white background, no text, no characters. Show exactly two objects, each from several angles, evenly spaced on a single row.
+OBJECT 1, THE PHONE: a modern smartphone with a glossy graphite-black body, thin softly rounded edges, one small round camera dot and a tiny lens on the back, and a glass screen glowing a soft blue-white. Show it three ways: front view with the glowing screen, back view, and a three-quarter view lying flat.
+OBJECT 2, THE BOOK: a thick hardcover book with a deep glossy purple cover, no title or text, a thin darker purple spine, and cream-white page edges. Show it three ways: closed standing front view, closed lying flat in three-quarter view, and open with two blank cream pages with faint line marks.
+Keep each object's design identical in every view.

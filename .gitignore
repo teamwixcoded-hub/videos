@@ -10,3 +10,14 @@ public/images/
 # review screenshots made while designing (regenerate any time)
 character-lab/*.png
 character-lab/*.jpg
+
+# derived narration pieces (re-create with the ffmpeg split in the project notes)
+public/audio/pieces/
+
+# Same Man: image-based assets stay local (copy by hand between computers)
+public/char/
+public/poses/
+frames/
+character-lab/pose-refs/
+character-lab/style-refs/
+out/

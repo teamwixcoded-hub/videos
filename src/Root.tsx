@@ -24,6 +24,17 @@ import {S5Montage} from './scenes/S5Montage';
 import {LabTest, LAB_FRAMES} from './lab/LabTest';
 import {NewVideo01, NEW01_FRAMES, NEW_SCENE_LIST} from './new/NewVideo01';
 import {Act1New, A1_FRAMES} from './new/act1v2';
+import {PoseSheet} from './new/PoseSheet';
+import {PoseLibrary, POSE_LIB_PAGES} from './new/PoseLibrary';
+import {PoseTest, POSETEST_FRAMES} from './new/PoseTest';
+import {PoseScenes, POSE_SCENES} from './new/PoseScenes';
+import {Demo01, DEMO_FRAMES} from './new/demo01';
+import {SameMan} from './same/SameMan';
+import {Same3D, SAME3D_FRAMES} from './three/Same3D';
+import {Same2D, SAME2D_TOTAL} from './same2d/Same2D';
+import {StickSheet} from './same/StickSheet';
+import {FrameSeqTest} from './same/FrameSeqTest';
+import {TOTAL_FRAMES as SAME_FRAMES} from './same/lib/timeline';
 
 const W = 1920, H = 1080, FPS = 30;
 
@@ -34,6 +45,16 @@ export const Root: React.FC = () => {
       <Composition id="LabTest" component={LabTest} durationInFrames={LAB_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="NewVideo01" component={NewVideo01} durationInFrames={NEW01_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="A1-New" component={Act1New} durationInFrames={A1_FRAMES} fps={FPS} width={W} height={H} />
+      <Composition id="PoseSheet" component={PoseSheet} durationInFrames={4} fps={FPS} width={W} height={H} />
+      <Composition id="PoseLibrary" component={PoseLibrary} durationInFrames={POSE_LIB_PAGES} fps={FPS} width={W} height={H} />
+      <Composition id="PoseTest" component={PoseTest} durationInFrames={POSETEST_FRAMES} fps={FPS} width={W} height={H} />
+      <Composition id="PoseScenes" component={PoseScenes} durationInFrames={POSE_SCENES} fps={FPS} width={W} height={H} />
+      <Composition id="Demo01" component={Demo01} durationInFrames={DEMO_FRAMES} fps={FPS} width={W} height={H} />
+      <Composition id="SameMan" component={SameMan} durationInFrames={SAME_FRAMES} fps={FPS} width={W} height={H} />
+      <Composition id="Same2D" component={Same2D} durationInFrames={SAME2D_TOTAL} fps={FPS} width={W} height={H} />
+      <Composition id="Same3D" component={Same3D} durationInFrames={SAME3D_FRAMES} fps={FPS} width={W} height={H} />
+      <Composition id="StickSheet" component={StickSheet} durationInFrames={30} fps={FPS} width={W} height={H} />
+      <Composition id="FrameSeqTest" component={FrameSeqTest} durationInFrames={240} fps={FPS} width={W} height={H} />
       {NEW_SCENE_LIST.map((s) => <Composition key={s.id} id={s.id} component={s.C} durationInFrames={s.frames} fps={FPS} width={W} height={H} />)}
       <Composition id="Hook" component={Hook} durationInFrames={HOOK_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="S06Spreads" component={S06Spreads} durationInFrames={S06_FRAMES} fps={FPS} width={W} height={H} />

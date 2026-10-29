@@ -12,7 +12,9 @@ const H = {Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json'};
 const [name, promptFile, aspect = '16:9', refs = ''] = process.argv.slice(2);
 const manifestPath = 'scripts/manifest.json';
 const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : {};
-const imageUrls = refs ? refs.split(',').map((r) => manifest[r]).filter(Boolean) : [];
+// a ref is a manifest name (hosted URL) or `file:<path>` (a local image sent inline as a data URL)
+const toUrl = (r) => (r.startsWith('file:') ? `data:image/png;base64,${fs.readFileSync(r.slice(5)).toString('base64')}` : manifest[r]);
+const imageUrls = refs ? refs.split(',').map(toUrl).filter(Boolean) : [];
 if (refs && imageUrls.length !== refs.split(',').length) throw new Error(`unknown ref in ${refs}`);
 
 const credits = async () => (await (await fetch(`${API}/common/credit`, {headers: H})).json()).data;

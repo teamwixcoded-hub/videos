@@ -1,0 +1,20 @@
+// S02 / S03 frames (1K). Scroller frames use the phone-only prop ref, reader frames the book-only prop ref.
+const fs = require('fs');
+const STYLE = 'Use the reference images as the exact character and rendering style: a simple stick-figure man with a big round translucent glass-bubble head with a thin dark rim, soft white specular highlights and a glossy swoop of hair on top, simple glossy black oval eyes, small brows and a simple mouth, a glossy lavender-purple t-shirt, glossy black rounded limbs, big white mitten-style hands, glossy white rounded shoes, all with the same shiny glassy plastic look. Keep the camera, framing, character size and position identical to the first reference. EXACTLY ONE man in the picture. Clean pure white background, soft lavender contact shadow on the floor, no text.';
+const PHONE = 'The smartphone must look exactly like the phone in the prop reference: glossy graphite-black body, thin rounded edges, glowing blue-white glass screen. There is NO book anywhere in the picture.';
+const BOOK = 'The book must look exactly like the book in the prop reference: a thick hardcover with a deep glossy purple cover, no title or text, cream-white page edges. There is NO smartphone anywhere in the picture.';
+const BED = 'He sits on the edge of the same frosted translucent lavender glass bed (plain mattress block, pillow, rumpled blanket, headboard), feet flat on the floor.';
+const CHAIR = 'He sits in the same simple rounded frosted translucent lavender glass armchair, in side view facing right, feet flat on the floor.';
+const F = {
+  GL2_bed_swipe: `${STYLE} ${BED} He holds the smartphone in one hand and swipes up on the screen with the thumb of the other hand, thumb caught mid-swipe, eyes on the screen, a small amused smile, a short upward motion line near the thumb, screen glowing. ${PHONE}`,
+  GL2_bed_laugh: `${STYLE} ${BED} He laughs at the smartphone screen in both hands: eyes squeezed shut in laughter, mouth open in a big grin, shoulders lifted, screen glowing a soft blue-white. ${PHONE}`,
+  GL2_bed_relaxed: `${STYLE} ${BED} He leans back relaxed, shoulders loose and low, holding the smartphone loosely in one hand on his lap with its screen glowing, a calm content half-smile, eyes on the screen. ${PHONE}`,
+  GL2_arm_clock: `${STYLE} ${CHAIR} He has lowered the open book to his lap and tilts his head up, glancing up and to the right with tired eyes at something high on the wall out of frame, eyebrows slightly raised. ${BOOK}`,
+  GL2_arm_yawn: `${STYLE} ${CHAIR} He yawns very widely: mouth open in a big oval, eyes squeezed shut, one white mitten hand lifting toward his mouth, the open book resting on his lap. ${BOOK}`,
+  GL2_arm_sigh: `${STYLE} ${CHAIR} He sighs heavily: shoulders dropped, head tilted down, eyes closed, a small puff of breath drawn as three short wavy lines near his mouth, the open book lowered on his lap. ${BOOK}`,
+  GL2_arm_shut: `${STYLE} ${CHAIR} He has just snapped the hardcover book shut and holds it closed in both hands on his lap, frustrated: eyebrows pushed down, mouth a tight frown, a few short tension lines near the book. ${BOOK}`,
+  GL2_arm_bored: `${STYLE} ${CHAIR} He slouches with his chin resting on one white mitten hand, a flat bored expression with half-lidded eyes looking forward, the closed hardcover book lying unopened on his lap. ${BOOK}`,
+  GL2_bus_read: `Use the reference images as the exact character and rendering style. The same glass-style man sits on a bench seat of a city bus, in side view facing right, reading an open book held in both hands, calm focused expression. The bus seat is a simple bench with a backrest made of the same frosted translucent lavender glass material, with a vertical grab handrail beside it. Only the seat and the handrail, no window, no bus walls. Keep the character size and position as in the first reference. EXACTLY ONE man. Clean pure white background, soft lavender contact shadow on the floor, no text. ${BOOK}`,
+};
+for (const [k, v] of Object.entries(F)) fs.writeFileSync(`scripts/prompts/${k}.txt`, v);
+console.log(Object.keys(F).length, 'prompts');

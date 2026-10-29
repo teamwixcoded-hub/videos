@@ -16,9 +16,9 @@ type Pt = [number, number];
 export type Arm = {reach?: Pt; ang?: Pt; hand?: string; bend?: number};
 export type Leg = {foot?: Pt; ang?: Pt; bend?: number};
 export type HoldSpec = {name: string; at?: 'L' | 'R' | 'mid'; size?: number; dx?: number; dy?: number; rot?: number} | null;
-export type K2 = {t: number; turn?: number; emo?: string; hip?: Pt; lean?: number; chest?: number; headTilt?: number; look?: Pt | null; armL?: Arm; armR?: Arm; legL?: Leg; legR?: Leg; hold?: HoldSpec; ease?: 'snap' | 'soft' | 'slow'};
+export type K2 = {t: number; turn?: number; emo?: string; hip?: Pt; lean?: number; chest?: number; headTilt?: number; look?: Pt | null; armL?: Arm; armR?: Arm; legL?: Leg; legR?: Leg; hold?: HoldSpec; hold2?: HoldSpec; open?: number; ease?: 'snap' | 'soft' | 'slow'};
 
-const DEF: any = {turn: 0, emo: 'neutral', hip: [150, 250], lean: 0, chest: 0, headTilt: 0, look: null, armL: {ang: [-8, -4]}, armR: {ang: [8, 4]}, legL: {}, legR: {}, hold: null};
+const DEF: any = {turn: 0, emo: 'neutral', hip: [150, 250], lean: 0, chest: 0, headTilt: 0, look: null, armL: {ang: [-8, -4]}, armR: {ang: [8, 4]}, legL: {}, legR: {}, hold: null, hold2: null, open: 1};
 const mix = (a: number, b: number, t: number) => a + (b - a) * t;
 const mixP = (a: Pt, b: Pt, t: number): Pt => [mix(a[0], b[0], t), mix(a[1], b[1], t)];
 const mixArm = (a: Arm, b: Arm, t: number): Arm => {
@@ -41,8 +41,8 @@ const SPR: Record<string, any> = {snap: {damping: 16, stiffness: 150, mass: 0.8}
 
 export const Actor2: React.FC<{
   id: string; keys: K2[]; pal: 'indigo' | 'teal' | 'coral' | 'gold'; x: number; y: number; h?: number; flip?: boolean;
-  speech?: {code: string; energy: number} | null; opacity?: number; dim?: number; shadow?: boolean; seat?: {back: string; front: string};
-}> = ({id, keys, pal, x, y, h = 620, flip = false, speech = null, opacity = 1, dim = 1, shadow = true, seat}) => {
+  speech?: {code: string; energy: number} | null; opacity?: number; dim?: number; shadow?: boolean; seat?: {back: string; front: string}; flips?: number[];
+}> = ({id, keys, pal, x, y, h = 620, flip = false, speech = null, opacity = 1, dim = 1, shadow = true, seat, flips = []}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   // full spec per key (carry-forward)
@@ -63,7 +63,14 @@ export const Actor2: React.FC<{
   };
   // eyes: follow the look target, with small natural drifts
   const lk = to.look || from.look;
-  if (lk) { const a: Pt = from.look || lk, b: Pt = to.look || lk; spec.look = [mix(a[0], b[0], p) + Math.sin((frame + o) / 17) * 6, mix(a[1], b[1], p) + Math.cos((frame + o) / 23) * 4]; }
+  const bookOpen = mix(from.open, to.open, pc);
+  const reading = !!(to.hold && to.hold.name === 'book-back') && bookOpen > 0.9;
+  if (lk) {
+    const a: Pt = from.look || lk, b: Pt = to.look || lk;
+    let sx = Math.sin((frame + o) / 17) * 6, sy = Math.cos((frame + o) / 23) * 4;
+    if (reading) { const ph = ((frame + o) % 46) / 46; sx = ph < 0.8 ? (ph / 0.8) * 30 - 15 : 15 - ((ph - 0.8) / 0.2) * 30; sy = Math.floor(((frame + o) / 46) % 5) * 3 - 5; }
+    spec.look = [mix(a[0], b[0], p) + sx, mix(a[1], b[1], p) + sy];
+  }
   const emo: any = mixFace(EMO[from.emo], EMO[to.emo], pc);
   const bp = (frame + o * 3) % 118, blink = bp < 7 ? Math.sin((bp / 7) * Math.PI) : 0;
   if (!emo.arch && blink > 0) emo.lid = [Math.max(emo.lid[0], blink * 1.1), emo.lid[1], emo.lid[2] * (1 - blink)];
@@ -74,19 +81,19 @@ export const Actor2: React.FC<{
     spec.headTilt += speech.energy * 2.2;
   }
   spec.emo = emo;
+  let flipP = 0; flips.forEach((t) => { const q = (frame - S(t)) / 16; if (q > 0 && q < 1) flipP = q; });
   // held prop sits under the fingers
-  const hold: HoldSpec = to.hold;
-  if (hold) {
-    spec.heldFn = (hs: any) => {
-      const at = hold.at ?? 'mid';
-      const pt = at === 'mid' ? [(hs.L[0] + hs.R[0]) / 2, (hs.L[1] + hs.R[1]) / 2] : hs[at];
-      // a book that is READ and a phone that is SCROLLED are drawn as seen from the side (see held.ts)
-      if (hold.name === 'book-back') return Held.book(pt[0] + (hold.dx ?? 6), pt[1] + (hold.dy ?? -20), {tilt: hold.rot ?? -16});
-      if (hold.name === 'phone-back') return Held.phone(pt[0] + (hold.dx ?? 12), pt[1] + (hold.dy ?? -18), {tilt: hold.rot ?? -20, scroll: frame / 17, skin: spec.u + 'k'});
-      const s = hold.size ?? 110;
-      return `<g transform="translate(${(pt[0] + (hold.dx ?? 0)).toFixed(1)} ${(pt[1] + (hold.dy ?? 0)).toFixed(1)}) rotate(${hold.rot ?? 0})"><svg x="${-s / 2}" y="${-s / 2}" width="${s}" height="${s}" viewBox="0 0 200 200" overflow="visible">${propSvg(hold.name, 1, true)}</svg></g>`;
-    };
-  }
+  const hold: HoldSpec = to.hold, hold2: HoldSpec = to.hold2;
+  const mkHold = (hd: NonNullable<HoldSpec>, hs: any) => {
+    const at = hd.at ?? 'mid';
+    const pt = at === 'mid' ? [(hs.L[0] + hs.R[0]) / 2, (hs.L[1] + hs.R[1]) / 2] : hs[at];
+    // a book that is READ and a phone that is SCROLLED are drawn as seen from the side (see held.ts)
+    if (hd.name === 'book-back') return Held.book(pt[0] + (hd.dx ?? 6), pt[1] + (hd.dy ?? -20), {tilt: hd.rot ?? -10, open: bookOpen, flip: flipP});
+    if (hd.name === 'phone-back') return Held.phone(pt[0] + (hd.dx ?? 12), pt[1] + (hd.dy ?? -18), {tilt: hd.rot ?? -20, scroll: frame / 17, skin: spec.u + 'k'});
+    const s = hd.size ?? 110;
+    return `<g transform="translate(${(pt[0] + (hd.dx ?? 0)).toFixed(1)} ${(pt[1] + (hd.dy ?? 0)).toFixed(1)}) rotate(${hd.rot ?? 0})"><svg x="${-s / 2}" y="${-s / 2}" width="${s}" height="${s}" viewBox="0 0 200 200" overflow="visible">${propSvg(hd.name, 1, true)}</svg></g>`;
+  };
+  if (hold || hold2) spec.heldFn = (hs: any) => (hold ? mkHold(hold, hs) : '') + (hold2 ? mkHold(hold2, hs) : '');
   const fig = Rig2.figure(spec);
   const k = h / 430;
   return (
