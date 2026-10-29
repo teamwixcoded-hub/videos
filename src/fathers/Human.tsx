@@ -13,7 +13,7 @@ const rot = (p: V, deg: number): V => { const r = (deg * Math.PI) / 180, c = Mat
 const mix = (a: V, b: V, k: number): V => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
 const SKIN = '#f3f0fb', SKIN_D = '#d9d3ec';
 
-export type Outfit = {style: 'suit' | 'cardigan' | 'tee' | 'hoodie'; top: string; shirt: string; pants: string; shoe: string; sleeve: 'long' | 'short'; sole?: string; watch?: boolean};
+export type Outfit = {style: 'suit' | 'cardigan' | 'tee' | 'hoodie'; top: string; shirt: string; pants: string; shoe: string; sleeve: 'long' | 'short'; sole?: string; watch?: boolean; simple?: boolean};
 
 // a limb segment: thick at A, thinner at B, round at both ends
 const Taper: React.FC<{A: V; B: V; r1: number; r2: number; fill: string; stroke?: string; sw?: number}> = ({A, B, r1, r2, fill, stroke = INK, sw = 4}) => {
@@ -21,6 +21,19 @@ const Taper: React.FC<{A: V; B: V; r1: number; r2: number; fill: string; stroke?
   const p = (P: V, r: number, s: number) => `${(P[0] + nx * r * s).toFixed(1)},${(P[1] + ny * r * s).toFixed(1)}`;
   return <path d={`M ${p(A, r1, 1)} L ${p(B, r2, 1)} A ${r2} ${r2} 0 0 0 ${p(B, r2, -1)} L ${p(A, r1, -1)} A ${r1} ${r1} 0 0 0 ${p(A, r1, 1)} Z`} fill={fill} stroke={stroke} strokeWidth={sw} strokeLinejoin="round" />;
 };
+
+// SIMPLE style: a limb is one smooth thick curve through the joint (no visible elbow/knee), the hand a rounded mitten with a thumb
+const Noodle: React.FC<{A: V; J: V; B: V; w: number; fill: string}> = ({A, J, B, w, fill}) => {
+  const c: V = [2 * J[0] - (A[0] + B[0]) / 2, 2 * J[1] - (A[1] + B[1]) / 2], d = `M ${A[0]},${A[1]} Q ${c[0]},${c[1]} ${B[0]},${B[1]}`;
+  return <g><path d={d} fill="none" stroke={INK} strokeWidth={w + 9} strokeLinecap="round" /><path d={d} fill="none" stroke={fill} strokeWidth={w} strokeLinecap="round" /></g>;
+};
+const Mitten: React.FC<{curl?: number; s?: number}> = ({curl = 0.35, s = 1}) => (
+  <g transform={`scale(${s})`}>
+    <path d={`M -18,-4 Q -24,26 -16,44 Q 0,${54 - curl * 14} 16,44 Q 24,26 18,-4 Z`} fill={SKIN} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
+    <path d={`M 14,6 Q 34,12 32,${34 - curl * 6} Q 26,40 18,30`} fill={SKIN} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
+    <path d="M -6,38 Q 0,42 8,38" fill="none" stroke={SKIN_D} strokeWidth={3} strokeLinecap="round" />
+  </g>
+);
 
 // a human hand: palm, four fingers and a thumb. Drawn with the wrist at the origin and the fingers pointing along +y (the caller rotates it onto the forearm)
 export const HumanHand: React.FC<{curl?: number; s?: number; dim?: boolean}> = ({curl = 0.35, s = 1, dim}) => {
@@ -46,6 +59,14 @@ const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9);
   const slv = o.sleeve === 'long' ? o.top : SKIN, cuff = o.style === 'suit' ? o.shirt : null;
   return (
+    o.simple ? (
+      <g style={dim ? {filter: 'brightness(0.9)'} : undefined}>
+        <Noodle A={S} J={E} B={wr} w={44} fill={o.top} />
+        {o.watch && <g transform={`translate(${mix(E, H, 0.82)[0]} ${mix(E, H, 0.82)[1]}) rotate(${fa})`}><rect x={-9} y={-20} width={18} height={40} rx={5} fill="#5a3a24" stroke={INK} strokeWidth={2.6} /><circle r={14} fill="#f2c14e" stroke={INK} strokeWidth={3} /><circle r={9.5} fill="#fbf1d2" /></g>}
+        {held && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform={`translate(0 -6) ${upright ? `rotate(${-(fa - 90)})` : ''}`}>{held}</g></g>}
+        <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>
+      </g>
+    ) : (
     <g style={dim ? {filter: 'brightness(0.9)'} : undefined}>
       <Taper A={S} B={E} r1={31} r2={24} fill={o.top} />
       <Taper A={E} B={wr} r1={23} r2={16} fill={slv} />
@@ -57,6 +78,7 @@ const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s
       {held && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform={`translate(0 -6) ${upright ? `rotate(${-(fa - 90)})` : ''}`}>{held}</g></g>}
       <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform={`translate(0 -${6})`}><HumanHand curl={curl} s={s * 1.3} dim={dim} /></g></g>
     </g>
+    )
   );
 };
 
@@ -64,6 +86,12 @@ const HumanLeg: React.FC<{HJ: V; T: V; o: Outfit; dim?: boolean; up?: boolean; l
   const a = 200, b = 190;
   const {J: K, H: A} = ik2(HJ, T, a, b, up ? (c) => (c[0][1] < c[1][1] ? c[0] : c[1]) : (c) => (c[0][0] > c[1][0] ? c[0] : c[1]));
   const ang = A[1] > 300 ? clamp((393 - A[1]) * 0.8, 0, 38) : 0;
+  if (o.simple) return (
+    <g style={dim ? {filter: 'brightness(0.8)'} : undefined}>
+      <Noodle A={HJ} J={K} B={A} w={60} fill={o.pants} />
+      <g transform={`translate(${A[0]} ${A[1]}) rotate(${ang})`}><path d="M -26,-16 Q -30,26 -22,30 L 70,30 Q 96,26 94,6 Q 90,-8 66,-12 Q 40,-16 24,-26 Z" fill={o.shoe} stroke={INK} strokeWidth={4.4} strokeLinejoin="round" /><path d="M 40,-6 q 16,8 34,2" fill="none" stroke="#fff" strokeWidth={3} opacity={0.3} strokeLinecap="round" /></g>
+    </g>
+  );
   return (
     <g style={dim ? {filter: 'brightness(0.8)'} : undefined}>
       <Taper A={HJ} B={K} r1={44} r2={31} fill={o.pants} />

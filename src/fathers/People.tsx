@@ -20,7 +20,7 @@ export const mixc = (a: string, b: string, k: number) => { const A = hex(a), B =
 
 const TEES: Record<Who, string> = {adam: '#34498f', sam: '#d2733c', leo: '#4a8bd8', max: '#47b57a', aunt: '#2fa39a'};
 const OUTFITS: Record<Who, Outfit> = {
-  adam: {style: 'suit', top: '#34498f', shirt: '#f3efe6', pants: '#232d52', shoe: '#1b1b22', sleeve: 'long', sole: '#2a2a33', watch: true},
+  adam: {style: 'suit', top: '#34498f', shirt: '#f3efe6', pants: '#232d52', shoe: '#1b1b22', sleeve: 'long', sole: '#2a2a33', watch: true, simple: true},
   sam: {style: 'cardigan', top: '#c8693a', shirt: '#efe3cf', pants: '#6b4b34', shoe: '#3a2a20', sleeve: 'long', sole: '#2a2018'},
   leo: {style: 'hoodie', top: '#4a8bd8', shirt: '#e8eef8', pants: '#34456e', shoe: '#f2f0f8', sleeve: 'long'},
   max: {style: 'tee', top: '#47b57a', shirt: '#e7f0e4', pants: '#5b6b3f', shoe: '#f2f0f8', sleeve: 'short'},
