@@ -5,7 +5,7 @@ import {Person, PersonProps, Who, bodyK, FaceP, CHAR_K} from './People';
 import {SetOut, FL, livingRoom, street, hospital, party, auditorium, office, leoDoor, leoRoom, stairs, teaStall, park, kitchen, leoFlat} from './sets';
 import {ease} from './fx';
 import {factory, drive} from './sets3';
-import {merge, livingDetail, teaDetail, streetDetail, kitchenDetail, officeDetail, hospitalDetail} from './details';
+import {merge, livingDetail, teaDetail, streetDetail, kitchenDetail, officeDetail, parkDetail, hospitalDetail} from './details';
 
 // Shot-list vocabulary. A shot is [startSec, fx?, renderer]; the renderer gets the clock of the shot (Ctx).
 export type Ctx = {t: number; l: number; d: number; p: number; from: number};
@@ -65,7 +65,7 @@ export const SC = {
   room: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(leoRoom({t: c.t}), camOf(c, cam), chars),
   stairs: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(stairs({t: c.t}), camOf(c, cam), chars),
   tea: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof teaStall>[0], 't'>, chars: React.ReactNode = null) => mk(merge(teaStall({t: c.t, ...o}), teaDetail({t: c.t, sunset: o.sunset})), camOf(c, cam), chars),
-  park: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof park>[0], 't'>, chars: React.ReactNode = null, extra?: React.ReactNode) => mk(park({t: c.t, ...o}), camOf(c, cam), chars, 1, extra),
+  park: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof park>[0], 't'>, chars: React.ReactNode = null, extra?: React.ReactNode) => mk(merge(park({t: c.t, ...o}), parkDetail({t: c.t, season: o.season})), camOf(c, cam), chars, 1, extra),
   kit: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof kitchen>[0], 't'>, chars: React.ReactNode = null) => mk(merge(kitchen({t: c.t, ...o}), kitchenDetail({t: c.t})), camOf(c, cam), chars),
   flat: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(leoFlat({t: c.t}), camOf(c, cam), chars),
   fac: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(factory({t: c.t}), camOf(c, cam), chars),

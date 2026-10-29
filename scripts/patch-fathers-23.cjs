@@ -1,0 +1,12 @@
+const fs=require('fs');
+let a=fs.readFileSync('src/fathers/inserts.tsx','utf8');
+a=a.replace("    <InsertBG tone=\"dark\">\n      {Array.from({length: 24}, (_, i) => {","    <InsertBG tone=\"dark\">\n      <g transform=\"translate(960 520) scale(1.22) translate(-960 -520)\">\n      {Array.from({length: 24}, (_, i) => {");
+const i=a.indexOf("export const GiftsToClocks");const j=a.indexOf("    </InsertBG>",i);
+a=a.slice(0,j)+"      </g>\n      <text x={960} y={990} textAnchor=\"middle\" fontFamily={UI} fontWeight={800} fontSize={84} letterSpacing={14} fill={k < 0.5 ? '#ffffff' : '#ffd77a'} stroke={INK} strokeWidth={6} paintOrder=\"stroke\">{k < 0.5 ? 'GIFTS' : 'TIME'}</text>\n"+a.slice(j);
+fs.writeFileSync('src/fathers/inserts.tsx',a);
+let b=fs.readFileSync('src/fathers/inserts3.tsx','utf8');
+b=b.replace("<InsertBG tone=\"dark\">\n      <g opacity={1 - dim * 0.75}","<InsertBG tone=\"dark\">\n      <g transform=\"translate(960 540) scale(1.3) translate(-1260 -540)\">\n      <g opacity={1 - dim * 0.75}");
+const k=b.indexOf("export const SeatsCount");const m=b.indexOf("    </InsertBG>",k);
+b=b.slice(0,m)+"      </g>\n"+b.slice(m);
+b=b.split('fontSize={40} letterSpacing={8}').join('fontSize={52} letterSpacing={8}');
+fs.writeFileSync('src/fathers/inserts3.tsx',b);

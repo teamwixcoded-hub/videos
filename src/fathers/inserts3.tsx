@@ -69,9 +69,10 @@ export const SeatsCount: React.FC<{t: number}> = ({t}) => {
   const money = ramp(t, 0.1, 1.6), dim = ramp(t, 1.9, 2.4), seats = Math.floor(ramp(t, 2.2, 5.4) * 8.99);
   return (
     <InsertBG tone="dark">
+      <g transform="translate(960 520) scale(1.12) translate(-1120 -520)">
       <g opacity={1 - dim * 0.75} transform={`translate(0 ${dim * 40})`}>
         {Array.from({length: 18}, (_, i) => { const x = 330 + (i % 6) * 70 + (i % 2) * 14, y = 640 - Math.floor(i / 6) * 58 - rnd(i, 1) * 8, on = i / 18 < money; return on ? <g key={i} transform={`translate(${x} ${y})`}><ellipse rx={36} ry={12} cy={8} fill="#b88a1f" stroke={INK} strokeWidth={3} /><ellipse rx={36} ry={12} fill="#f5c542" stroke={INK} strokeWidth={3} /></g> : null; })}
-        <text x={560} y={780} textAnchor="middle" fontFamily={UI} fontWeight={700} fontSize={40} letterSpacing={8} fill="#fff6e6">MONEY SPENT</text>
+        <text x={560} y={780} textAnchor="middle" fontFamily={UI} fontWeight={700} fontSize={52} letterSpacing={8} fill="#fff6e6">MONEY SPENT</text>
       </g>
       <g transform="translate(1000 0)">
         {Array.from({length: 8}, (_, i) => { const x = 140 + (i % 4) * 190, y = 380 + Math.floor(i / 4) * 230, on = i < seats; return (
@@ -79,7 +80,8 @@ export const SeatsCount: React.FC<{t: number}> = ({t}) => {
             <rect x={-70} y={-30} width={140} height={150} rx={22} fill={on ? '#8a3a4a' : '#3a2a3a'} stroke={INK} strokeWidth={4} />
             {on && <g transform={`translate(0 ${-(1 - ramp(t, 2.2 + i * 0.4, 2.6 + i * 0.4)) * 40})`} opacity={ramp(t, 2.2 + i * 0.4, 2.6 + i * 0.4)}><circle cx={0} cy={-6} r={36} fill="#f4f2fb" stroke={INK} strokeWidth={4} /><circle cx={-12} cy={-8} r={4.6} fill={INK} /><circle cx={12} cy={-8} r={4.6} fill={INK} /><path d="M -10,8 q 10,8 20,0" fill="none" stroke={INK} strokeWidth={3.6} strokeLinecap="round" /></g>}
           </g>); })}
-        <text x={380} y={780} textAnchor="middle" fontFamily={UI} fontWeight={700} fontSize={40} letterSpacing={8} fill="#ffd77a" opacity={ramp(t, 2.4, 3.0)}>SEATS FILLED</text>
+        <text x={380} y={780} textAnchor="middle" fontFamily={UI} fontWeight={700} fontSize={52} letterSpacing={8} fill="#ffd77a" opacity={ramp(t, 2.4, 3.0)}>SEATS FILLED</text>
+      </g>
       </g>
     </InsertBG>
   );

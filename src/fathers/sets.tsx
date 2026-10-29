@@ -50,7 +50,7 @@ const Plant: React.FC<{x: number; y: number; s?: number; c?: string}> = ({x, y, 
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------
 // the living room: Adam's (cold, quiet, a gift pile in the corner) or Sam's (warm, a photo wall)
-export type LivingOpts = {t: number; warm?: boolean; giftN?: number; dust?: number; clockMin?: number; phoneLit?: number; samAnswer?: number; photoN?: number; season?: number; night?: boolean; tilt?: number};
+export type LivingOpts = {t: number; seats?: boolean; warm?: boolean; giftN?: number; dust?: number; clockMin?: number; phoneLit?: number; samAnswer?: number; photoN?: number; season?: number; night?: boolean; tilt?: number};
 export const LR = {chairX: 1860, sofaX: 900, tableX: 1500};
 export const livingRoom = (o: LivingOpts): SetOut => {
   const w = !!o.warm, wall1 = w ? '#c78d2c' : '#525e91', wall2 = w ? '#a57231' : '#495481', sofa = w ? '#653c25' : '#2e3552', lit = (o.samAnswer ?? 0) > 0 ? 1 : 0;
@@ -111,7 +111,7 @@ export const livingRoom = (o: LivingOpts): SetOut => {
         {!w && <Plant x={2860} y={FL} s={1.1} c="#333b5b" />}
       </g>
     ),
-    front: (<g>
+    front: o.seats === false ? undefined : (<g>
       <rect x={LR.chairX - 178} y={706} width={356} height={74} rx={28} fill={shade(sofa, -0.02)} stroke={INK} strokeWidth={3} /><path d={`M ${LR.chairX - 150},738 Q ${LR.chairX},758 ${LR.chairX + 150},738`} fill="none" stroke={INK} strokeWidth={1.8} opacity={0.4} />
     </g>),
     fg: <g><Plant x={150} y={1100} s={2.2} c={w ? '#2d3553' : '#282f48'} /></g>,

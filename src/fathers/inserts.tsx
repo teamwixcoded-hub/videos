@@ -242,6 +242,7 @@ export const GiftsToClocks: React.FC<{t: number}> = ({t}) => {
   const k = ramp(t, 0.6, 2.6);
   return (
     <InsertBG tone="dark">
+      <g transform="translate(960 520) scale(1.22) translate(-960 -520)">
       {Array.from({length: 24}, (_, i) => {
         const col = i % 8, row = Math.floor(i / 8), x = 330 + col * 180, y0 = 330 + row * 230, gift = i % 2 === 0;
         const y = gift ? y0 + k * 60 : y0 - k * 70 * (0.6 + rnd(i, 1) * 0.6);
@@ -253,6 +254,8 @@ export const GiftsToClocks: React.FC<{t: number}> = ({t}) => {
           </g>
         );
       })}
+      </g>
+      <text x={960} y={990} textAnchor="middle" fontFamily={UI} fontWeight={800} fontSize={84} letterSpacing={14} fill={k < 0.5 ? '#ffffff' : '#ffd77a'} stroke={INK} strokeWidth={6} paintOrder="stroke">{k < 0.5 ? 'GIFTS' : 'TIME'}</text>
     </InsertBG>
   );
 };
