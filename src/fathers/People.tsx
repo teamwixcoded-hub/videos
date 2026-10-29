@@ -35,7 +35,7 @@ const VARIANTS: Record<string, Outfit> = {
 const CURL: Partial<Record<PoseName, number>> = {cup: 0.75, stand: 0.3, rest: 0.4, desk: 0.35, type: 0.35, phone: 0.8, ear: 0.8, cradle: 0.5, clap: 0.1, knock: 0.9, wave: 0.05, film: 0.5, carry: 0.6, fold: 0.45, point: 0.2, hold: 0.5, raise: 0.8};
 const isSon = (w: Who) => w === 'leo' || w === 'max';
 // body scale by age (sons grow; fathers stay adult)
-export const bodyK = (w: Who, age: number) => (isSon(w) ? clamp(lerp(0.5, 1, (age - 4) / 18), 0.5, 1) : 1);
+export const bodyK = (_w: Who, age: number) => clamp(lerp(0.5, 1, (age - 4) / 18), 0.5, 1);
 
 // the rigs are ~1060 tall at scale 1; the shot list was written for ~900, so every person is scaled by this
 export const CHAR_K = 0.85;
