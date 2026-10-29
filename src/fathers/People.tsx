@@ -1,6 +1,7 @@
 import React from 'react';
 import {Face, V, shade as shade0} from '../same2d/Char';
 import {HumanFront, HumanSide, Outfit} from './Human';
+import {PhoneBack, CupHeld} from './held';
 
 // ============================================================================================
 // The cast of Two Fathers, drawn with the SAME rig as Same Man (glass bubble head, black oval eyes, thin black limbs, white gloves, white shoes):
@@ -31,14 +32,14 @@ const VARIANTS: Record<string, Outfit> = {
   pjs: {style: 'tee', top: '#7a8fd0', shirt: '#fff', pants: '#5a6ab0', shoe: '#f2f0f8', sleeve: 'long'},
 };
 // how far the fingers curl for each pose (0 open .. 1 fist)
-const CURL: Partial<Record<PoseName, number>> = {stand: 0.3, rest: 0.4, desk: 0.35, type: 0.35, phone: 0.55, ear: 0.55, cradle: 0.5, clap: 0.1, knock: 0.9, wave: 0.05, film: 0.5, carry: 0.6, fold: 0.45, point: 0.2, hold: 0.5, raise: 0.8};
+const CURL: Partial<Record<PoseName, number>> = {cup: 0.75, stand: 0.3, rest: 0.4, desk: 0.35, type: 0.35, phone: 0.8, ear: 0.8, cradle: 0.5, clap: 0.1, knock: 0.9, wave: 0.05, film: 0.5, carry: 0.6, fold: 0.45, point: 0.2, hold: 0.5, raise: 0.8};
 const isSon = (w: Who) => w === 'leo' || w === 'max';
 // body scale by age (sons grow; fathers stay adult)
 export const bodyK = (w: Who, age: number) => (isSon(w) ? clamp(lerp(0.5, 1, (age - 4) / 18), 0.5, 1) : 1);
 
 // the rigs are ~1060 tall at scale 1; the shot list was written for ~900, so every person is scaled by this
 export const CHAR_K = 0.85;
-export type PoseName = 'stand' | 'rest' | 'desk' | 'phone' | 'ear' | 'cradle' | 'clap' | 'knock' | 'wave' | 'film' | 'carry' | 'fold' | 'point' | 'hold' | 'raise' | 'type';
+export type PoseName = 'cup' | 'stand' | 'rest' | 'desk' | 'phone' | 'ear' | 'cradle' | 'clap' | 'knock' | 'wave' | 'film' | 'carry' | 'fold' | 'point' | 'hold' | 'raise' | 'type';
 export type PersonProps = {
   who: Who; age?: number; x: number; y: number; scale?: number; flip?: boolean; t: number; seed?: number; dim?: number; idle?: number;
   turn?: number; lean?: number; tilt?: number; slump?: number; face?: FaceP; legs?: 'stand' | 'sit' | 'none'; sitDrop?: number; walk?: number;
@@ -54,7 +55,8 @@ const SIDE: Record<PoseName, (t: number, r: number) => H> = {
   desk: (t) => ({N: [250 + Math.sin(t * 9) * 8, -125 + Math.sin(t * 13) * 6], F: [214 + Math.sin(t * 11) * 8, -112], torso: 6, pitch: 16}),
   type: (t) => ({N: [250 + Math.sin(t * 9) * 8, -125 + Math.sin(t * 13) * 6], F: [214 + Math.sin(t * 11) * 8, -112], torso: 6, pitch: 16}),
   phone: () => ({N: [150, -250], F: [96, -122], pitch: 28}),
-  ear: () => ({N: [26, 66], F: [-6, -436]}),
+  ear: () => ({N: [-92, -452], F: [26, 66], pitch: 2}),
+  cup: (t) => ({N: [196 + Math.sin(t * 0.7) * 4, -168 + Math.sin(t * 0.9) * 3], F: [84, -92], pitch: 12}),
   cradle: () => ({N: [160, -112], F: [118, -100], torso: -4, pitch: 24}),
   clap: (t) => { const k = (Math.sin(t * 16) + 1) / 2; return {N: [212 - 30 * k, -235], F: [176 + 30 * k, -228]}; },
   knock: (t) => ({N: [300 + Math.max(0, Math.sin(t * 14)) * 26, -250], F: [20, 66]}),
@@ -73,7 +75,8 @@ const FRONT: Record<PoseName, (t: number, r: number) => {L: V; R: V; lean?: numb
   desk: (t) => ({L: [-76 + Math.sin(t * 9) * 4, -76 + Math.sin(t * 13) * 5], R: [76 + Math.sin(t * 11) * 4, -76 + Math.cos(t * 10) * 5], lean: 4}),
   type: (t) => ({L: [-76 + Math.sin(t * 9) * 4, -76 + Math.sin(t * 13) * 5], R: [76 + Math.sin(t * 11) * 4, -76 + Math.cos(t * 10) * 5], lean: 4}),
   phone: () => ({L: [-100, -80], R: [70, -270], lean: 3}),
-  ear: () => ({L: [-100, -80], R: [150, -505]}),
+  ear: () => ({L: [-100, -80], R: [142, -408]}),
+  cup: () => ({L: [-70, -80], R: [100, -150]}),
   cradle: () => ({L: [-50, -130], R: [60, -140]}),
   clap: (t) => { const k = (Math.sin(t * 16) + 1) / 2; return {L: [-98 + 34 * k, -240], R: [98 - 34 * k, -240]}; },
   knock: (t) => ({L: [-100, -80], R: [160 + Math.max(0, Math.sin(t * 14)) * 12, -300]}),
@@ -91,6 +94,8 @@ const SHIFT: Record<'side' | 'front', Partial<Record<PoseName, V>>> = {
   front: {cradle: [5, -72], ear: [54, -128], carry: [0, -40]},
 };
 const FRONTY = new Set<PoseName>(['clap', 'film', 'desk', 'type']);
+// what a pose puts in the hand (the near / right hand)
+const HELD: Partial<Record<PoseName, 'phone' | 'cup'>> = {ear: 'phone', phone: 'phone', cup: 'cup'};
 // ease into a pose with a little overshoot (anticipation and settle), so every cut starts with a move and not a freeze
 const settle = (k: number) => { const q = clamp(k, 0, 1) - 1; return 1 + 2.4 * q * q * q + 1.4 * q * q; };
 const mixV = (a: V, b: V, e: number): V => [lerp(a[0], b[0], e), lerp(a[1], b[1], e)];
@@ -108,13 +113,14 @@ export const Person: React.FC<PersonProps> = (p) => {
   const e = p.enter === undefined ? 1 : settle(p.enter);
   const raise = p.raise ?? 1, stoop = (who === 'adam' || who === 'sam') ? clamp((age - 50) / 15, 0, 1) * 5 : 0;
   const shift = SHIFT[view][pose] ?? [0, 0];
-  const kids = p.children ? <g transform={`translate(${shift[0]} ${shift[1]})`}>{p.children}</g> : null;
+  const holds = HELD[pose], heldNode = holds === 'phone' ? <PhoneBack lit={pose === 'ear' ? 1 : 0.5} /> : holds === 'cup' ? <CupHeld t={t} /> : undefined;
+  const kids = p.children && pose !== 'ear' ? <g transform={`translate(${shift[0]} ${shift[1]})`}>{p.children}</g> : null;
   if (view === 'front') {
     const q = FRONT[pose](t, raise);
     const s0 = FRONT.stand(t, 1), L: V = mixV(s0.L, p.handL ? [p.handL[0], p.handL[1] - 92] : q.L, e), R: V = mixV(s0.R, p.handR ? [p.handR[0], p.handR[1] - 92] : q.R, e);
     return (
       <HumanFront x={x} y={y} scale={sc} flip={p.flip} lean={(p.lean ?? q.lean ?? 0) + stoop} head={{turn: clamp(turn, -1, 1), tilt: p.tilt}} face={face} handL={L} handR={R}
-        slump={slump} legs={sitting ? 'sit' : 'none'} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} look={who} grey={grey} tie={who === 'adam' && !p.outfit} curl={CURL[pose] ?? 0.35}>{kids}</HumanFront>
+        slump={slump} legs={sitting ? 'sit' : 'none'} heldR={heldNode} heldUp={holds === 'cup'} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} look={who} grey={grey} tie={who === 'adam' && !p.outfit} curl={CURL[pose] ?? 0.35}>{kids}</HumanFront>
     );
   }
   const q = SIDE[pose](t, raise), flip = p.flip ?? turn < 0;
@@ -127,7 +133,7 @@ export const Person: React.FC<PersonProps> = (p) => {
   const bob = walking ? Math.abs(Math.sin(walk * Math.PI * 2)) * 9 * sc : 0;
   return (
     <HumanSide x={x} y={y - bob} scale={sc} flip={flip} torso={(p.lean ?? 0) + (q.torso ?? 0) * e + (sitting ? -6 : 0) + stoop + (walking ? 3 : 0)} headPitch={(q.pitch ?? 8) + slump * 6} turn={clamp(0.85 + Math.abs(turn) * 0.15, 0.6, 1)} face={face}
-      handN={handN} handF={handF} footN={footN} footF={footF} look={who} tie={who === 'adam' && !p.outfit} grey={grey} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} slump={slump} curlN={CURL[pose] ?? 0.35} curlF={0.3}>{kids}</HumanSide>
+      handN={handN} handF={handF} footN={footN} footF={footF} look={who} tie={who === 'adam' && !p.outfit} grey={grey} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} slump={slump} curlN={CURL[pose] ?? 0.35} curlF={0.3} heldN={heldNode} heldUp={holds === 'cup'}>{kids}</HumanSide>
   );
 };
 

@@ -39,7 +39,7 @@ const giftTopOld = (n: number) => { let t = 0; for (let i = 0; i < Math.min(8, M
 export type PhotoKind = 'father' | 'boy' | 'four' | 'kite' | 'play' | 'stall' | 'grad' | 'wedding' | 'party' | 'walk' | 'shave' | 'cup' | 'sunset' | 'stairs' | 'baby';
 export const PhotoArt: React.FC<{kind: PhotoKind; w: number; h: number; x?: number; y?: number}> = ({kind, w, h, x, y}) => {
   const sky = kind === 'sunset' || kind === 'stall' || kind === 'four' ? '#bb6f12' : kind === 'play' ? '#22273c' : kind === 'party' ? '#d08515' : kind === 'wedding' ? '#c39b4b' : '#308fb9';
-  const person = (cx: number, by: number, sc: number, col: string) => (
+  const person = (cx: number, by: number, sc: number, col: string, _hair?: string) => (
     <g transform={`translate(${cx} ${by}) scale(${sc * 1.15})`}><rect x={-15} y={-48} width={30} height={48} rx={11} fill={col} stroke={INK} strokeWidth={2.4} /><circle cx={0} cy={-68} r={20} fill="#f4f2fb" stroke={INK} strokeWidth={2.4} /><circle cx={-6.5} cy={-70} r={2.8} fill={INK} /><circle cx={6.5} cy={-70} r={2.8} fill={INK} /><path d="M -6,-61 q 6,5 12,0" fill="none" stroke={INK} strokeWidth={2.2} strokeLinecap="round" /></g>
   );
   return (

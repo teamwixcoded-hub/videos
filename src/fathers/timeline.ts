@@ -1,4 +1,4 @@
-import words2 from './data/words2.json';
+import {WORDS2} from './data/words2';
 
 // Two Fathers, version 2: the video is exactly as long as the new recording (6:56.4); video time = recording time. Every word has a timestamp (words2.json, from
 // ElevenLabs), so shots and on-screen words are placed with T('phrase'): the start time of that phrase in the narration. Three seconds after the last word hold the closing question.
@@ -7,8 +7,7 @@ export const AUDIO_FILE = 'audio/two-fathers-2.mp3';
 export const VOICE_END = 416.37;
 export const TOTAL = 419.4;
 export const PIECES = [{at: 0, a: 0, b: VOICE_END, dur: VOICE_END}];
-type Seg = {words: {text: string; start_time: number; end_time: number}[]};
-export const WORDS: {w: string; a: number; b: number}[] = (words2 as {segments: Seg[]}).segments.flatMap((s) => s.words).filter((x) => x.text.trim()).map((x) => ({w: x.text.toLowerCase().replace(/-/g, '').replace(/[^a-z0-9']/g, ''), a: x.start_time, b: x.end_time}));
+export const WORDS: {w: string; a: number; b: number}[] = WORDS2.map(([w, a, b]) => ({w, a, b}));
 const norm = (p: string) => p.toLowerCase().replace(/-/g, '').replace(/[^a-z0-9' ]/g, ' ').split(/\s+/).filter(Boolean);
 const find = (phrase: string, nth: number): number => {
   const q = norm(phrase); let hit = 0;

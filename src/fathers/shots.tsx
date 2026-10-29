@@ -44,11 +44,11 @@ const walkers = (c: Ctx, ages: [number, number], x0: number, sp: number, sc = 0.
   <>{Pe(c, stand('sam', ages[0], x0 + c.l * sp, sc, {turn: 0.85, walk: c.l * 0.7, face: F.smile}))}{Pe(c, stand('max', ages[1], x0 + 260 + c.l * sp, sc, {turn: 0.85, walk: c.l * 0.7 + 0.25, face: F.grin}))}</>
 );
 const benchPair = (c: Ctx, ages: [number, number], face = F.smile) => (
-  <>{Pe(c, sit('sam', ages[0], 1620, 0.62, {turn: 0.25, face, view: 'front', pose: 'fold'}))}{Pe(c, sit('max', ages[1], 1900, 0.62, {turn: -0.25, face: F.smile, view: 'front', pose: 'fold'}))}</>
+  <>{Pe(c, sit('sam', ages[0], 1620, 0.62, {turn: 0.25, face, view: 'front', pose: 'cup'}))}{Pe(c, sit('max', ages[1], 1900, 0.62, {turn: -0.25, face: F.smile, view: 'front', pose: 'cup'}))}</>
 );
 const four = (c: Ctx, cups = 4) => SC.tea(c, [Z(1760, 580, 1.25), Z(1760, 570, 1.35)], {season: 1, cups}, <>
-  {Pe(c, sit('adam', 65, 1440, 0.6, {turn: 0.2, face: F.soft, view: 'front', pose: 'fold'}))}{Pe(c, sit('sam', 65, 1660, 0.6, {turn: 0.1, face: F.smile, view: 'front', pose: 'fold'}))}
-  {Pe(c, sit('leo', 30, 1880, 0.6, {turn: -0.1, face: F.smile, view: 'front', pose: 'fold'}))}{Pe(c, sit('max', 30, 2100, 0.6, {turn: -0.2, face: F.grin, view: 'front', pose: 'fold'}))}</>);
+  {Pe(c, sit('adam', 65, 1440, 0.6, {turn: 0.2, face: F.soft, view: 'front', pose: 'cup'}))}{Pe(c, sit('sam', 65, 1660, 0.6, {turn: 0.1, face: F.smile, view: 'front', pose: 'cup'}))}
+  {Pe(c, sit('leo', 30, 1880, 0.6, {turn: -0.1, face: F.smile, view: 'front', pose: 'cup'}))}{Pe(c, sit('max', 30, 2100, 0.6, {turn: -0.2, face: F.grin, view: 'front', pose: 'cup'}))}</>);
 const tint = (a: string, b: string, k: number) => <AbsoluteFill style={{background: `linear-gradient(90deg, ${a}, ${b})`, opacity: k, mixBlendMode: 'soft-light', pointerEvents: 'none'}} />;
 const leoNight = (c: Ctx, z = 1.3) => SC.room(c, [Z(1700, 520, z), Z(1660, 500, z + 0.2)], Pe(c, sit('leo', 16, 1360, 0.8, {pose: 'phone', face: {...F.worried, gaze: [0, 0.6], smile: 0}, turn: 0.2})));
 const samDoor = (c: Ctx) => SC.door(c, [Z(930, 520, 1.3), Z(940, 520, 1.45)], {label: 'DAD', boxes: 0, glow: 0}, Pe(c, stand('max', 16, 1280, 0.9, {pose: 'knock', turn: 0.8, face: F.sad})));
@@ -123,7 +123,7 @@ export const LIST: Entry[] = [
   [T("doesn't ring"), undefined, (c) => <PhoneDark t={c.l} light={0} />],
   [T('across the street'), 'w', (c) => SC.liv(c, [Z(1750, 450, 1.5), Z(2430, 360, 1.85)], {clockMin: 60, samAnswer: c.l > 0.9 ? 1 : 0}, adamAt(c, 65, {face: {...F.sad, gaze: [0.8, 0]}}), 0.3)],
   [T("his neighbor's phone rings"), undefined, (c) => <CallScreen t={c.l} name="Max" initial="M" color="#4c9a63" mode="incoming" shake={0.4 + 0.35 * Math.abs(Math.sin(c.l * 28))} />],
-  [T('rings every sunday') + 1.0, undefined, (c) => SC.liv(c, faceCam(sit('sam', 65, LR.chairX, 0.66), 2.4, 20), {warm: true}, samAt(c, 65, {pose: 'ear', face: {smile: ramp(c.l, 0.2, 0.6), open: 0.2}, children: <Handset glow={0.4} />}), 0.3)],
+  [T('rings every sunday') + 1.0, undefined, (c) => SC.liv(c, faceCam(sit('sam', 65, LR.chairX, 0.66), 2.4, 20), {warm: true}, samAt(c, 65, {pose: 'ear', face: {smile: ramp(c.l, 0.2, 0.6), open: 0.2}}), 0.3)],
   [T('for 25 years'), undefined, (c) => <SundayFlip t={c.l * 3} who="sam" week={Math.floor(c.l * 6)} />],
   [T('same street'), 'w', (c) => SC.str(c, [Z(1600, 560, 0.95), Z(1600, 540, 1.2)], {})],
   [T('same salary'), undefined, (c) => <Payslip t={c.l} who="adam" />],
@@ -254,9 +254,9 @@ export const LIST: Entry[] = [
   [T('leo grew up successful'), 'f', (c) => SC.off(c, [Z(1600, 520, 1.0), Z(1700, 530, 1.3)], {clockMin: 480}, <>{Pe(c, sit('leo', 25, 1700, 0.7, {pose: 'desk', face: F.calm, turn: 0.1}, FL + 76))}<Laptop x={1700} y={690} s={0.9} open={1} /></>)],
   [T('he sends money home'), undefined, (c) => <LeoTransfer t={c.l} />],
   [T("that's what his father taught him"), undefined, (c) => <PhoneDark t={c.l} light={ramp(c.l, 0.1, 0.4)} />],
-  [T('max grew up busy too'), 'w', (c) => SC.flat(c, faceCam(stand('max', 30, 1500, 0.85), 2.2, 20), Pe(c, stand('max', 30, 1500, 0.85, {pose: 'ear', turn: 0.3, face: {smile: 0.5, brow: 0.2, gaze: [0.3, 0]}, children: <Handset glow={0.3} />})))],
+  [T('max grew up busy too'), 'w', (c) => SC.flat(c, faceCam(stand('max', 30, 1500, 0.85), 2.2, 20), Pe(c, stand('max', 30, 1500, 0.85, {pose: 'ear', turn: 0.3, face: {smile: 0.5, brow: 0.2, gaze: [0.3, 0]}})))],
   [T('every sunday at eight', 1), undefined, (c) => <SundayFlip t={c.l} who="sam" week={0} />],
-  [T('he always picks up') - 0.2, undefined, (c) => SC.liv(c, faceCam(sit('sam', 60, LR.chairX, 0.66), 2.5, 20), {warm: true}, samAt(c, 60, {pose: 'ear', face: {smile: 1, open: 0.7 * Math.abs(Math.sin(c.t * 7)), brow: 0.3}, children: <Handset glow={0.4} />}), 0.3)],
+  [T('he always picks up') - 0.2, undefined, (c) => SC.liv(c, faceCam(sit('sam', 60, LR.chairX, 0.66), 2.5, 20), {warm: true}, samAt(c, 60, {pose: 'ear', face: {smile: 1, open: 0.7 * Math.abs(Math.sin(c.t * 7)), brow: 0.3}}), 0.3)],
   [T('then last spring'), 'w', (c) => SC.hos(c, [Z(1100, 560, 1.0), faceCam(stand('leo', 30, 900, 0.85), 2.4, 100)], {track: 0.6}, Pe(c, stand('leo', 30, 900, 0.85, {pose: 'cradle', turn: 0.3, face: F.soft, children: <Baby />})))],
   [T('last month leo missed'), undefined, (c) => deskScene(c, [Z(1700, 540, 1.3), Z(1700, 520, 1.5)], 30, {face: F.tired, pose: 'phone'}, 700)],
   [T("his little boy's first birthday"), undefined, (c) => SC.pty(c, [Z(1500, 640, 1.5), Z(1500, 640, 1.7)], {}, <>{Pe(c, stand('leo', 3, 1450, 0.7, {face: F.smile, turn: 0.2, top: '#e0455a'}))}<g transform="translate(1700 700)"><rect x={-60} y={-20} width={120} height={28} rx={8} fill="#f6efe2" stroke="#1d1a2e" strokeWidth={3} /><rect x={-5} y={-50} width={10} height={32} fill="#e0455a" /></g></>)],
@@ -281,19 +281,19 @@ export const LIST: Entry[] = [
   [T('25 years of fridays') - 0.2, undefined, (c) => SC.tea(c, [Z(1700, 560, 1.5), Z(1600, 540, 0.95)], {season: 2, sunset: 1}, benchPair(c, [65, 30], F.smile))],
   [T('sam never got the bigger house'), undefined, (c) => SC.str(c, [Z(2150, 560, 1.4), Z(2285, 560, 1.8)], {})],
   [T('he never got the promotion'), undefined, (c) => <PromotionLetter t={c.l + 1} />],
-  [T('but he has the one thing'), 'w', (c) => SC.liv(c, [Z(1800, 480, 1.4), Z(1850, 460, 1.7)], {warm: true}, samAt(c, 65, {pose: 'ear', face: {smile: 0.7, open: 0.15}, children: <Handset glow={0.4} />}), 0.3)],
+  [T('but he has the one thing'), 'w', (c) => SC.liv(c, [Z(1800, 480, 1.4), Z(1850, 460, 1.7)], {warm: true}, samAt(c, 65, {pose: 'ear', face: {smile: 0.7, open: 0.15}}), 0.3)],
   [T('a son who calls'), undefined, (c) => <CallScreen t={c.l} name="Max" initial="M" color="#4c9a63" mode="connected" />],
-  [T('not because he has to'), undefined, (c) => SC.flat(c, faceCam(stand('max', 30, 1500, 0.85), 2.2, 20), Pe(c, stand('max', 30, 1500, 0.85, {pose: 'ear', turn: 0.3, face: {smile: 0.8, brow: 0.3, gaze: [0.3, 0]}, children: <Handset glow={0.3} />})))],
+  [T('not because he has to'), undefined, (c) => SC.flat(c, faceCam(stand('max', 30, 1500, 0.85), 2.2, 20), Pe(c, stand('max', 30, 1500, 0.85, {pose: 'ear', turn: 0.3, face: {smile: 0.8, brow: 0.3, gaze: [0.3, 0]}})))],
   // ================= THE CALL =================
   [T('that sunday adam picks up'), 'w', (c) => SC.liv(c, [faceCam(sit('adam', 65, LR.chairX, 0.66), 2.5, 20), faceCam(sit('adam', 65, LR.chairX, 0.66), 2.8, 20)], {giftN: 8, dust: 0.9}, adamAt(c, 65, {pose: 'phone', turn: 0.15, face: {...F.sad, gaze: [0, 0.6]}}), 0.3)],
   [T('his thumb goes'), 'f', (c) => <Banking t={c.l} to="Leo" digits="2500" typeFrom={3.5} delFrom={5.0} press={6.6} />],
   [T('and presses call') + 0.5, undefined, (c) => <CallScreen t={c.l} name="Leo" initial="L" color="#3f78c4" mode="ringing" shake={Math.max(0, 1 - c.l / 0.5) * 0.8} />],
-  [ADAM_SAYS, undefined, (c) => SC.liv(c, [faceCam(sit('adam', 65, LR.chairX, 0.66), 2.5, 20), faceCam(sit('adam', 65, LR.chairX, 0.66), 2.8, 20)], {giftN: 8, dust: 0.9}, adamAt(c, 65, {pose: 'ear', turn: 0.15, face: {...say(c, ADAM_SAYS, TE("it's dad"), {tilt: 8, brow: 0.3})}, children: <Handset />}), 0.3)],
-  [T('do you have time this weekend'), undefined, (c) => SC.liv(c, faceCam(sit('adam', 65, LR.chairX, 0.66), 2.6, 20), {giftN: 8, dust: 0.9}, adamAt(c, 65, {pose: 'ear', turn: 0.15, face: {...say(c, T('do you have time this weekend'), TE('this weekend'), {tilt: 8})}, children: <Handset />}), 0.3)],
-  [T('not for anything'), undefined, (c) => SC.flat(c, faceCam(stand('leo', 30, 1500, 0.85), 2.2, 20), Pe(c, stand('leo', 30, 1500, 0.85, {pose: 'ear', turn: 0.3, face: {...F.soft, lids: 0.25, gaze: [0.2, 0.3]}, children: <Handset glow={0.3} />})))],
-  [T('just time') - 0.15, undefined, (c) => SC.liv(c, faceCam(sit('adam', 65, LR.chairX, 0.66), 2.6, 20), {giftN: 8, dust: 0.9}, adamAt(c, 65, {pose: 'ear', turn: 0.15, idle: 0.4, face: {...F.worried, gaze: [0, 0.2], ...say(c, T('just time'), TE('just time'))}, children: <Handset />}), 0.3)],
-  [LEO_SAYS, undefined, (c) => SC.flat(c, [faceCam(stand('leo', 30, 1500, 0.85), 2.2, 20), faceCam(stand('leo', 30, 1500, 0.85), 2.6, 20)], Pe(c, stand('leo', 30, 1500, 0.85, {pose: 'ear', turn: 0.3, face: {...say(c, LEO_SAYS, 384.9, {smile: 0.5, brow: 0.3})}, children: <Handset glow={0.3} />})))],
-  [384.9, undefined, (c) => SC.liv(c, [faceCam(sit('adam', 65, LR.chairX, 0.66), 2.6, 20), faceCam(sit('adam', 65, LR.chairX, 0.66), 2.3, 20)], {giftN: 8, dust: 0.9}, adamAt(c, 65, {pose: 'ear', turn: 0.15, face: {smile: ramp(c.l, 0.1, 0.7), lids: 0.3 * ramp(c.l, 0.7, 1.0), brow: 0.3, tilt: 8}, children: <Handset />}), 0.3)],
+  [ADAM_SAYS, undefined, (c) => SC.liv(c, [faceCam(sit('adam', 65, LR.chairX, 0.66), 2.5, 20), faceCam(sit('adam', 65, LR.chairX, 0.66), 2.8, 20)], {giftN: 8, dust: 0.9}, adamAt(c, 65, {pose: 'ear', turn: 0.15, face: {...say(c, ADAM_SAYS, TE("it's dad"), {tilt: 8, brow: 0.3})}}), 0.3)],
+  [T('do you have time this weekend'), undefined, (c) => SC.liv(c, faceCam(sit('adam', 65, LR.chairX, 0.66), 2.6, 20), {giftN: 8, dust: 0.9}, adamAt(c, 65, {pose: 'ear', turn: 0.15, face: {...say(c, T('do you have time this weekend'), TE('this weekend'), {tilt: 8})}}), 0.3)],
+  [T('not for anything'), undefined, (c) => SC.flat(c, faceCam(stand('leo', 30, 1500, 0.85), 2.2, 20), Pe(c, stand('leo', 30, 1500, 0.85, {pose: 'ear', turn: 0.3, face: {...F.soft, lids: 0.25, gaze: [0.2, 0.3]}})))],
+  [T('just time') - 0.15, undefined, (c) => SC.liv(c, faceCam(sit('adam', 65, LR.chairX, 0.66), 2.6, 20), {giftN: 8, dust: 0.9}, adamAt(c, 65, {pose: 'ear', turn: 0.15, idle: 0.4, face: {...F.worried, gaze: [0, 0.2], ...say(c, T('just time'), TE('just time'))}}), 0.3)],
+  [LEO_SAYS, undefined, (c) => SC.flat(c, [faceCam(stand('leo', 30, 1500, 0.85), 2.2, 20), faceCam(stand('leo', 30, 1500, 0.85), 2.6, 20)], Pe(c, stand('leo', 30, 1500, 0.85, {pose: 'ear', turn: 0.3, face: {...say(c, LEO_SAYS, 384.9, {smile: 0.5, brow: 0.3})}})))],
+  [384.9, undefined, (c) => SC.liv(c, [faceCam(sit('adam', 65, LR.chairX, 0.66), 2.6, 20), faceCam(sit('adam', 65, LR.chairX, 0.66), 2.3, 20)], {giftN: 8, dust: 0.9}, adamAt(c, 65, {pose: 'ear', turn: 0.15, face: {smile: ramp(c.l, 0.1, 0.7), lids: 0.3 * ramp(c.l, 0.7, 1.0), brow: 0.3, tilt: 8}}), 0.3)],
   // ================= THAT FRIDAY =================
   [T('that friday'), 'w', (c) => SC.tea(c, [Z(1760, 560, 1.2), Z(1760, 560, 1.3)], {season: 1, cups: 5, milk: true})],
   [T('five cups on the table'), undefined, (c) => SC.tea(c, [Z(1700, 650, 2.0), Z(1760, 640, 2.4)], {season: 1, cups: 5, milk: true})],

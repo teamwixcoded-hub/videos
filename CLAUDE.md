@@ -75,6 +75,7 @@ Other files: sets.tsx + sets3.tsx (factory, car), props.tsx + props2.tsx (shaded
 Rules the user set for this video: speakers are on camera while they speak; both ends of every phone call are shown (ringing phone + the person answering); the seat that is empty is only meaningful when the rest of the audience is full;
 objects must be clear (big, sharp, shaded), wall photos readable; motion human-like (eased poses with overshoot, weight shift, walking bob); text digital like Same Man.
 Check without Studio: node scripts/still-fathers.cjs 12 80 200 ... in batches of <= 8 (more can crash on 16 GB). Do NOT run it or Studio during the long Same Man render. Validate phrases: every T() must exist in words2.json (a missing one throws at import).
+Held objects: src/fathers/held.tsx (PhoneBack, CupHeld) are drawn in the hand frame under the fingers via Human.tsx `held` props; People.tsx HELD table maps pose->object (ear/phone->phone, cup->cup). Phone-at-ear hand target is side N:[-92,-452]. Set dressing: src/fathers/details.tsx (shelves, lamps, rug, bulbs, bicycle, fridge...) merged into sets inside kit.tsx SC.* wrappers. User's quality bar (latest): phones must look like phones at the ear, sitting/holding/backgrounds/objects must feel real, not basic.
 Status: full build, type-checks, 48 frames across the timeline render without errors; user has NOT yet reviewed version 2 in Studio. Known to polish: more per-shot action, hospital/street palettes, faces.
 
 ---

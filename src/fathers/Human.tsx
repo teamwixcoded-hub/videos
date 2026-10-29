@@ -41,7 +41,7 @@ export const HumanHand: React.FC<{curl?: number; s?: number; dim?: boolean}> = (
   );
 };
 
-const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s: number}> = ({S, T, o, dim, curl = 0.35, s}) => {
+const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s: number; held?: React.ReactNode; upright?: boolean}> = ({S, T, o, dim, curl = 0.35, s, held, upright}) => {
   const {J: E, H} = ik2(S, T, 185, 170, (c) => (c[0][1] > c[1][1] ? c[0] : c[1]));
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9);
   const slv = o.sleeve === 'long' ? o.top : SKIN, cuff = o.style === 'suit' ? o.shirt : null;
@@ -54,6 +54,7 @@ const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s
       <path d={`M ${S[0] - 8},${S[1] - 6} L ${E[0] - 8},${E[1] - 5}`} stroke="#fff" strokeWidth={6} strokeLinecap="round" opacity={0.2} />
       <circle cx={E[0]} cy={E[1]} r={9} fill={shade(o.top, -0.12)} opacity={0.4} />
       {o.watch && (() => { const w = mix(E, H, 0.8); return <g transform={`translate(${w[0]} ${w[1]}) rotate(${fa})`}><rect x={-9} y={-20} width={18} height={40} rx={5} fill="#5a3a24" stroke={INK} strokeWidth={2.6} /><circle cx={0} cy={0} r={15} fill="#f2c14e" stroke={INK} strokeWidth={3} /><circle cx={0} cy={0} r={10.5} fill="#fbf1d2" stroke={INK} strokeWidth={1.6} /><path d="M 0,-8 L 0,0 L 6,3" fill="none" stroke={INK} strokeWidth={2} strokeLinecap="round" /></g>; })()}
+      {held && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform={`translate(0 -6) ${upright ? `rotate(${-(fa - 90)})` : ''}`}>{held}</g></g>}
       <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform={`translate(0 -${6})`}><HumanHand curl={curl} s={s * 1.3} dim={dim} /></g></g>
     </g>
   );
@@ -81,10 +82,10 @@ const HumanLeg: React.FC<{HJ: V; T: V; o: Outfit; dim?: boolean; up?: boolean; l
 
 export type HumanSideProps = {
   x: number; y: number; scale?: number; flip?: boolean; torso: number; headPitch?: number; turn?: number; face?: Face; handN: V; handF: V; footN: V; footF: V; legUp?: boolean;
-  look?: Look; grey?: number; outfit: Outfit; tie?: boolean; t: number; seed?: number; dim?: number; idle?: number; slump?: number; curlN?: number; curlF?: number; children?: React.ReactNode;
+  look?: Look; grey?: number; outfit: Outfit; tie?: boolean; t: number; seed?: number; dim?: number; idle?: number; slump?: number; curlN?: number; curlF?: number; heldN?: React.ReactNode; heldUp?: boolean; children?: React.ReactNode;
 };
 
-export const HumanSide: React.FC<HumanSideProps> = ({x, y, scale = 1, flip, torso, headPitch = 8, turn = 0.85, face = {}, handN, handF, footN, footF, legUp, look = 'man', grey = 0, outfit, tie, t, seed = 0, dim = 0, idle = 1, slump = 0, curlN = 0.35, curlF = 0.35, children}) => {
+export const HumanSide: React.FC<HumanSideProps> = ({x, y, scale = 1, flip, torso, headPitch = 8, turn = 0.85, face = {}, handN, handF, footN, footF, legUp, look = 'man', grey = 0, outfit, tie, t, seed = 0, dim = 0, idle = 1, slump = 0, curlN = 0.35, curlF = 0.35, heldN, heldUp, children}) => {
   const id = useId().replace(/:/g, '');
   const inh = Math.sin(t * 1.9 + seed);
   // weight shift: the pelvis drifts one way, the chest answers, the head lags a beat behind and settles
@@ -137,7 +138,7 @@ export const HumanSide: React.FC<HumanSideProps> = ({x, y, scale = 1, flip, tors
       </g>
       <HumanLeg HJ={HJ} T={footN} o={o} up={legUp} />
       {children}
-      <HumanArm S={SH} T={hN} o={o} curl={curlN} s={1} />
+      <HumanArm S={SH} T={hN} o={o} curl={curlN} s={1} held={heldN} upright={heldUp} />
     </g>
   );
 };
@@ -146,9 +147,9 @@ export const HumanSide: React.FC<HumanSideProps> = ({x, y, scale = 1, flip, tors
 // front view: sitting at a desk, clapping, filming, on a bench. Shoulders and waist, jacket or tee, two arms with elbows, trousers and shoes.
 export type HumanFrontProps = {
   x: number; y: number; scale?: number; flip?: boolean; lean?: number; head?: {turn?: number; tilt?: number}; face?: Face; handL: V; handR: V; slump?: number; legs?: 'none' | 'sit';
-  look?: Look; grey?: number; outfit: Outfit; tie?: boolean; t: number; seed?: number; dim?: number; idle?: number; curl?: number; children?: React.ReactNode;
+  look?: Look; grey?: number; outfit: Outfit; tie?: boolean; t: number; seed?: number; dim?: number; idle?: number; curl?: number; heldR?: React.ReactNode; heldUp?: boolean; children?: React.ReactNode;
 };
-const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number}> = ({S, T, o, s, curl}) => {
+const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?: React.ReactNode; upright?: boolean}> = ({S, T, o, s, curl, held, upright}) => {
   const {J: E, H} = ik2(S, T, 198, 182, (c) => (c[0][1] > c[1][1] ? c[0] : c[1]));
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9), slv = o.sleeve === 'long' ? o.top : SKIN;
   return (
@@ -157,11 +158,12 @@ const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number}> = ({S
       <Taper A={E} B={wr} r1={23} r2={16} fill={slv} />
       {o.style === 'suit' && (() => { const c0 = mix(E, wr, 0.78); return <Taper A={c0} B={wr} r1={19} r2={17} fill={o.shirt} sw={3} />; })()}
       <path d={`M ${S[0] - 6},${S[1] - 4} L ${E[0] - 6},${E[1] - 4}`} stroke="#fff" strokeWidth={6} strokeLinecap="round" opacity={0.2} />
+      {held && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform={`translate(0 -6) ${upright ? `rotate(${-(fa - 90)})` : ''}`}>{held}</g></g>}
       <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><g transform={`scale(${s * 1.3} 1.3)`}><HumanHand curl={curl} /></g></g></g>
     </g>
   );
 };
-export const HumanFront: React.FC<HumanFrontProps> = ({x, y, scale = 1, flip, lean = 0, head = {}, face = {}, handL, handR, slump = 0, legs = 'none', look = 'man', grey = 0, outfit, tie, t, seed = 0, dim = 0, idle = 1, curl = 0.35, children}) => {
+export const HumanFront: React.FC<HumanFrontProps> = ({x, y, scale = 1, flip, lean = 0, head = {}, face = {}, handL, handR, slump = 0, legs = 'none', look = 'man', grey = 0, outfit, tie, t, seed = 0, dim = 0, idle = 1, curl = 0.35, heldR, heldUp, children}) => {
   const id = useId().replace(/:/g, '');
   const inh = Math.sin(t * 1.9 + seed), sway = Math.sin(t * 0.55 + seed * 2) * 1.0 * idle, sy = slump * 30 - inh * 2.6 * idle, o = outfit;
   const j = (a: number, b: number): V => [Math.sin(t * 1.3 + seed + a) * 2.2 * idle, Math.cos(t * 1.1 + seed * 2 + b) * 2.2 * idle];
@@ -206,7 +208,7 @@ export const HumanFront: React.FC<HumanFrontProps> = ({x, y, scale = 1, flip, le
         </g>
         {children}
         <FrontArm S={SL} T={hl} o={o} s={-1} curl={curl} />
-        <FrontArm S={SR} T={hr} o={o} s={1} curl={curl} />
+        <FrontArm S={SR} T={hr} o={o} s={1} curl={curl} held={heldR} upright={heldUp} />
       </g>
     </g>
   );

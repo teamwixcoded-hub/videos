@@ -1,0 +1,10 @@
+const fs=require('fs');let s=fs.readFileSync('src/fathers/kit.tsx','utf8');
+s=s.replace("import {factory, drive} from './sets3';","import {factory, drive} from './sets3';\nimport {merge, livingDetail, teaDetail, streetDetail, kitchenDetail, officeDetail, hospitalDetail} from './details';");
+const r=(a,b)=>{if(!s.includes(a))console.log('MISSING',a.slice(0,50));s=s.replace(a,b)};
+r("mk(livingRoom({t: c.t, ...o}),","mk(merge(livingRoom({t: c.t, ...o}), livingDetail({t: c.t, warm: o.warm})),");
+r("mk(street({t: c.t, ...o}),","mk(merge(street({t: c.t, ...o}), streetDetail({t: c.t, night: o.night})),");
+r("mk(hospital({t: c.t, ...o}),","mk(merge(hospital({t: c.t, ...o}), hospitalDetail()),");
+r("mk(office({t: c.t, ...o}),","mk(merge(office({t: c.t, ...o}), officeDetail({t: c.t})),");
+r("mk(teaStall({t: c.t, ...o}),","mk(merge(teaStall({t: c.t, ...o}), teaDetail({t: c.t, sunset: o.sunset})),");
+r("mk(kitchen({t: c.t, ...o}),","mk(merge(kitchen({t: c.t, ...o}), kitchenDetail({t: c.t})),");
+fs.writeFileSync('src/fathers/kit.tsx',s);
