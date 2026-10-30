@@ -127,9 +127,9 @@ export const Person: React.FC<PersonProps> = (p) => {
   const kids = p.children && pose !== 'ear' ? <g transform={`translate(${shift[0]} ${shift[1]})`}>{p.children}</g> : null;
   if (view === 'front') {
     const q = sitting && (pose === 'stand' || pose === 'rest') ? {L: [-96, 34] as V, R: [96, 34] as V} : FRONT[pose](t, raise);
-    const [lvN, lvF, lvT] = lively(t, sd, sitting ? 'hold' : pose, e * idle);
+    const [lvN, lvF, lvT] = lively(t, sd, sitting ? 'hold' : pose, e * idle * 0.6);
     const s0 = FRONT.stand(t, 1), L0: V = mixV(s0.L, p.handL ? [p.handL[0], p.handL[1] - 92] : q.L, e), R0: V = mixV(s0.R, p.handR ? [p.handR[0], p.handR[1] - 92] : q.R, e);
-    const L: V = [L0[0] + lvF[0], L0[1] + lvF[1]], R: V = [R0[0] + lvN[0], R0[1] + lvN[1]];
+    const L: V = [L0[0] - lvF[0], L0[1] + lvF[1]], R: V = [R0[0] + lvN[0], R0[1] + lvN[1]];
     return (
       <HumanFront x={x} y={y} scale={sc} flip={p.flip} lean={(p.lean ?? q.lean ?? 0) + stoop + lvT} head={{turn: clamp(turn, -1, 1), tilt: p.tilt}} face={face} handL={L} handR={R}
         slump={slump} legs={sitting ? 'sit' : 'none'} heldR={heldNode} heldUp={holds === 'cup'} noHands={pose === 'film'} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} look={who} grey={grey} tie={who === 'adam' && !p.outfit} curl={sitting && (pose === 'stand' || pose === 'rest') ? 0.8 : (CURL[pose] ?? 0.35)}>{kids}{view === 'front' && pose === 'film' ? <PhoneLandscape /> : null}</HumanFront>
