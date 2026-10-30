@@ -48,15 +48,15 @@ export const BookSpread: React.FC<{left?: string; right?: string; ribbon?: boole
 );
 
 // the bedside table: warm lamp light on wood, the phone and the book, a glove that hovers between them
-export const TableScene: React.FC<{t: number; hover: number; tag?: string}> = ({t, hover, tag}) => {
-  const bob = Math.sin(t * 3) * 10, hx = 960 + Math.sin(t * 1.3) * 90 * hover, hy = 250 + (1 - hover) * -260 + bob, pulse = 0.5 + 0.5 * Math.sin(t * 2.4);
+export const TableScene: React.FC<{t: number; hover: number; tag?: string; handX?: number; handY?: number; buzz?: number}> = ({t, hover, tag, handX, handY, buzz = 0}) => {
+  const bob = Math.sin(t * 3) * 10, hx = handX ?? 960 + Math.sin(t * 1.3) * 90 * hover, hy = handY ?? 250 + (1 - hover) * -260 + bob, pulse = 0.5 + 0.5 * Math.sin(t * 2.4);
   return (
     <InsertBG glow="#9b7be4">
       <defs><radialGradient id="tbl" cx="50%" cy="0%" r="90%"><stop offset="0" stopColor="#ffc97a" stopOpacity="0.55" /><stop offset="1" stopColor="#ffc97a" stopOpacity="0" /></radialGradient></defs>
       <rect x={0} y={740} width={1920} height={400} fill="#5a3f2c" /><rect x={0} y={740} width={1920} height={26} fill="#7a5638" stroke={INK} strokeWidth={6} />
       {Array.from({length: 9}, (_, i) => <path key={i} d={`M 0,${790 + i * 38} Q 960,${780 + i * 38 + (i % 2) * 8} 1920,${792 + i * 38}`} stroke="#3e2a1c" strokeWidth={3} opacity={0.45} fill="none" />)}
       <rect x={0} y={740} width={1920} height={340} fill="url(#tbl)" />
-      <g transform="translate(520 700) rotate(-8)"><ellipse cx={20} cy={14} rx={150} ry={20} fill="rgba(0,0,0,.4)" />
+      <g transform={`translate(${520 + Math.sin(t * 90) * 7 * buzz} 700) rotate(-8)`}><ellipse cx={20} cy={14} rx={150} ry={20} fill="rgba(0,0,0,.4)" />
         <rect x={-120} y={-250} width={240} height={470} rx={38} fill="#15161f" stroke={INK} strokeWidth={8} /><rect x={-100} y={-230} width={200} height={430} rx={26} fill="#0b1a33" />
         <circle cx={0} cy={-40} r={110} fill="#4aa8ff" opacity={0.12 + 0.1 * pulse} /><text x={0} y={-100} textAnchor="middle" fontFamily={MONT} fontWeight={800} fontSize={64} fill="#fff" opacity={0.85}>11:04</text>
         <rect x={-76} y={-40} width={152} height={44} rx={14} fill="#16305c" /><rect x={-76} y={18} width={152} height={44} rx={14} fill="#16305c" opacity={0.7} /><circle cx={-54} cy={-18} r={10} fill="#ff5a6e" opacity={0.5 + 0.5 * pulse} /></g>
@@ -85,11 +85,11 @@ export const BookGift: React.FC<{t: number}> = ({t}) => {
 };
 
 // the book open at page one, the ribbon bookmark lying in the gutter
-export const BookPageOne: React.FC<{t: number}> = ({t}) => {
+export const BookPageOne: React.FC<{t: number; left?: string; right?: string}> = ({t, left = '1', right = '2'}) => {
   const k = sm(t, 0, 0.5);
   return (
     <InsertBG glow="#ffb25a">
-      <g transform={`translate(960 ${520 + (1 - k) * 40}) rotate(-2) scale(${0.72 + 0.03 * k})`}><BookSpread left="1" right="2" /></g>
+      <g transform={`translate(960 ${520 + (1 - k) * 40}) rotate(-2) scale(${0.72 + 0.03 * k})`}><BookSpread left={left} right={right} /></g>
     </InsertBG>
   );
 };

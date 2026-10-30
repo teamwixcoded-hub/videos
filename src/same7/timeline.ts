@@ -17,6 +17,15 @@ const find = (phrase: string, nth: number): number => {
 };
 export const T = (phrase: string, nth = 0): number => WORDS[find(phrase, nth)].a;
 export const TE = (phrase: string, nth = 0): number => { const i = find(phrase, nth); return WORDS[i + norm(phrase).length - 1].b; };
+// first occurrence of a phrase at or after a given time (for words that come up many times)
+export const TA = (phrase: string, after: number, nth = 0): number => {
+  const q = norm(phrase); let hit = 0;
+  for (let i = 0; i + q.length <= WORDS.length; i++) {
+    if (WORDS[i].a < after - 0.01) continue;
+    if (q.every((w, k) => WORDS[i + k].w === w)) { if (hit === nth) return WORDS[i].a; hit++; }
+  }
+  throw new Error('phrase not in the narration after ' + after + ': "' + phrase + '"');
+};
 // the speech, in runs separated by pauses (used to duck sound effects and music under the voice)
 export const CAPS: {from: number; to: number}[] = (() => {
   const out: {from: number; to: number}[] = [];

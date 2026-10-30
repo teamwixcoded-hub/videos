@@ -145,7 +145,7 @@ const sidePax = (x: number, seed: number, tee: string, t: number) => (
     <PhoneSide x={238} y={-214} deg={-18} glow={1} />
   </SideChar>
 );
-const kit = (): R => (c) => {
+export const kit = (): R => (c) => {
   const set = kitchen(), bite = 0.5 - 0.5 * Math.cos(c.t * 3.4);
   return <Stage cam={camOf(c, [1800, 480, 1.0], [1830, 480, 1.1])} far={set.far} mid={set.mid} rim="rgba(255,230,170,.9)"
     front={<g>
@@ -160,7 +160,7 @@ const kit = (): R => (c) => {
       <g transform={`translate(${lerp(330, 150, bite)} ${lerp(-92, -362, bite)}) rotate(40)`}><rect x={-5} y={-8} width={11} height={70} rx={5} fill="#c7cdd6" stroke={INK} strokeWidth={4} /></g>
     </SideChar>} />;
 };
-const bath = (): R => (c) => {
+export const bath = (): R => (c) => {
   const set = bathroom(), br = Math.sin(c.t * 14) * 14;
   return <Stage cam={camOf(c, [1700, 480, 1.0], [1730, 480, 1.1])} far={set.far} mid={set.mid} rim="rgba(230,250,255,.9)"
     front={<g>

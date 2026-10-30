@@ -40,7 +40,7 @@ export type Api = {
 // ---------------- the cast ----------------
 const LOOK: Partial<Record<Look, {tee: string; tie?: boolean}>> = {man: {tee: '#9a7be4'}, mom: {tee: '#e58a8a'}, manager: {tee: '#f2f2f7', tie: true}, colleague: {tee: '#5fa8a0'}, friend: {tee: '#e6b34a'}};
 type PersonP = {k: Look; x: number; y: number; flip?: boolean; pose?: 'sit' | 'stand'; hn?: V; hf?: V; face?: Face; torso?: number; pitch?: number; talk?: number; t: number; seed?: number; tee?: string; turn?: number; children?: React.ReactNode; dim?: number};
-const Person: React.FC<PersonP> = (p) => {
+export const Person: React.FC<PersonP> = (p) => {
   const sit = (p.pose ?? 'sit') === 'sit', talk = p.talk ?? 0, sd = p.seed ?? 0;
   const g = Math.sin(p.t * 3.1 + sd) * 30 * talk, g2 = Math.sin(p.t * 2.3 + 1) * 24 * talk;
   const baseN: V = sit ? [150, -44] : [34, 30], baseF: V = sit ? [200, -44] : [70, 42];
@@ -60,6 +60,8 @@ const ScBook: React.FC<{t: number; smile?: number}> = ({t, smile = 0.2}) => (
   </SideChar>
 );
 
+// scene makers shared with the new cut (src/same7); filled the first time buildPart2 runs
+export let SC2: any = null;
 export const buildPart2 = (api: Api): Item[] => {
   const {B, bedScene, sP, rB, WIDE, camS, camR, sFace, rFace, K, camOf, kit, bath} = api;
   const mk = (setFn: (t: number) => SetL, rim: string, filter?: string, extraFront?: React.ReactNode) =>
@@ -149,6 +151,7 @@ export const buildPart2 = (api: Api): Item[] => {
     return out;
   };
 
+  SC2 = {kitE, kitWide, meet, offW, dine, resW, mgr, mgW, OF, pip, montage};
   const L: Item[] = [];
   // ======================= M1: THE DAYS BLUR (1:55 - 2:40), the same days cut faster and faster =======================
   L.push(...montage(115.3, 160.3, (u) => lerp(1.15, 0.3, Math.pow(u, 0.8)), (i, u) => {
