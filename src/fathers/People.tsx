@@ -72,7 +72,7 @@ const SIDE: Record<PoseName, (t: number, r: number) => H> = {
 };
 // ---- front view (Char): screen-left / screen-right hands ----
 const FRONT: Record<PoseName, (t: number, r: number) => {L: V; R: V; lean?: number}> = {
-  stand: () => ({L: [-100, -80], R: [100, -80]}),
+  stand: () => ({L: [-114, 12], R: [114, 12]}),
   rest: () => ({L: [-70, -30], R: [70, -30]}),
   desk: (t) => ({L: [-76 + Math.sin(t * 9) * 4, -76 + Math.sin(t * 13) * 5], R: [76 + Math.sin(t * 11) * 4, -76 + Math.cos(t * 10) * 5], lean: 4}),
   type: (t) => ({L: [-76 + Math.sin(t * 9) * 4, -76 + Math.sin(t * 13) * 5], R: [76 + Math.sin(t * 11) * 4, -76 + Math.cos(t * 10) * 5], lean: 4}),

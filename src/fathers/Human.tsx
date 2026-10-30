@@ -185,7 +185,10 @@ export type HumanFrontProps = {
   look?: Look; grey?: number; outfit: Outfit; tie?: boolean; t: number; seed?: number; dim?: number; idle?: number; curl?: number; heldR?: React.ReactNode; heldUp?: boolean; noHands?: boolean; children?: React.ReactNode;
 };
 const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?: React.ReactNode; upright?: boolean; noHand?: boolean}> = ({S, T, o, s, curl, held, upright, noHand}) => {
-  const {J: E, H} = ik2(S, T, 176, 164, (c) => ((c[0][0] - c[1][0]) * (S[0] < 0 ? -1 : 1) > 0 ? c[0] : c[1]));
+  // a hanging arm is nearly straight down along the body, not a wing
+  let Tg = T;
+  if (T[1] > S[1] + 250) { const dx = T[0] - S[0], dy = T[1] - S[1], d = Math.hypot(dx, dy) || 1, want = 0.975 * 340; Tg = [S[0] + (dx / d) * want, S[1] + (dy / d) * want]; }
+  const {J: E, H} = ik2(S, Tg, 176, 164, (c) => ((c[0][0] - c[1][0]) * (S[0] < 0 ? -1 : 1) > 0 ? c[0] : c[1]));
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9), slv = o.sleeve === 'long' ? o.top : SKIN;
   if (o.simple) return (
     <g>

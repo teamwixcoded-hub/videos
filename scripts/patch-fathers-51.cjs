@@ -1,0 +1,11 @@
+const fs=require('fs');
+let p=fs.readFileSync('src/fathers/People.tsx','utf8');
+const a="  stand: () => ({L: [-100, -80], R: [100, -80]}),";
+if(!p.includes(a))console.log('MISSING stand');
+p=p.replace(a,"  stand: () => ({L: [-114, 12], R: [114, 12]}),");
+fs.writeFileSync('src/fathers/People.tsx',p);
+let h=fs.readFileSync('src/fathers/Human.tsx','utf8');
+const b="const {J: E, H} = ik2(S, T, 176, 164, (c) => ((c[0][0] - c[1][0]) * (S[0] < 0 ? -1 : 1) > 0 ? c[0] : c[1]));";
+if(!h.includes(b))console.log('MISSING ik');
+h=h.replace(b,"// a hanging arm is nearly straight down along the body, not a wing\n  let Tg = T;\n  if (T[1] > S[1] + 250) { const dx = T[0] - S[0], dy = T[1] - S[1], d = Math.hypot(dx, dy) || 1, want = 0.975 * 340; Tg = [S[0] + (dx / d) * want, S[1] + (dy / d) * want]; }\n  const {J: E, H} = ik2(S, Tg, 176, 164, (c) => ((c[0][0] - c[1][0]) * (S[0] < 0 ? -1 : 1) > 0 ? c[0] : c[1]));");
+fs.writeFileSync('src/fathers/Human.tsx',h);
