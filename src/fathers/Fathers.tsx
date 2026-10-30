@@ -36,7 +36,7 @@ const STAMPS: StampT[] = [
   st('adam and sam stood', 3.4, 'THE HOSPITAL', 'ADAM & SAM · NEW FATHERS'), st('to understand adam', 3.2, 'FLASHBACK', 'ADAM’S FATHER · THE FACTORY'), st('he still wears it', 3.2, 'THE ONLY GIFT', 'A WATCH. STILL ON HIS WRIST.'),
   st('no phone no emails', 3.2, 'EVERY EVENING', 'NO PHONE. NO EMAILS.'), st('his house stayed small', 3.6, 'WHAT IT COST SAM', 'A SMALL HOUSE · AN OLD CAR'), st('a client meeting', 2.8, 'ADAM', 'MISSED THE PARTY'),
   st('max is 30', 3.4, 'MAX · 30 YEARS OLD', 'STILL REMEMBERS THE KITE'), st('he practiced his one line', 3.2, 'LEO · THE SCHOOL PLAY', 'ONE LINE · THREE WEEKS'), st("adam's seat stayed empty", 2.6, 'THE BEST COSTUME', 'AN EMPTY SEAT'),
-  st('last month leo missed', 3.4, 'LEO · LAST MONTH', 'A CLIENT MEETING. A TOY CAR.'), st("sam's knees are weaker", 3.2, 'SAM · 65', 'MAX WALKS SLOWER'), st('had five cups', 3.6, 'THAT FRIDAY', '5 CUPS · 1 SMALL GLASS OF MILK'),
+  st('last month leo missed', 3.4, 'LEO · LAST MONTH', 'A CLIENT MEETING. A TOY CAR.'), st("sam's knees are weaker", 3.2, 'SAM · 65', 'MAX WALKS SLOWER'), st('the biggest toy car', 2.2, 'LEO · AGE 5', 'THE BIGGEST TOY CAR IN THE SHOP'), st('for two days', 1.5, 'THE BIGGEST TOY CAR', 'PLAYED WITH · 2 DAYS'), st('had five cups', 3.6, 'THAT FRIDAY', '5 CUPS · 1 SMALL GLASS OF MILK'),
   st('an old man wearing', 3.4, 'ON THE HILL', 'THE WATCH. THE KITE.'),
 ];
 const QUOTES: TW[] = [

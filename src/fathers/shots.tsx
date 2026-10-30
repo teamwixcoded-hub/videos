@@ -7,6 +7,7 @@ import {Ctx, Entry, Z, stand, sit, Pe, faceCam, bodyCam, F, SC, Split} from './k
 import {ClockInsert, LaptopHand, Payslip, PromotionLetter, Chat, GiftsToClocks, PhoneDark, SundayFlip, Banking, LeoTransfer, CallScreen, Gallery, PhotoShadow, Viewfinder, Polaroid, EndCard} from './inserts';
 import {WatchInsert, Fork, SeatsCount, Blocks, OldCar, Newspaper} from './inserts3';
 import {KW, ramp} from './fx';
+import {ToyCar, Sparkles, BigGift} from './props3';
 import {T, TE, speaking} from './timeline';
 
 // ============================================================================================
@@ -238,10 +239,12 @@ export const LIST: Entry[] = [
   [T('when leo turned five'), 'f', (c) => SC.pty(c, [Z(1700, 560, 1.0), Z(2000, 600, 1.4)], {}, <>{partyGuests(c)}{Pe(c, stand('leo', 5, 1500, 0.8, {face: F.grin, turn: 0.3}))}{Pe(c, stand('max', 5, 1250, 0.8, {face: F.smile, turn: 0.3}))}</>)],
   [T('adam missed the party'), undefined, (c) => SC.pty(c, [Z(1900, 560, 1.2), Z(2300, 600, 1.7)], {}, <>{partyGuests(c)}{Pe(c, stand('aunt', 40, 1700, 0.8, {pose: 'film', turn: -0.4, face: F.smile, top: '#2fa39a'}))}{Pe(c, stand('leo', 5, 1450, 0.8, {face: F.grin, turn: 0.3}))}</>)],
   [T('a client meeting'), undefined, (c) => deskScene(c, [Z(1700, 540, 1.3), Z(2115, 540, 1.5)], 40, {face: F.tired, pose: 'phone'}, 700)],
-  [T('but he came home'), 'w', (c) => SC.pty(c, [Z(1100, 560, 1.0), Z(1250, 560, 1.2)], {}, Pe(c, stand('adam', 40, 700 + ramp(c.l, 0, 2.2) * 500, 0.85, {pose: 'carry', face: F.smile, turn: 0.5, children: <g><rect x={-55} y={-60} width={110} height={80} rx={8} fill="#c9954a" stroke="#1d1a2e" strokeWidth={4} /><rect x={-55} y={-60} width={110} height={20} fill="#e0b068" stroke="#1d1a2e" strokeWidth={3} /></g>})))],
-  [T('still wrapped with a bow'), undefined, (c) => SC.pty(c, [Z(1500, 650, 2.2), Z(1500, 650, 2.6)], {}, <GiftPile x={1500} y={770} n={1} s={0.9} />)],
-  [T('leo played with it'), undefined, (c) => SC.pty(c, faceCam(stand('leo', 5, 1500, 0.9), 2.4, 40), {}, Pe(c, stand('leo', 5, 1500, 0.9, {face: {smile: 1, open: 0.6, wide: 0.6, brow: 0.5}, turn: 0.1})))],
-  [T('for two days'), undefined, (c) => SC.room(c, [Z(1300, 760, 2.0), Z(1250, 780, 2.4)], <g transform="translate(1180 800)"><rect x={-60} y={-24} width={120} height={36} rx={14} fill="#c0392b" stroke="#1d1a2e" strokeWidth={5} /><circle cx={-34} cy={14} r={14} fill="#2a2a32" stroke="#1d1a2e" strokeWidth={4} /><circle cx={34} cy={14} r={14} fill="#2a2a32" stroke="#1d1a2e" strokeWidth={4} /></g>)],
+  [T('but he came home'), 'w', (c) => SC.pty(c, [Z(1100, 560, 1.0), Z(1250, 560, 1.2)], {}, Pe(c, stand('adam', 40, 700 + ramp(c.l, 0, 2.2) * 500, 0.85, {pose: 'carry', face: F.smile, turn: 0.5, children: <g transform="translate(0 -34)"><BigGift s={0.85} /></g>})))],
+  // the biggest toy car in the shop: it fills the room, Leo stands next to it, wide eyed
+  [T('the biggest toy car'), undefined, (c) => SC.pty(c, [Z(1500, 640, 1.0), Z(1500, 600, 1.25)], {}, <><ToyCar x={1560} y={FL + 6} s={1.25} wrap />{Pe(c, stand('leo', 5, 1160, 0.9, {face: {smile: 1, open: 0.8, wide: 1, brow: 0.8}, turn: 0.6}))}<Sparkles t={c.t} x={1560} y={FL - 140} w={620} h={320} n={11} /></>)],
+  [T('still wrapped with a bow'), undefined, (c) => SC.pty(c, [Z(1560, 520, 1.7), Z(1580, 470, 2.4)], {}, <><ToyCar x={1560} y={FL + 6} s={1.25} wrap /><Sparkles t={c.t} x={1580} y={FL - 280} w={360} h={200} n={7} /></>)],
+  [T('leo played with it'), undefined, (c) => { const x = 1050 + ramp(c.l, 0, 1.0) * 800, sp = c.t * 900; return SC.pty(c, [Z(1450, 620, 1.2), Z(1600, 620, 1.3)], {}, <><ToyCar x={x} y={FL + 6} s={1.1} spin={sp} part="back" open />{Pe(c, {...sit('leo', 5, x - 40, 0.9, {turn: 0.8, face: {smile: 1, open: 0.7, wide: 0.7, brow: 0.5}}, FL), y: FL - 84})}<ToyCar x={x} y={FL + 6} s={1.1} spin={sp} part="front" open shadow={false} /></>); }],
+  [T('for two days'), undefined, (c) => { const ph = c.l * 5.2, x = 1450 + Math.sin(ph) * 420, dir = Math.cos(ph) >= 0, away = c.l > 1.15, sp = c.t * 900 * (away ? 0 : 1); return <AbsoluteFill>{SC.pty(c, [Z(1450, 620, 1.25), Z(1500, 620, 1.4)], {}, <><ToyCar x={away ? 1750 : x} y={FL + 6} s={1.1} spin={sp} part="back" open flip={away ? false : !dir} />{!away && Pe(c, {...sit('leo', 5, x - (dir ? 40 : -40), 0.9, {turn: dir ? 0.8 : -0.8, flip: !dir, face: {smile: 1, open: 0.7, wide: 0.7, brow: 0.5}}, FL), y: FL - 84})}<ToyCar x={away ? 1750 : x} y={FL + 6} s={1.1} spin={sp} part="front" open flip={away ? false : !dir} shadow={false} /></>)}{tint('rgba(255,150,60,.9)', 'rgba(40,50,130,.9)', 0.12 + 0.3 * Math.abs(Math.sin(c.l * 2.1)))}</AbsoluteFill>; }],
   // ================= THE KITE =================
   [T('max got a small paper kite'), undefined, (c) => SC.park(c, [Z(1600, 480, 2.0), Z(1600, 480, 2.6)], {season: 1}, null, <Kite x={1600} y={430} s={1.1} rot={-8} t={c.t} tail={1} />)],
   [T('sam made it himself'), 'w', (c) => SC.kit(c, [Z(1500, 560, 1.1), Z(1500, 540, 1.4)], {}, <>{Pe(c, {...sit('sam', 35, 1300, 0.7, {pose: 'desk', turn: 0.5, face: F.calm}, FL + 76), chair: true})}<Newspaper x={1620} y={700} s={1.2} fold={ramp(c.l, 1, 2)} /></>)],
@@ -312,7 +315,7 @@ export const LIST: Entry[] = [
   [T('then last spring'), 'w', (c) => SC.hos(c, [Z(1100, 560, 1.0), faceCam(stand('leo', 30, 900, 0.85), 2.4, 100)], {track: 0.6}, Pe(c, stand('leo', 30, 900, 0.85, {pose: 'cradle', turn: 0.3, face: F.soft, children: <Baby />})))],
   [T('last month leo missed'), undefined, (c) => deskScene(c, [Z(1700, 540, 1.3), Z(2115, 540, 1.5)], 30, {face: F.tired, pose: 'phone'}, 700)],
   [T("his little boy's first birthday"), undefined, (c) => SC.pty(c, [Z(1500, 640, 1.5), Z(1500, 640, 1.7)], {}, <>{Pe(c, stand('leo', 3, 1450, 0.7, {face: F.smile, turn: 0.2, top: '#e0455a'}))}<g transform="translate(1700 700)"><rect x={-60} y={-20} width={120} height={28} rx={8} fill="#f6efe2" stroke="#1d1a2e" strokeWidth={3} /><rect x={-5} y={-50} width={10} height={32} fill="#e0455a" /></g></>)],
-  [T('but he sent the biggest toy car'), undefined, (c) => SC.door(c, [Z(1500, 560, 1.1), Z(1500, 560, 1.25)], {label: 'LEO JR', boxes: 1, glow: 0.6}, <GiftPile x={1300} y={FL + 6} n={1} s={0.9} />)],
+  [T('but he sent the biggest toy car'), undefined, (c) => SC.door(c, [Z(1500, 560, 1.1), Z(1500, 560, 1.25)], {label: 'LEO JR', boxes: 0, glow: 0.6}, <ToyCar x={1300} y={FL + 6} s={0.8} wrap />)],
   [T('which brings us back'), 'w', (c) => SC.liv(c, [W0, Z(1620, 540, 1.1)], {giftN: 8, dust: 0.8, clockMin: 60}, adamAt(c, 65))],
   // ================= ADAM AT 65 =================
   [T('a comfortable house'), undefined, () => <Banking t={0.05} digits="" typeFrom={99} />],
