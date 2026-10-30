@@ -419,13 +419,10 @@ export const teaStall = (o: {t: number; season?: number; sunset?: number; cups?:
           <ellipse cx={1760} cy={846} rx={560} ry={22} fill="rgba(5,6,15,.42)" style={{filter: "blur(9px)"}} /><rect x={1260} y={640} width={1000} height={34} rx={8} fill="#533c2a" stroke={INK} strokeWidth={3} />
           <rect x={1300} y={674} width={22} height={160} fill="#493625" stroke={INK} strokeWidth={2.4} /><rect x={2200} y={674} width={22} height={160} fill="#493625" stroke={INK} strokeWidth={2.4} />
         </g>
-        {s === 3 && Array.from({length: 40}, (_, i) => <circle key={i} cx={(rnd(i, 1) * 3400 + o.t * 30) % 3400 - 100} cy={((rnd(i, 2) * 1100 + o.t * 90 * (0.5 + rnd(i, 3))) % 1100)} r={3 + rnd(i, 4) * 4} fill="#fff" opacity={0.85} />)}
-      </g>
-    ),
-    front: (
-      <g>
         {o.milk && <g transform="translate(1760 640)"><path d="M -16,-62 L 16,-62 L 13,0 L -13,0 Z" fill="#f4f6ff" stroke={INK} strokeWidth={2.4} opacity={0.95} /><path d="M -14,-44 L 14,-44 L 13,0 L -13,0 Z" fill="#fff" /><ellipse cx={0} cy={-62} rx={16} ry={4} fill="#e6e8f6" stroke={INK} strokeWidth={2} /></g>}
         {Array.from({length: o.cups ?? 2}, (_, i) => <Cup key={i} x={1600 + (i - ((o.cups ?? 2) - 1) / 2) * 190 + 20} y={640} s={0.8} t={o.t} steam={1} />)}
+
+        {s === 3 && Array.from({length: 40}, (_, i) => <circle key={i} cx={(rnd(i, 1) * 3400 + o.t * 30) % 3400 - 100} cy={((rnd(i, 2) * 1100 + o.t * 90 * (0.5 + rnd(i, 3))) % 1100)} r={3 + rnd(i, 4) * 4} fill="#fff" opacity={0.85} />)}
       </g>
     ),
     rim: sun > 0.2 ? 'rgba(255,190,110,.95)' : 'rgba(255,230,170,.8)',
