@@ -7,7 +7,6 @@ import {ClockInsert, CalendarBlur} from '../same2d/inserts';
 import {YearFlip} from '../same2d/inserts2';
 import {IconTag, SpeedLines, Bridge, Dust, Shafts, Cinema, ramp, bell, Bubble, BigCounter} from '../same2d/fx';
 import {Sfx3, Cue3} from '../same2d/sound';
-import {Music} from '../components/Music';
 import {GRAIN} from '../fathers/fx';
 import {TypeLayer, Stamp, StampT, TW} from '../fathers/type';
 import {TypeSearch, TripleIcons, TenRing, MirrorPhone} from './inserts';
@@ -152,6 +151,15 @@ const mixCue = (c: Cue3): Cue3 => {
   const a = LEVELS[c.file]?.act ?? -20, k = Math.min(1.6, Math.max(0.5, (c.vol ?? 0.15) / 0.15));
   return {...c, vol: Math.min(1, 0.8 * k * Math.pow(10, (-20 - a) / 20))};
 };
+// a music bed that swells in the pauses and sinks a little under the voice. The recordings are loud (about -19 dBFS) and the voice is quiet (about -23 dBFS), so vol 0.1 on the old scale is about 0.24 here.
+const MusicBed: React.FC<{track: string; from: number; to: number; vol: number}> = ({track, from, to, vol}) => {
+  const frames = Math.round((to - from) * FPS);
+  return (
+    <Sequence from={Math.round(from * FPS)} durationInFrames={frames}>
+      <Audio src={staticFile(`music/${track}.mp3`)} volume={(f) => Math.min(1, vol * 2.4 * (1 - 0.3 * talkEnv(from + f / FPS)) * Math.min(1, f / 60) * Math.min(1, Math.max(0, (frames - f) / 75)))} />
+    </Sequence>
+  );
+};
 const Same7Main: React.FC = () => {
   const frame = useCurrentFrame(), t = frame / FPS;
   const shot = SHOTS.find((s) => t >= s.from && t < s.to) ?? SHOTS[SHOTS.length - 1];
@@ -191,9 +199,9 @@ const Same7Main: React.FC = () => {
 
       <Sequence from={0} durationInFrames={SAME7_FRAMES}><Audio src={staticFile(AUDIO_FILE)} startFrom={0} endAt={SAME7_FRAMES} /></Sequence>
       <Sfx3 cues={CUES.filter((c) => !(c.loop && SYNTH.has(c.file))).map(mixCue)} gain={1} minVol={0} duck={speechDuck} />
-      <Sequence from={0} durationInFrames={Math.round(56 * FPS)}><Music track="low" frames={Math.round(56 * FPS)} vol={0.1} fadeIn={60} fadeOut={90} /></Sequence>
-      <Sequence from={Math.round(55.5 * FPS)} durationInFrames={Math.round(9 * FPS)}><Music track="wonder" frames={Math.round(9 * FPS)} vol={0.08} fadeIn={45} fadeOut={60} /></Sequence>
-      {ACT_MUSIC.map((m, i) => <Sequence key={'am' + i} from={Math.round(m.from * FPS)} durationInFrames={Math.round((m.to - m.from) * FPS)}><Music track={m.track} frames={Math.round((m.to - m.from) * FPS)} vol={m.vol} fadeIn={60} fadeOut={75} /></Sequence>)}
+      <MusicBed track="low" from={0} to={56} vol={0.1} />
+      <MusicBed track="wonder" from={55.5} to={64.5} vol={0.08} />
+      {ACT_MUSIC.map((m, i) => <MusicBed key={'am' + i} track={m.track} from={m.from} to={m.to} vol={m.vol} />)}
     </AbsoluteFill>
   );
 };
