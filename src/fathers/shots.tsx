@@ -59,7 +59,7 @@ const friday = (c: Ctx, side: 'adam' | 'sam') => {
   return SC.str(c, Z(px + (side === 'adam' ? 209 : -209), 590, 2.3), {samLit: 1}, c.l > 0.5 ? <Person t={c.t} {...p} /> : null);
 };
 const partyGuests = (c: Ctx) => (
-  <>{Pe(c, sit('aunt', 40, 1960, 0.6, {face: F.smile, turn: -0.3, top: '#d9a030'}))}{Pe(c, sit('max', 38, 2200, 0.6, {face: F.grin, turn: -0.3, top: '#e0455a'}))}{Pe(c, stand('max', 5, 1100, 0.7, {face: F.grin, turn: 0.3, top: '#e0455a'}))}{Pe(c, stand('leo', 5, 1300, 0.7, {face: F.smile, turn: 0.3, top: '#e8b030'}))}</>
+  <>{Pe(c, {...sit('aunt', 40, 1960, 0.6, {face: F.smile, turn: -0.3, top: '#d9a030'}), chair: true})}{Pe(c, sit('max', 38, 2200, 0.6, {face: F.grin, turn: -0.3, top: '#e0455a'}))}{Pe(c, stand('max', 5, 1100, 0.7, {face: F.grin, turn: 0.3, top: '#e0455a'}))}{Pe(c, stand('leo', 5, 1300, 0.7, {face: F.smile, turn: 0.3, top: '#e8b030'}))}</>
 );
 // Leo in the school play: he is a TREE (brown tunic, a crown of leaves). Drawn in stage coordinates on the stage floor
 const leoTree = (c: Ctx, sc = 0.62, extra: Partial<PersonProps> = {}, x = 1600) => {
@@ -109,6 +109,23 @@ const factoryWork = (c: Ctx, off: number, camA: ReturnType<typeof Z>, camB: Retu
   const p0 = stand('adam', 60, x, 0.85, {outfit: 'work', pose: carrying ? 'carry' : 'stand', turn: face, face: F.tired, walk, hN: hn, hF: hf, lean, children: crate});
   const aOn = u < 0.7 || u >= 4.8, aK = u < 0.7 ? 1 : sm((u - 4.8) / 0.4), bOn = u >= 3.7 && u < 5.6, bK = u < 5.2 ? 1 : 1 - sm((u - 5.2) / 0.4);
   return SC.fac(c, [camA, camB], <>{BENCH(1475, aOn, aK)}{BENCH(794, bOn, bK)}{Pe(c, p0)}</>);
+};
+
+const birthday = (c: Ctx) => {
+  const sc = 0.62, k = sc * bodyK('adam', 12) * 0.85, p = stand('adam', 12, 1500, sc, {}), hx = 1500 + 26 * k, hy = p.y - 450 * k, fl = 1 + 0.12 * Math.sin(c.t * 14);
+  return SC.kit(c, [Z(1560, 520, 1.15), Z(1560, 540, 1.45)], {night: true}, <>
+    <g transform="translate(0 0)">
+      <path d="M 1000,250 Q 1560,400 2120,250" fill="none" stroke="#1d1a2e" strokeWidth={4} />
+      {'HAPPY BIRTHDAY'.split('').map((ch, i) => { const q = (i + 0.5) / 14, x = 1000 + q * 1120, y = 250 + 4 * 75 * q * (1 - q) * 1.3 + 10; return ch === ' ' ? null : <g key={i} transform={`translate(${x} ${y}) rotate(${(q - 0.5) * 40})`}><path d="M -22,0 L 22,0 L 0,56 Z" fill={['#e0455a', '#f5c542', '#3f9a52', '#2c7ab8'][i % 4]} stroke="#1d1a2e" strokeWidth={3} /><text x={0} y={28} textAnchor="middle" fontFamily="Montserrat, sans-serif" fontWeight={800} fontSize={26} fill="#fff" stroke="#1d1a2e" strokeWidth={0.8}>{ch}</text></g>; })}
+      {[[1090, 560, '#e0455a'], [1140, 520, '#f5c542'], [1190, 570, '#3f9a52'], [2040, 540, '#2c7ab8'], [2090, 590, '#e0455a']].map(([x, y, col], i) => <g key={i} transform={`translate(${x} ${y})`}><path d={`M 0,44 Q ${i % 2 ? 16 : -16},120 0,${200 - i * 8}`} fill="none" stroke="#1d1a2e" strokeWidth={2.4} /><ellipse cx={0} cy={0} rx={36} ry={46} fill={col as string} stroke="#1d1a2e" strokeWidth={3.4} /><ellipse cx={-12} cy={-14} rx={8} ry={14} fill="#fff" opacity={0.4} /><path d="M -5,46 L 5,46 L 0,56 Z" fill={col as string} stroke="#1d1a2e" strokeWidth={2.4} /></g>)}
+    </g>
+    <g transform="translate(1800 700)">
+      <ellipse cx={0} cy={4} rx={150} ry={26} fill="#ffffff" stroke="#1d1a2e" strokeWidth={3.6} /><rect x={-110} y={-52} width={220} height={54} rx={10} fill="#f4d9a8" stroke="#1d1a2e" strokeWidth={3.6} /><rect x={-80} y={-96} width={160} height={46} rx={10} fill="#f08aa6" stroke="#1d1a2e" strokeWidth={3.6} /><path d="M -80,-96 q 20,18 40,0 q 20,18 40,0 q 20,18 40,0 q 20,18 40,0" fill="#fff" stroke="#1d1a2e" strokeWidth={3} />
+      {[-40, -14, 12, 38].map((x, i) => <g key={i} transform={`translate(${x} -98)`}><rect x={-4} y={-34} width={8} height={34} fill={['#e0455a', '#3f9a52', '#2c7ab8', '#f5c542'][i]} stroke="#1d1a2e" strokeWidth={2} /><ellipse cx={0} cy={-42 * 1} rx={5 * fl} ry={9 * fl} fill="#ffcf5a" /><ellipse cx={0} cy={-40} rx={9} ry={14} fill="#ffcf5a" opacity={0.25} /></g>)}
+    </g>
+    {Pe(c, {...sit('adam', 12, 1500, sc, {outfit: 'kid', turn: 0.7, face: {...F.sad, gaze: [0.9, 0.2]}}, FL), chair: true})}
+    <g transform={`translate(${hx - 4 * k} ${hy - 205 * k + 104}) rotate(8)`}><path d={`M -34,0 L 34,0 L 0,-92 Z`} fill="#f5c542" stroke="#1d1a2e" strokeWidth={3.4} transform={`scale(${k * 1.9})`} /><circle cx={0} cy={-92 * k * 1.9} r={9 * k * 1.9} fill="#e0455a" stroke="#1d1a2e" strokeWidth={2.4} /></g>
+  </>);
 };
 
 export const KWORDS: KW[] = [
@@ -185,10 +202,10 @@ export const LIST: Entry[] = [
   [T("adam's father worked double shifts"), 'f', (c) => factoryWork(c, 0, Z(1250, 540, 1.1), Z(1250, 540, 1.3))],
   [T('for 30 years'), undefined, (c) => factoryWork(c, 2.5, Z(1150, 540, 1.25), Z(1250, 540, 1.1))],
   [T('adam barely saw him'), undefined, (c) => SC.liv(c, [Z(1950, 520, 1.4), Z(1980, 500, 1.6)], {night: true, seats: false}, Pe(c, stand('adam', 8, 1960, 0.7, {outfit: 'kid', turn: 0.7, face: {...F.sad, gaze: [0.9, 0.1]}})), 0.4)],
-  [T('but on his 12th birthday'), 'w', (c) => SC.kit(c, [Z(1500, 540, 1.2), Z(1500, 520, 1.35)], {night: true}, <>{Pe(c, sit('adam', 12, 1600, 0.55, {outfit: 'kid', turn: 0.2, face: {...F.sad, gaze: [0.9, 0]}}, FL))}<g transform="translate(1600 704)"><rect x={-60} y={-18} width={120} height={22} rx={6} fill="#f6efe2" stroke="#1d1a2e" strokeWidth={3} /><rect x={-6} y={-60} width={12} height={42} fill="#e0455a" stroke="#1d1a2e" strokeWidth={2.6} /><ellipse cx={0} cy={-64} rx={7} ry={11} fill="#ffcf5a" /></g></>)],
+  [T('but on his 12th birthday'), 'w', (c) => birthday(c)],
   [T('his father came home late'), undefined, (c) => SC.door(c, [Z(1500, 500, 1.2), Z(1560, 500, 1.4)], {label: 'HOME', boxes: 0, glow: 0.4}, Pe(c, stand('adam', 60, 1250 + ramp(c.l, 0, 1.4) * 80, 0.9, {outfit: 'work', turn: 0.7, face: F.tired})))],
   [T('and handed him a watch'), undefined, (c) => giftScene(c)],
-  [T('wrapped in newspaper'), undefined, (c) => <WatchInsert t={c.l} unwrapAt={0.6} zoom={0.9} />],
+  [T('wrapped in newspaper'), undefined, (c) => <WatchInsert t={c.l} unwrapAt={1.0} zoom={1.3} />],
   [T('it was the only gift'), undefined, (c) => SC.kit(c, faceCam(stand('adam', 12, 1600, 0.7), 2.4, 30), {night: true}, Pe(c, stand('adam', 12, 1600, 0.7, {outfit: 'kid', pose: 'hold', turn: 0.2, face: {smile: 0.6, lids: 0.3, gaze: [0, 0.6], brow: 0.3}})))],
   [T('he still wears it'), undefined, (c) => <WatchInsert t={c.l + 3} zoom={0.75} />],
   // ================= ADAM BECOMES A FATHER =================
@@ -207,7 +224,7 @@ export const LIST: Entry[] = [
   [T('not because he loved less'), undefined, (c) => deskScene(c, [faceCam(sit('adam', 35, 1700, 0.7, {pose: 'desk'}, FL + 76), 2.3), faceCam(sit('adam', 35, 1700, 0.7, {pose: 'desk'}, FL + 76), 2.9)], 35, {face: {lids: 0.35, smile: 0.25, tilt: 8, gaze: [0, 0.3]}, turn: 0}, 600, false)],
   [T('because this was the only kind of love'), undefined, (c) => deskScene(c, [Z(1500, 600, 1.3), Z(1620, 560, 1.7)], 40, {face: {...F.tired, gaze: [0, 0.6]}}, 660)],
   // ================= SAM'S HOUR =================
-  [T('sam worked too'), 'w', (c) => SC.kit(c, [Z(1500, 540, 1.0), Z(1450, 520, 1.25)], {}, <>{Pe(c, sit('sam', 35, 1280, 0.7, {pose: 'desk', turn: 0.5, face: F.calm}, FL + 76))}<Laptop x={1620} y={690} s={0.8} open={1} /></>)],
+  [T('sam worked too'), 'w', (c) => SC.kit(c, [Z(1500, 540, 1.0), Z(1450, 520, 1.25)], {}, <>{Pe(c, {...sit('sam', 35, 1280, 0.7, {pose: 'desk', turn: 0.5, face: F.calm}, FL + 76), chair: true})}<Laptop x={1620} y={690} s={0.8} open={1} /></>)],
   [T('he closed the laptop') - 0.8, undefined, (c) => <LaptopHand t={c.l} who="sam" closeAt={0.95} />],
   [T('every evening', 1), undefined, (c) => SC.liv(c, [Z(1250, 620, 1.1), Z(1250, 600, 1.35)], {warm: true}, <>{Pe(c, sit('sam', 35, 1100, 0.62, {turn: 0.4, face: F.grin}, FL + 90))}{Pe(c, sit('max', 5, 1430, 0.62, {turn: -0.4, face: F.grin}, FL + 90))}<Blocks x={1270} y={FL + 6} n={Math.min(10, 3 + Math.floor(c.l * 1.5))} s={0.6} /></>, 0.4)],
   [T('no phone'), undefined, (c) => <PhoneDark t={c.l} light={0} />],
@@ -227,7 +244,7 @@ export const LIST: Entry[] = [
   [T('for two days'), undefined, (c) => SC.room(c, [Z(1300, 760, 2.0), Z(1250, 780, 2.4)], <g transform="translate(1180 800)"><rect x={-60} y={-24} width={120} height={36} rx={14} fill="#c0392b" stroke="#1d1a2e" strokeWidth={5} /><circle cx={-34} cy={14} r={14} fill="#2a2a32" stroke="#1d1a2e" strokeWidth={4} /><circle cx={34} cy={14} r={14} fill="#2a2a32" stroke="#1d1a2e" strokeWidth={4} /></g>)],
   // ================= THE KITE =================
   [T('max got a small paper kite'), undefined, (c) => SC.park(c, [Z(1600, 480, 2.0), Z(1600, 480, 2.6)], {season: 1}, null, <Kite x={1600} y={430} s={1.1} rot={-8} t={c.t} tail={1} />)],
-  [T('sam made it himself'), 'w', (c) => SC.kit(c, [Z(1500, 560, 1.1), Z(1500, 540, 1.4)], {}, <>{Pe(c, sit('sam', 35, 1300, 0.7, {pose: 'desk', turn: 0.5, face: F.calm}, FL + 76))}<Newspaper x={1620} y={700} s={1.2} fold={ramp(c.l, 1, 2)} /></>)],
+  [T('sam made it himself'), 'w', (c) => SC.kit(c, [Z(1500, 560, 1.1), Z(1500, 540, 1.4)], {}, <>{Pe(c, {...sit('sam', 35, 1300, 0.7, {pose: 'desk', turn: 0.5, face: F.calm}, FL + 76), chair: true})}<Newspaper x={1620} y={700} s={1.2} fold={ramp(c.l, 1, 2)} /></>)],
   [T('out of newspaper and two sticks'), undefined, (c) => SC.kit(c, [Z(1620, 640, 2.2), Z(1620, 650, 2.6)], {}, <Newspaper x={1620} y={700} s={1.3} fold={1} />)],
   [T('it wobbled'), undefined, (c) => SC.park(c, [Z(1550, 400, 1.3), Z(1550, 430, 1.5)], {season: 1}, null, <Kite x={1560 + Math.sin(c.t * 5) * 30} y={300 + c.l * 20} s={1} rot={Math.sin(c.t * 5) * 20} t={c.t} />)],
   [T('it crashed'), undefined, (c) => SC.park(c, [Z(1550, 500, 1.4), Z(1550, 640, 1.6)], {season: 1}, null, <Kite x={1560 + c.l * 80} y={300 + c.l * 360} s={1} rot={-40 + c.l * 150} t={c.t} />)],

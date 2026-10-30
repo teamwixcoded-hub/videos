@@ -22,7 +22,7 @@ export const path = (t: number, keys: [number, Cam][]): Cam => {
   return keys[keys.length - 1][1];
 };
 
-type Pos = {who: Who; age: number; x: number; y: number; scale: number} & Partial<Omit<PersonProps, 'who' | 't' | 'x' | 'y' | 'scale' | 'age'>>;
+type Pos = {who: Who; age: number; x: number; y: number; scale: number; chair?: boolean} & Partial<Omit<PersonProps, 'who' | 't' | 'x' | 'y' | 'scale' | 'age'>>;
 const FRONTP = ['clap', 'film', 'desk', 'type'];
 export const stand = (who: Who, age: number, x: number, sc = 0.7, o: Partial<PersonProps> = {}): Pos => ({who, age, x, y: FLOOR - 425 * sc * bodyK(who, age) * CHAR_K, scale: sc, ...o});
 // side-view sitters have their hips 218 above the floor, front-view sitters (desk, clapping, filming) 300
@@ -34,9 +34,33 @@ export const sit = (who: Who, age: number, x: number, sc = 0.7, o: Partial<Perso
 const ShadowE: React.FC<{x: number; rx: number; floor?: number}> = ({x, rx, floor = FLOOR}) => (
   <g><defs><radialGradient id="pshadow"><stop offset="0" stopColor="#05060f" stopOpacity="0.5" /><stop offset="0.6" stopColor="#05060f" stopOpacity="0.24" /><stop offset="1" stopColor="#05060f" stopOpacity="0" /></radialGradient></defs><ellipse cx={x} cy={floor + 6} rx={rx} ry={rx * 0.13} fill="url(#pshadow)" /></g>
 );
-export const Pe = (c: Ctx, p: Pos, key?: string | number) => (
-  <g key={key}><ShadowE x={p.x} floor={(p as {floor?: number}).floor} rx={190 * p.scale * bodyK(p.who, p.age) * CHAR_K} /><Person t={c.t} enter={c.l / 0.55} {...p} /></g>
-);
+// a plain wooden chair under a sitter (side view: seat, back post, legs; front view: seat and legs) so nobody sits in the air
+const ChairUnder: React.FC<{p: Pos; k: number; front: boolean}> = ({p, k, front}) => {
+  const dir = (p.turn ?? 0.2) < 0 ? -1 : 1, seatY = p.y + (front ? 96 : 80) * k, floor = p.y + (front ? 300 : 218) * k, wood = '#7a5232', woodD = '#5a3a22';
+  if (front) return (
+    <g>
+      <rect x={p.x - 120 * k} y={seatY - 260 * k} width={22 * k} height={260 * k} fill={woodD} stroke="#1d1a2e" strokeWidth={3} /><rect x={p.x + 98 * k} y={seatY - 260 * k} width={22 * k} height={260 * k} fill={woodD} stroke="#1d1a2e" strokeWidth={3} />
+      <rect x={p.x - 120 * k} y={seatY - 250 * k} width={240 * k} height={36 * k} rx={6} fill={wood} stroke="#1d1a2e" strokeWidth={3} />
+      <rect x={p.x - 126 * k} y={seatY} width={252 * k} height={26 * k} rx={8} fill={wood} stroke="#1d1a2e" strokeWidth={3.4} />
+      {[-100, 80].map((dx) => <rect key={dx} x={p.x + dx * k} y={seatY + 26 * k} width={20 * k} height={floor - seatY - 26 * k} fill={woodD} stroke="#1d1a2e" strokeWidth={3} />)}
+    </g>
+  );
+  const bx = p.x - dir * 96 * k, fx = p.x + dir * 200 * k;
+  return (
+    <g>
+      <rect x={Math.min(bx, bx + dir * 0) - 10 * k} y={seatY - 340 * k} width={22 * k} height={340 * k + 20 * k} fill={woodD} stroke="#1d1a2e" strokeWidth={3} />
+      <rect x={bx - 14 * k} y={seatY - 330 * k} width={30 * k} height={120 * k} rx={6} fill={wood} stroke="#1d1a2e" strokeWidth={3} />
+      <rect x={Math.min(bx, fx) - 4} y={seatY} width={Math.abs(fx - bx) + 8} height={24 * k} rx={8} fill={wood} stroke="#1d1a2e" strokeWidth={3.4} />
+      {[bx + dir * 10 * k, fx - dir * 20 * k].map((lx, i) => <rect key={i} x={lx - 10 * k} y={seatY + 24 * k} width={20 * k} height={floor - seatY - 24 * k} fill={woodD} stroke="#1d1a2e" strokeWidth={3} />)}
+    </g>
+  );
+};
+export const Pe = (c: Ctx, p: Pos, key?: string | number) => {
+  const {chair, ...rest} = p, front = rest.view === 'front' || (!!rest.pose && FRONTP.includes(rest.pose)), k = p.scale * bodyK(p.who, p.age) * CHAR_K;
+  return (
+    <g key={key}>{chair && <ChairUnder p={p} k={k} front={front} />}<ShadowE x={p.x} floor={(p as {floor?: number}).floor} rx={190 * p.scale * bodyK(p.who, p.age) * CHAR_K} /><Person t={c.t} enter={c.l / 0.55} {...rest} /></g>
+  );
+};
 // camera aimed at a person's face / upper body
 const headH = (p: Pos) => ((p.view === 'front' || (!!p.pose && FRONTP.includes(p.pose))) ? 500 : 440);
 export const faceCam = (p: Pos, z = 2.4, dy = 0): Cam => Z(p.x, p.y - headH(p) * p.scale * bodyK(p.who, p.age) * CHAR_K + dy, z);
