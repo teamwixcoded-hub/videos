@@ -1,0 +1,11 @@
+const fs=require('fs');let h=fs.readFileSync('src/fathers/Human.tsx','utf8');
+const a=h.indexOf("const HumanArm");const b=h.indexOf("o.simple ? (",a);const e=h.indexOf("\n    ) : (",b);
+let blk=h.slice(b,e);
+const held="        {held && (upright ? <g transform={`translate(${H[0]} ${H[1]})`}>{held}</g> : <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform=\"translate(0 -6)\">{held}</g></g>)}\n";
+const hand="        {!(held && upright) && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform=\"translate(0 -6)\"><Mitten curl={curl} s={s * 1.25} /></g></g>}\n";
+if(!blk.includes(held)||!blk.includes(hand))throw new Error('blk');
+const under="        {held && !upright && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform=\"translate(0 -6)\"><Mitten curl={curl} s={s * 1.25} /></g></g>}\n";
+const tips="        {held && !upright && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform=\"translate(0 -6)\" fill={SKIN} stroke={INK} strokeWidth={3.4} strokeLinecap=\"round\">{[18, 48, 78].map((y) => <rect key={y} x={-58} y={y + 36} width={18} height={20} rx={9} />)}<rect x={42} y={58} width={18} height={26} rx={9} /></g></g>}\n";
+blk=blk.replace(held,"").replace(hand,under+held+tips+hand.replace("!(held && upright) && !noHand","!held && !noHand"));
+h=h.slice(0,b)+blk+h.slice(e);
+fs.writeFileSync('src/fathers/Human.tsx',h);

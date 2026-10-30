@@ -96,8 +96,10 @@ const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s
       <g style={dim ? {filter: 'brightness(0.9)'} : undefined}>
         <Noodle A={S} J={E} B={wr} w={50} w2={42} fill={o.top} />
         {o.watch && <g transform={`translate(${mix(E, H, 0.82)[0]} ${mix(E, H, 0.82)[1]}) rotate(${fa})`}><rect x={-9} y={-20} width={18} height={40} rx={5} fill="#5a3a24" stroke={INK} strokeWidth={2.6} /><circle r={14} fill="#f2c14e" stroke={INK} strokeWidth={3} /><circle r={9.5} fill="#fbf1d2" /></g>}
+        {held && !upright && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>}
         {held && (upright ? <g transform={`translate(${H[0]} ${H[1]})`}>{held}</g> : <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)">{held}</g></g>)}
-        {!(held && upright) && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>}
+        {held && !upright && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)" fill={SKIN} stroke={INK} strokeWidth={3.4} strokeLinecap="round">{[18, 48, 78].map((y) => <rect key={y} x={-58} y={y + 36} width={18} height={20} rx={9} />)}<rect x={42} y={58} width={18} height={26} rx={9} /></g></g>}
+        {!held && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>}
       </g>
     ) : (
     <g style={dim ? {filter: 'brightness(0.9)'} : undefined}>
@@ -230,8 +232,10 @@ const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?:
   if (o.simple) return (
     <g>
       <Noodle A={S} J={E} B={wr} w={50} w2={42} fill={o.top} />
+      {held && !upright && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>}
       {held && (upright ? <g transform={`translate(${H[0]} ${H[1]})`}>{held}</g> : <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)">{held}</g></g>)}
-      {!(held && upright) && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>}
+      {held && !upright && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)" fill={SKIN} stroke={INK} strokeWidth={3.4} strokeLinecap="round">{[18, 48, 78].map((y) => <rect key={y} x={-58 * s * -1 * 0 - 58} y={y + 36} width={18} height={20} rx={9} />)}<rect x={42} y={58} width={18} height={26} rx={9} /></g></g>}
+      {!held && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>}
     </g>
   );
   return (
