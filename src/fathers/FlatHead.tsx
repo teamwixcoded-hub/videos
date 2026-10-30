@@ -9,7 +9,7 @@ const clamp = (x: number, a: number, b: number) => Math.min(b, Math.max(a, x));
 const rnd = (i: number) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 const sstep = (x: number) => { const k = clamp(x, 0, 1); return k * k * (3 - 2 * k); };
 
-const SKINS: Record<string, string> = {adam: '#f1c9a5', sam: '#e0a678', leo: '#f3cfae', max: '#e6b48a', aunt: '#d79a73', man: '#f1c9a5'};
+const SKINS: Record<string, string> = {adam: '#eeb08a', sam: '#a8613a', leo: '#f1c19b', max: '#d98f5c', aunt: '#d79a73', man: '#eeb08a'};
 export const skinOf = (look: string) => SKINS[look] ?? '#f1c9a5';
 // hands, necks and bare arms read the skin colour of whoever is drawn
 let CUR = '#f1c9a5';

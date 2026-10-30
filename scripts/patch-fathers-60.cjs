@@ -1,0 +1,25 @@
+const fs=require('fs');
+let fh=fs.readFileSync('src/fathers/FlatHead.tsx','utf8');
+fh=fh.replace(/const SKINS: Record<string, string> = \{[^}]*\};/,"const SKINS: Record<string, string> = {adam: '#eeb08a', sam: '#a8613a', leo: '#f1c19b', max: '#d98f5c', aunt: '#d79a73', man: '#eeb08a'};");
+fs.writeFileSync('src/fathers/FlatHead.tsx',fh);
+let h=fs.readFileSync('src/fathers/Human.tsx','utf8');
+h=h.replace("import {HeadFor} from './ImgHead';","import {HeadFor} from './ImgHead';\nimport {setSkin, SK, SKD} from './FlatHead';");
+h=h.replace("const SKIN = '#f3f0fb', SKIN_D = '#d9d3ec';\n","");
+h=h.replace(/\bSKIN_D\b/g,'SKD()').replace(/\bSKIN\b/g,'SK()');
+h=h.replace("  const id = useId().replace(/:/g, '');\n  const inh = Math.sin(t * 1.9 + seed);","  setSkin(look);\n  const id = useId().replace(/:/g, '');\n  const inh = Math.sin(t * 1.9 + seed);");
+h=h.replace("  const id = useId().replace(/:/g, '');\n  const inh = Math.sin(t * 1.9 + seed), sway","  setSkin(look);\n  const id = useId().replace(/:/g, '');\n  const inh = Math.sin(t * 1.9 + seed), sway");
+// age reaches the head so it can pick the right illustrated set
+h=h.split("<HeadFor face={face}").join("<HeadFor age={age} face={face}");
+h=h.replace("curlF?: number; heldN?","curlF?: number; age?: number; heldN?");
+h=h.replace("curlN = 0.35, curlF = 0.35, heldN,","curlN = 0.35, curlF = 0.35, age, heldN,");
+h=h.replace("idle?: number; curl?: number; heldR?","idle?: number; curl?: number; age?: number; heldR?");
+h=h.replace("curl = 0.35, heldR,","curl = 0.35, age, heldR,");
+fs.writeFileSync('src/fathers/Human.tsx',h);
+let he=fs.readFileSync('src/fathers/held.tsx','utf8');
+he=he.replace("import {INK} from './theme';","import {INK} from './theme';\nimport {SK, SKD} from './FlatHead';");
+he=he.split('fill="#f3f0fb"').join('fill={SK()}').split('fill="#d9d3ec"').join('fill={SKD()}').split('stroke="#d9d3ec"').join('stroke={SKD()}');
+fs.writeFileSync('src/fathers/held.tsx',he);
+let p=fs.readFileSync('src/fathers/People.tsx','utf8');
+p=p.split("look={who} grey={grey}").join("look={who} grey={grey} age={age}");
+fs.writeFileSync('src/fathers/People.tsx',p);
+console.log((p.match(/age=\{age\}/g)||[]).length,(h.match(/age=\{age\}/g)||[]).length);
