@@ -80,15 +80,15 @@ export const Reader: React.FC<{p: RP; t: number}> = ({p, t}) => {
   const tossK = ramp(p.l ?? 0, 0.2, 0.8);
   const restN: V = [112, -62], restF: V = [152, -44];
   // the book is held out in front of the chest at arm's length, elbows bent a little, near hand under the book, far hand turns the page
-  const handN: V = mode === 'book' ? lerpV(restN, [244, -128], rk) : mode === 'shut' ? [160, -66] : mode === 'toss' ? lerpV([160, -66], [40, -96], tossK) : mode === 'chin' ? [44, -334] : restN;
-  const handF: V = mode === 'book' ? lerpV(restF, [290 - turnF * 30, -146 - turnF * 120], rk) : mode === 'shut' ? [186, -78] : mode === 'toss' ? lerpV([186, -78], [70, -80], tossK) : restF;
+  const handN: V = mode === 'book' ? lerpV(restN, [214, -222], rk) : mode === 'shut' ? [160, -66] : mode === 'toss' ? lerpV([160, -66], [40, -96], tossK) : mode === 'chin' ? [44, -334] : restN;
+  const handF: V = mode === 'book' ? lerpV(restF, [262 - turnF * 30, -240 - turnF * 100], rk) : mode === 'shut' ? [186, -78] : mode === 'toss' ? lerpV([186, -78], [70, -80], tossK) : restF;
   const sweep = ((t * 0.6) % 1) * 1.6 - 0.8;
-  const face: Face = {gaze: p.gaze ?? (mode === 'book' ? [sweep * 0.5 + 0.3, 0.9] : [0.2, 0.2]), lids: p.lids ?? 0.12, smile: p.smile ?? 0.25, open: p.open ?? 0, brow: p.brow ?? 0.1, browTilt: p.browTilt ?? 6};
-  const headPitch = 6 + (p.tilt ?? (mode === 'book' ? 8 : 0)) + (mode === 'book' ? 6 : 0) - (p.turn ?? 0) * 10;
+  const face: Face = {gaze: p.gaze ?? (mode === 'book' ? [sweep * 0.4 + 0.5, 0.2] : [0.2, 0.2]), lids: p.lids ?? 0.12, smile: p.smile ?? 0.25, open: p.open ?? 0, brow: p.brow ?? 0.1, browTilt: p.browTilt ?? 6};
+  const headPitch = 6 + (p.tilt ?? (mode === 'book' ? 2 : 0)) + (mode === 'book' ? 3 : 0) - (p.turn ?? 0) * 10;
   return (
     <SideChar x={p.x ?? 640} y={p.y ?? 612} torso={-6 + ((p.lean ?? -3) + 3) * 0.7} headPitch={headPitch} turn={0.85 + (p.turn ?? 0) * 0.15} face={face}
       handN={handN} handF={handF} footN={[230, 170]} footF={[300, 172]} t={t} seed={0.7}>
-      {mode === 'book' && (p.raise ?? 1) > 0.04 && <BookSide x={lerp(150, 272, rk)} y={lerp(-70, -232, rk)} deg={lerp(-4, -22, rk)} flip={fl} />}
+      {mode === 'book' && (p.raise ?? 1) > 0.04 && <BookSide x={lerp(150, 246, rk)} y={lerp(-70, -312, rk)} deg={lerp(-4, -10, rk)} flip={fl} />}
       {mode === 'toss' && <BookSide shut x={lerp(176, 40, tossK)} y={lerp(-92, -112, tossK)} deg={lerp(-8, -4, tossK)} />}
       {mode === 'shut' && <BookSide shut x={176} y={-92} deg={-8} />}
       {p.bookArm && mode === 'rest' && <BookSide shut x={40} y={-112} deg={-4} />}
