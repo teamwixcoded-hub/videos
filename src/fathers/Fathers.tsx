@@ -85,11 +85,17 @@ const TwoFathersMain: React.FC = () => {
     <AbsoluteFill style={{background: '#05060b'}}>
       <AbsoluteFill style={{transform: `translate(${whipDir * whip * whip * 90 + Math.sin(t * 83) * shk}px, ${Math.cos(t * 67) * shk}px) scale(${1 + whip * 0.04 + shk * 0.002})`, filter: `contrast(1.06) saturate(${paperCard ? 1 : 1.05 * g.sat})${whip > 0.02 ? ` blur(${whip * 16}px)` : ''}`}}>
         {shot.C(c)}
+        {!paperCard && <AbsoluteFill style={{mixBlendMode: 'screen', opacity: 0.26, filter: 'blur(28px) brightness(1.05) contrast(2.0)', pointerEvents: 'none'}}>{shot.C(c)}</AbsoluteFill>}
       </AbsoluteFill>
       {!paperCard && <AbsoluteFill style={{background: `rgb(${g.c[0]},${g.c[1]},${g.c[2]})`, opacity: g.a, mixBlendMode: 'soft-light'}} />}
       {!paperCard && <Shafts t={t} warm={warm} />}
       {!paperCard && <Cinema t={t} />}
-      <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 52%, rgba(0,0,0,.55) 100%)'}} />
+      {!paperCard && <>
+        <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(14,80,125,.30) 0%, rgba(0,0,0,0) 48%, rgba(255,125,45,.20) 100%)', mixBlendMode: 'soft-light', pointerEvents: 'none'}} />
+        <AbsoluteFill style={{background: 'linear-gradient(0deg, rgba(8,10,26,.5) 0%, rgba(8,10,26,0) 34%)', pointerEvents: 'none'}} />
+        <AbsoluteFill style={{background: `radial-gradient(ellipse at ${warm ? 78 : 22}% 24%, rgba(${warm ? '255,196,120' : '150,190,255'},.13) 0%, rgba(0,0,0,0) 55%)`, mixBlendMode: 'screen', pointerEvents: 'none'}} />
+      </>}
+      <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 44%, rgba(0,0,0,.66) 100%)'}} />
       <AbsoluteFill style={{backgroundImage: GRAIN, backgroundPosition: `${(frame * 37) % 220}px ${(frame * 91) % 220}px`, mixBlendMode: 'overlay', opacity: 0.12, pointerEvents: 'none'}} />
       {BRIDGE_AT.map((b) => <Bridge key={b} t={t} at={b} />)}
       {fl > 0 && <><AbsoluteFill style={{background: '#fff', opacity: fl * 0.9}} /><SpeedLines o={Math.min(1, fl * 1.6)} /><div style={{position: 'absolute', left: 0, right: 0, top: '50%', height: 8 + fl * 26, transform: 'translateY(-50%)', background: 'linear-gradient(90deg, transparent, rgba(150,200,255,.95) 30%, #fff 50%, rgba(150,200,255,.95) 70%, transparent)', opacity: Math.min(1, fl * 1.4), filter: 'blur(7px)'}} /></>}
@@ -99,6 +105,7 @@ const TwoFathersMain: React.FC = () => {
       {paperCard && <RewindCard p={(t - REWIND[0]) / (REWIND[1] - REWIND[0])} f={(t - REWIND[0]) * FPS} />}
 
       <Rain t={t} from={T('the way he thought love was supposed to look')} to={T('the other kept it') - 0.1} kind="money" /><Rain t={t} from={T('the way his son actually needed')} to={T('by the end of this video') - 0.15} kind="time" /><Rain t={t} from={T('more money')} to={T('more money') + 2} kind="money" /><Rain t={t} from={T('one hour belonged')} to={T('one hour belonged') + 3} kind="time" />
+      {!paperCard && <><div style={{position: 'absolute', left: 0, right: 0, top: 0, height: 54, background: '#000'}} /><div style={{position: 'absolute', left: 0, right: 0, bottom: 0, height: 54, background: '#000'}} /></>}
       <KineticWord t={t} words={WORDS} />
       {TAGS.map((w) => <AgeTag key={w.at} t={t} from={w.at} to={w.at + w.dur} text={w.text} pills={pillsOf(w.text)} />)}
       {TIMES.map((w) => <IconTag key={w.at} t={t} from={w.at} to={w.at + w.dur} text={w.text} icon={w.text.startsWith('SUNDAY') ? 'sun' : 'clock'} color="#fff" />)}
