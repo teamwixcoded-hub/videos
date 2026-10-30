@@ -46,7 +46,7 @@ const walkers = (c: Ctx, ages: [number, number], x0: number, sp: number, sc = 0.
 const benchPair = (c: Ctx, ages: [number, number], face = F.smile) => (
   <>{Pe(c, sit('sam', ages[0], 1620, 0.62, {turn: 0.25, face, view: 'front', pose: 'cup'}))}{Pe(c, sit('max', ages[1], 1900, 0.62, {turn: -0.25, face: F.smile, view: 'front', pose: 'cup'}))}</>
 );
-const four = (c: Ctx, cups = 4) => SC.tea(c, [Z(1760, 580, 1.25), Z(1760, 570, 1.35)], {season: 1, cups}, <>
+const four = (c: Ctx, cups = 0) => SC.tea(c, [Z(1760, 580, 1.25), Z(1760, 570, 1.35)], {season: 1, cups}, <>
   {Pe(c, sit('adam', 65, 1440, 0.6, {turn: 0.2, face: F.soft, view: 'front', pose: 'cup'}))}{Pe(c, sit('sam', 65, 1660, 0.6, {turn: 0.1, face: F.smile, view: 'front', pose: 'cup'}))}
   {Pe(c, sit('leo', 30, 1880, 0.6, {turn: -0.1, face: F.smile, view: 'front', pose: 'cup'}))}{Pe(c, sit('max', 30, 2100, 0.6, {turn: -0.2, face: F.grin, view: 'front', pose: 'cup'}))}</>);
 const tint = (a: string, b: string, k: number) => <AbsoluteFill style={{background: `linear-gradient(90deg, ${a}, ${b})`, opacity: k, mixBlendMode: 'soft-light', pointerEvents: 'none'}} />;
@@ -275,7 +275,7 @@ export const LIST: Entry[] = [
   [T('the walks'), undefined, (c) => SC.tea(c, [Z(1100, 560, 1.0), Z(1700, 560, 1.15)], {season: 1, sunset: 0.1}, walkers(c, [40, 10], 700, 120))],
   [T('the boring tuesday nights'), undefined, (c) => SC.liv(c, [Z(1250, 560, 1.2), Z(1250, 560, 1.35)], {warm: true}, <>{Pe(c, sit('sam', 40, 1100, 0.62, {turn: 0.4, face: F.soft}, FL + 20))}{Pe(c, sit('max', 10, 1400, 0.62, {turn: 0.4, face: F.smile}, FL + 20))}<rect x={1620} y={440} width={300} height={190} rx={14} fill="#2a3a66" stroke="#1d1a2e" strokeWidth={4} /><rect x={1636} y={456} width={268} height={158} rx={8} fill="#8fb8ff" opacity={0.65} /></>, 0.4)],
   [T('those were the moments'), 'f', (c) => SC.liv(c, [Z(1000, 380, 1.2), Z(1000, 340, 1.0)], {warm: true, photoN: 12}, null, 0.1)],
-  [T("they just didn't look like it"), undefined, (c) => SC.tea(c, [Z(1700, 600, 1.3), Z(1700, 590, 1.5)], {season: 1, sunset: 0.1}, benchPair(c, [45, 14]))],
+  [T("they just didn't look like it"), undefined, (c) => SC.tea(c, [Z(1700, 600, 1.3), Z(1700, 590, 1.5)], {season: 1, sunset: 0.1, cups: 0}, benchPair(c, [45, 14]))],
   // ================= AGE 15 =================
   [T('at 15'), 'f', (c) => SC.room(c, [Z(1400, 520, 1.2), Z(1350, 480, 1.5)], Pe(c, sit('leo', 15, 1360, 0.8, {pose: 'phone', face: {...F.calm, gaze: [0, 0.5]}, turn: 0.2})))],
   [T('the best shoes'), undefined, (c) => SC.door(c, [Z(1300, 760, 1.6), Z(1250, 740, 1.9)], {boxes: 4})],
@@ -294,7 +294,7 @@ export const LIST: Entry[] = [
   [T('grades'), undefined, (c) => SC.kit(c, faceCam(stand('max', 16, 1950, 0.85), 2.3, 30), {}, Pe(c, stand('max', 16, 1950, 0.85, {turn: -0.5, face: {...F.angry, open: 0.3 + 0.3 * Math.abs(Math.sin(c.t * 11))}})))],
   [T('curfews'), undefined, (c) => SC.kit(c, [Z(1600, 560, 1.05), Z(1600, 540, 1.2)], {}, <>{Pe(c, stand('sam', 45, 1250, 0.8, {turn: 0.5, face: F.angry, pose: 'point'}))}{Pe(c, stand('max', 16, 1980 + ramp(c.l, 0.3, 0.7) * 120, 0.85, {turn: -0.5, face: F.angry, lean: -ramp(c.l, 0.2, 0.6) * 12}))}</>)],
   [T('but every friday'), 'w', (c) => SC.tea(c, [Z(1100, 560, 1.0), Z(1700, 560, 1.15)], {season: 1, sunset: 0.1}, walkers(c, [45, 16], 700, 120))],
-  [T('they still walked to the tea stall'), undefined, (c) => SC.tea(c, [Z(1700, 600, 1.3), Z(1700, 590, 1.5)], {season: 1, sunset: 0.1}, benchPair(c, [45, 16]))],
+  [T('they still walked to the tea stall'), undefined, (c) => SC.tea(c, [Z(1700, 600, 1.3), Z(1700, 590, 1.5)], {season: 1, sunset: 0.1, cups: 0}, benchPair(c, [45, 16]))],
   // ================= THE WORST NIGHT =================
   [T('one night'), undefined, (c) => SC.str(c, [Z(1600, 560, 0.95), Z(1600, 540, 1.25)], {night: true, adamLit: 1, samLit: 1})],
   [T('leo locked his door'), 'w', (c) => leoNight(c)],
@@ -328,9 +328,9 @@ export const LIST: Entry[] = [
   [T('it was the time he never had'), undefined, (c) => SC.liv(c, [faceCam(sit('adam', 65, LR.chairX, 0.66), 2.6, 20), faceCam(sit('adam', 65, LR.chairX, 0.66), 3.0, 20)], {giftN: 8, dust: 0.9}, adamAt(c, 65, {turn: 0.15, face: {...F.sad, gaze: [0, 0.4]}}), 0.3)],
   // ================= SAM AT 65 =================
   [T('across the street', 1), 'w', (c) => SC.tea(c, [Z(1100, 560, 1.0), Z(1500, 560, 1.15)], {season: 2, sunset: 1}, walkers(c, [65, 30], 700, 70))],
-  [T('they still go to the same tea stall'), undefined, (c) => SC.tea(c, [Z(1700, 600, 1.3), Z(1700, 590, 1.55)], {season: 2, sunset: 1}, benchPair(c, [65, 30], F.smile))],
+  [T('they still go to the same tea stall'), undefined, (c) => SC.tea(c, [Z(1700, 600, 1.3), Z(1700, 590, 1.55)], {season: 2, sunset: 1, cups: 0}, benchPair(c, [65, 30], F.smile))],
   [T('same two cups'), undefined, (c) => SC.tea(c, [Z(1700, 650, 2.4), Z(1700, 640, 2.9)], {season: 2, sunset: 1, cups: 2})],
-  [T('25 years of fridays') - 0.2, undefined, (c) => SC.tea(c, [Z(1700, 560, 1.5), Z(1600, 540, 0.95)], {season: 2, sunset: 1}, benchPair(c, [65, 30], F.smile))],
+  [T('25 years of fridays') - 0.2, undefined, (c) => SC.tea(c, [Z(1700, 560, 1.5), Z(1600, 540, 0.95)], {season: 2, sunset: 1, cups: 0}, benchPair(c, [65, 30], F.smile))],
   [T('sam never got the bigger house'), undefined, (c) => SC.str(c, [Z(2150, 560, 1.4), Z(2285, 560, 1.8)], {})],
   [T('he never got the promotion'), undefined, (c) => <PromotionLetter t={c.l + 1} />],
   [T('but he has the one thing'), 'w', (c) => SC.liv(c, [Z(1800, 480, 1.4), Z(1850, 460, 1.7)], {warm: true}, samAt(c, 65, {pose: 'ear', face: {smile: 0.7, open: 0.15}}), 0.3)],

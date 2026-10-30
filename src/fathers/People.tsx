@@ -123,7 +123,7 @@ export const Person: React.FC<PersonProps> = (p) => {
   const e = p.enter === undefined ? 1 : settle(p.enter);
   const raise = p.raise ?? 1, stoop = (who === 'adam' || who === 'sam') ? clamp((age - 50) / 15, 0, 1) * 5 : 0;
   const shift = SHIFT[view][pose] ?? [0, 0];
-  const holds = HELD[pose], heldNode = holds === 'phone' ? <PhoneBack lit={pose === 'ear' ? 1 : 0.5} /> : holds === 'cup' ? <CupHeld t={t} /> : undefined;
+  const holds = HELD[pose], heldNode = holds === 'phone' ? <PhoneBack lit={pose === 'ear' ? 1 : 0.5} /> : holds === 'cup' ? <CupHeld t={t} k={sip(t)} /> : undefined;
   const kids = p.children && pose !== 'ear' ? <g transform={`translate(${shift[0]} ${shift[1]})`}>{p.children}</g> : null;
   if (view === 'front') {
     const q = FRONT[pose](t, raise);
@@ -132,7 +132,7 @@ export const Person: React.FC<PersonProps> = (p) => {
     const L: V = [L0[0] + lvF[0], L0[1] + lvF[1]], R: V = [R0[0] + lvN[0], R0[1] + lvN[1]];
     return (
       <HumanFront x={x} y={y} scale={sc} flip={p.flip} lean={(p.lean ?? q.lean ?? 0) + stoop + lvT} head={{turn: clamp(turn, -1, 1), tilt: p.tilt}} face={face} handL={L} handR={R}
-        slump={slump} legs={sitting ? 'sit' : 'none'} heldR={heldNode} heldUp={holds === 'cup'} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} look={who} grey={grey} tie={who === 'adam' && !p.outfit} curl={CURL[pose] ?? 0.35}>{kids}{view === 'front' && pose === 'film' ? <PhoneLandscape /> : null}</HumanFront>
+        slump={slump} legs={sitting ? 'sit' : 'none'} heldR={heldNode} heldUp={holds === 'cup'} noHands={pose === 'film'} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} look={who} grey={grey} tie={who === 'adam' && !p.outfit} curl={CURL[pose] ?? 0.35}>{kids}{view === 'front' && pose === 'film' ? <PhoneLandscape /> : null}</HumanFront>
     );
   }
   const q = SIDE[pose](t, raise), flip = p.flip ?? turn < 0;
