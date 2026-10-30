@@ -55,8 +55,11 @@ export const HumanHand: React.FC<{curl?: number; s?: number; dim?: boolean}> = (
 };
 
 const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s: number; held?: React.ReactNode; upright?: boolean}> = ({S, T, o, dim, curl = 0.35, s, held, upright}) => {
-  const hang = T[1] > S[1] + 200;
-  const {J: E, H} = ik2(S, T, 185, 170, hang ? (c) => (c[0][0] > c[1][0] ? c[0] : c[1]) : (c) => (c[0][1] > c[1][1] ? c[0] : c[1]));
+  // a relaxed hanging arm is almost straight with the elbow a touch BEHIND the line, so the forearm points slightly forward; every other arm keeps its elbow low
+  const hang = T[1] > S[1] + 300;
+  let Tg = T;
+  if (hang) { const dx = T[0] - S[0], dy = T[1] - S[1], d = Math.hypot(dx, dy) || 1, want = 0.965 * 355; Tg = [S[0] + (dx / d) * want, S[1] + (dy / d) * want]; }
+  const {J: E, H} = ik2(S, Tg, 185, 170, hang ? (c) => (c[0][0] < c[1][0] ? c[0] : c[1]) : (c) => (c[0][1] > c[1][1] ? c[0] : c[1]));
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9);
   const slv = o.sleeve === 'long' ? o.top : SKIN, cuff = o.style === 'suit' ? o.shirt : null;
   return (
