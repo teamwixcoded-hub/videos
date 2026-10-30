@@ -42,7 +42,7 @@ const MaskWord: React.FC<{text: string; k: number; size: number; gold: boolean; 
 export const Headline: React.FC<{w: TW; l: number}> = ({w, l}) => {
   const words = w.text.split(' '), n = words.length, mode = w.mode;
   // balanced rows: as few rows as needed so that no row is longer than about 18 characters
-  const rows: string[][] = (() => { const nr = Math.max(1, Math.ceil(w.text.length / 18)); if (nr === 1) return [words]; const target = w.text.length / nr, out: string[][] = []; let cur: string[] = [], cl = 0; for (const wd of words) { if (cur.length && cl + wd.length / 2 > target && out.length < nr - 1) { out.push(cur); cur = []; cl = 0; } cur.push(wd); cl += wd.length + 1; } out.push(cur); return out; })();
+  const rows: string[][] = (() => { if (w.text.length > 18 && w.text.includes(' · ')) return w.text.split(' · ').map((p) => p.split(' ')); const nr = Math.max(1, Math.ceil(w.text.length / 18)); if (nr === 1) return [words]; const target = w.text.length / nr, out: string[][] = []; let cur: string[] = [], cl = 0; for (const wd of words) { if (cur.length && cl + wd.length / 2 > target && out.length < nr - 1) { out.push(cur); cur = []; cl = 0; } cur.push(wd); cl += wd.length + 1; } out.push(cur); return out; })();
   const out = smooth(w.dur - 0.32, w.dur, l);
   const size = mode === 'slam' ? (w.text.length > 14 ? 150 : 178) : mode === 'title' ? (w.text.length > 20 ? 110 : 132) : (w.text.length > 24 ? 84 : w.text.length > 14 ? 100 : 118);
   const lower = mode === 'pop';
