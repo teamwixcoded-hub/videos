@@ -23,9 +23,23 @@ const Taper: React.FC<{A: V; B: V; r1: number; r2: number; fill: string; stroke?
 };
 
 // SIMPLE style: a limb is one smooth thick curve through the joint (no visible elbow/knee), the hand a rounded mitten with a thumb
-const Noodle: React.FC<{A: V; J: V; B: V; w: number; fill: string}> = ({A, J, B, w, fill}) => {
-  const c: V = [2 * J[0] - (A[0] + B[0]) / 2, 2 * J[1] - (A[1] + B[1]) / 2], d = `M ${A[0]},${A[1]} Q ${c[0]},${c[1]} ${B[0]},${B[1]}`;
-  return <g><path d={d} fill="none" stroke={INK} strokeWidth={w + 9} strokeLinecap="round" /><path d={d} fill="none" stroke={fill} strokeWidth={w} strokeLinecap="round" /></g>;
+const Noodle: React.FC<{A: V; J: V; B: V; w: number; w2?: number; fill: string}> = ({A, J, B, w, w2, fill}) => {
+  const e = w2 ?? w, c: V = [2 * J[0] - (A[0] + B[0]) / 2, 2 * J[1] - (A[1] + B[1]) / 2], N = 16;
+  const pts: V[] = [], nor: V[] = [], ws: number[] = [];
+  for (let k = 0; k <= N; k++) {
+    const t = k / N, u = 1 - t, x = u * u * A[0] + 2 * u * t * c[0] + t * t * B[0], y = u * u * A[1] + 2 * u * t * c[1] + t * t * B[1];
+    const dx = 2 * u * (c[0] - A[0]) + 2 * t * (B[0] - c[0]), dy = 2 * u * (c[1] - A[1]) + 2 * t * (B[1] - c[1]), L = Math.hypot(dx, dy) || 1;
+    // the muscle bulge: a little fuller a third of the way down
+    pts.push([x, y]); nor.push([-dy / L, dx / L]); ws.push((w + (e - w) * t + Math.sin(t * Math.PI) * w * 0.06) / 2);
+  }
+  const side = (s: number) => pts.map((p, k) => [p[0] + nor[k][0] * ws[k] * s, p[1] + nor[k][1] * ws[k] * s] as V);
+  const L1 = side(1), R1 = side(-1).reverse(), d = 'M ' + [...L1, ...R1].map((p) => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' L ') + ' Z';
+  return (
+    <g>
+      <g stroke={INK} strokeWidth={4.6} strokeLinejoin="round" fill={INK}><path d={d} /><circle cx={A[0]} cy={A[1]} r={ws[0]} /><circle cx={B[0]} cy={B[1]} r={ws[N]} /></g>
+      <g fill={fill}><path d={d} /><circle cx={A[0]} cy={A[1]} r={ws[0] - 0.4} /><circle cx={B[0]} cy={B[1]} r={ws[N] - 0.4} /></g>
+    </g>
+  );
 };
 const Mitten: React.FC<{curl?: number; s?: number}> = ({curl = 0.35, s = 1}) => (
   <g transform={`scale(${s})`}>
@@ -66,7 +80,7 @@ const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s
   return (
     o.simple ? (
       <g style={dim ? {filter: 'brightness(0.9)'} : undefined}>
-        <Noodle A={S} J={E} B={wr} w={44} fill={o.top} />
+        <Noodle A={S} J={E} B={wr} w={50} w2={37} fill={o.top} />
         {o.watch && <g transform={`translate(${mix(E, H, 0.82)[0]} ${mix(E, H, 0.82)[1]}) rotate(${fa})`}><rect x={-9} y={-20} width={18} height={40} rx={5} fill="#5a3a24" stroke={INK} strokeWidth={2.6} /><circle r={14} fill="#f2c14e" stroke={INK} strokeWidth={3} /><circle r={9.5} fill="#fbf1d2" /></g>}
         {held && (upright ? <g transform={`translate(${H[0]} ${H[1]})`}>{held}</g> : <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)">{held}</g></g>)}
         {!(held && upright) && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>}
@@ -93,7 +107,7 @@ const HumanLeg: React.FC<{HJ: V; T: V; o: Outfit; dim?: boolean; up?: boolean; l
   const ang = A[1] > 300 ? clamp((393 - A[1]) * 0.8, 0, 38) : 0;
   if (o.simple) return (
     <g style={dim ? {filter: 'brightness(0.8)'} : undefined}>
-      <Noodle A={HJ} J={K} B={A} w={60} fill={o.pants} />
+      <Noodle A={HJ} J={K} B={A} w={76} w2={48} fill={o.pants} />
       <g transform={`translate(${A[0]} ${A[1]}) rotate(${ang})`}><path d="M -26,-16 Q -30,26 -22,30 L 70,30 Q 96,26 94,6 Q 90,-8 66,-12 Q 40,-16 24,-26 Z" fill={o.shoe} stroke={INK} strokeWidth={4.4} strokeLinejoin="round" /><path d="M 40,-6 q 16,8 34,2" fill="none" stroke="#fff" strokeWidth={3} opacity={0.3} strokeLinecap="round" /></g>
     </g>
   );
@@ -192,7 +206,7 @@ const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?:
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9), slv = o.sleeve === 'long' ? o.top : SKIN;
   if (o.simple) return (
     <g>
-      <Noodle A={S} J={E} B={wr} w={44} fill={o.top} />
+      <Noodle A={S} J={E} B={wr} w={50} w2={37} fill={o.top} />
       {held && (upright ? <g transform={`translate(${H[0]} ${H[1]})`}>{held}</g> : <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)">{held}</g></g>)}
       {!(held && upright) && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>}
     </g>
@@ -219,7 +233,7 @@ export const HumanFront: React.FC<HumanFrontProps> = ({x, y, scale = 1, flip, le
       <defs><linearGradient id={'fg' + id} x1="0" y1="0" x2="1" y2="0.4"><stop offset="0" stopColor={topG} /><stop offset="0.55" stopColor={o.top} /><stop offset="1" stopColor={topD} /></linearGradient></defs>
       {legs === 'sit' && [-1, 1].map((s) => o.simple ? (
         <g key={s}>
-          <Noodle A={[s * 56, 40]} J={[s * 84, 150]} B={[s * 76, 268]} w={64} fill={o.pants} />
+          <Noodle A={[s * 52, 34]} J={[s * 92, 86]} B={[s * 80, 268]} w={80} w2={50} fill={o.pants} />
           <g transform={`translate(${s * 78} 276)`}><path d="M -40,-14 Q -46,8 -38,24 L 44,24 Q 62,18 60,0 Q 56,-14 34,-18 Z" fill={o.shoe} stroke={INK} strokeWidth={4.4} strokeLinejoin="round" /></g>
         </g>
       ) : (

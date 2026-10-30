@@ -5,7 +5,7 @@ import {Person, PersonProps, Who, bodyK, FaceP, CHAR_K} from './People';
 import {SetOut, FL, livingRoom, street, hospital, party, auditorium, office, leoDoor, leoRoom, stairs, teaStall, park, kitchen, leoFlat} from './sets';
 import {ease} from './fx';
 import {factory, drive} from './sets3';
-import {merge, livingDetail, teaDetail, streetDetail, kitchenDetail, officeDetail, parkDetail, roomDetail, stairsDetail, doorDetail, hospitalDetail} from './details';
+import {merge, livingDetail, teaDetail, streetDetail, kitchenDetail, officeDetail, parkDetail, roomDetail, stairsDetail, doorDetail, factoryDetail, stageDetail, teaMore, officeMore, kitchenMore, stairsMore, hospitalDetail} from './details';
 
 // Shot-list vocabulary. A shot is [startSec, fx?, renderer]; the renderer gets the clock of the shot (Ctx).
 export type Ctx = {t: number; l: number; d: number; p: number; from: number};
@@ -83,16 +83,16 @@ export const SC = {
   str: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof street>[0], 't'>, chars: React.ReactNode = null) => mk(merge(street({t: c.t, ...o}), streetDetail({t: c.t, night: o.night, sunset: o.sunset, season: o.season})), camOf(c, cam), chars),
   hos: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof hospital>[0], 't'>, chars: React.ReactNode = null) => mk(merge(hospital({t: c.t, ...o}), hospitalDetail()), camOf(c, cam), chars),
   pty: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof party>[0], 't'>, chars: React.ReactNode = null) => mk(party({t: c.t, ...o}), camOf(c, cam), chars),
-  aud: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof auditorium>[0], 't'>, chars: React.ReactNode = null) => mk(auditorium({t: c.t, ...o}), camOf(c, cam), chars),
-  off: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof office>[0], 't'>, chars: React.ReactNode = null) => mk(merge(office({t: c.t, ...o}), officeDetail({t: c.t})), camOf(c, cam), chars),
+  aud: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof auditorium>[0], 't'>, chars: React.ReactNode = null) => mk(merge(auditorium({t: c.t, ...o}), stageDetail({t: c.t})), camOf(c, cam), chars),
+  off: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof office>[0], 't'>, chars: React.ReactNode = null) => mk(merge(merge(office({t: c.t, ...o}), officeDetail({t: c.t})), officeMore()), camOf(c, cam), chars),
   door: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof leoDoor>[0], 't'>, chars: React.ReactNode = null) => mk(merge(leoDoor({t: c.t, ...o}), doorDetail()), camOf(c, cam), chars),
   room: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(merge(leoRoom({t: c.t}), roomDetail({t: c.t})), camOf(c, cam), chars),
-  stairs: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(merge(stairs({t: c.t}), stairsDetail()), camOf(c, cam), chars),
-  tea: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof teaStall>[0], 't'>, chars: React.ReactNode = null) => mk(merge(teaStall({t: c.t, ...o}), teaDetail({t: c.t, sunset: o.sunset})), camOf(c, cam), chars),
+  stairs: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(merge(merge(stairs({t: c.t}), stairsDetail()), stairsMore()), camOf(c, cam), chars),
+  tea: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof teaStall>[0], 't'>, chars: React.ReactNode = null) => mk(merge(merge(teaStall({t: c.t, ...o}), teaDetail({t: c.t, sunset: o.sunset})), teaMore()), camOf(c, cam), chars),
   park: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof park>[0], 't'>, chars: React.ReactNode = null, extra?: React.ReactNode) => mk(merge(park({t: c.t, ...o}), parkDetail({t: c.t, season: o.season})), camOf(c, cam), chars, 1, extra),
-  kit: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof kitchen>[0], 't'>, chars: React.ReactNode = null) => mk(merge(kitchen({t: c.t, ...o}), kitchenDetail({t: c.t})), camOf(c, cam), chars),
+  kit: (c: Ctx, cam: CamArg, o: Omit<Parameters<typeof kitchen>[0], 't'>, chars: React.ReactNode = null) => mk(merge(merge(kitchen({t: c.t, ...o}), kitchenDetail({t: c.t})), kitchenMore()), camOf(c, cam), chars),
   flat: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(leoFlat({t: c.t}), camOf(c, cam), chars),
-  fac: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(factory({t: c.t}), camOf(c, cam), chars),
+  fac: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(merge(factory({t: c.t}), factoryDetail({t: c.t})), camOf(c, cam), chars),
   drv: (c: Ctx, cam: CamArg, chars: React.ReactNode = null) => mk(drive({t: c.t}), camOf(c, cam), chars),
 };
 
