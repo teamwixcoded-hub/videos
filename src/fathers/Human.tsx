@@ -41,14 +41,28 @@ const Noodle: React.FC<{A: V; J: V; B: V; w: number; w2?: number; fill: string}>
     </g>
   );
 };
-const Mitten: React.FC<{curl?: number; s?: number}> = ({curl = 0.35, s = 1}) => (
-  <g transform={`scale(${s})`}>
-    <path d={`M -18,-4 Q -24,26 -16,44 Q 0,${54 - curl * 14} 16,44 Q 24,26 18,-4 Z`} fill={SKIN} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
-    <path d={`M 14,6 Q 34,12 32,${34 - curl * 6} Q 26,40 18,30`} fill={SKIN} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
-    <path d="M -6,38 Q 0,42 8,38" fill="none" stroke={SKIN_D} strokeWidth={3} strokeLinecap="round" />
-    {[0, 1, 2].map((i) => <path key={i} d={`M -14,${10 + i * 11} Q 0,${13 + i * 11} 14,${10 + i * 11}`} fill="none" stroke={SKIN_D} strokeWidth={2.4} strokeLinecap="round" />)}
-  </g>
-);
+// a hand that fits the gesture. curl: <= -0.5 open spread (wave), 0..0.8 relaxed to curled, 0.85..1 fist, >= 1.5 pointing finger. Wrist at the origin, fingers along +y, thumb on +x.
+const Mitten: React.FC<{curl?: number; s?: number}> = ({curl = 0.35, s = 1}) => {
+  const open = curl <= -0.5, point = curl >= 1.5, fist = !point && !open && curl >= 0.85, c = open ? 0 : point ? 1 : Math.min(curl, 1);
+  const X = [-13.5, -4.5, 4.5, 13], L = [24, 29, 27, 21], B = 36;
+  const fingers = X.map((x, k) => {
+    if (open) { const a = ((k - 1.5) * 14 * Math.PI) / 180, l = L[k] * 1.12; return `M ${x},${B} L ${x + Math.sin(a) * l},${B + Math.cos(a) * l}`; }
+    if (point && k === 1) return `M ${x},${B} L ${x + 1},${B + 40}`;
+    if (fist || point) return `M ${x},${B} Q ${x + 1},${B + 11} ${x - 1},${B + 15}`;
+    return `M ${x},${B} Q ${x + 1},${B + L[k] * 0.8} ${x + c * 4},${B + L[k] * (1 - 0.42 * c)}`;
+  });
+  const thumb = open ? 'M 18,12 Q 30,18 38,34' : (fist || point) ? 'M 18,12 Q 26,24 17,38' : `M 18,12 Q ${26 + 2 * c},${22} ${28 - 5 * c},${34 - 3 * c}`;
+  const palm = 'M -17,-2 L -19,20 Q -21,36 -19,40 Q 0,47 19,40 Q 21,36 19,20 L 17,-2';
+  return (
+    <g transform={`scale(${s})`} strokeLinecap="round" strokeLinejoin="round">
+      <path d={palm} fill={SKIN} stroke={INK} strokeWidth={4} />
+      <g fill="none" stroke={INK} strokeWidth={13.6}>{fingers.map((d, k) => <path key={k} d={d} />)}<path d={thumb} strokeWidth={14.4} /></g>
+      <g fill="none" stroke={SKIN} strokeWidth={9.4}>{fingers.map((d, k) => <path key={k} d={d} />)}<path d={thumb} strokeWidth={10} /></g>
+      <path d={palm + ' Z'} fill={SKIN} stroke="none" />
+      <path d="M -9,24 Q 0,30 11,22" fill="none" stroke={SKIN_D} strokeWidth={2.4} />
+    </g>
+  );
+};
 
 // a human hand: palm, four fingers and a thumb. Drawn with the wrist at the origin and the fingers pointing along +y (the caller rotates it onto the forearm)
 export const HumanHand: React.FC<{curl?: number; s?: number; dim?: boolean}> = ({curl = 0.35, s = 1, dim}) => {
@@ -80,7 +94,7 @@ const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s
   return (
     o.simple ? (
       <g style={dim ? {filter: 'brightness(0.9)'} : undefined}>
-        <Noodle A={S} J={E} B={wr} w={50} w2={37} fill={o.top} />
+        <Noodle A={S} J={E} B={wr} w={50} w2={42} fill={o.top} />
         {o.watch && <g transform={`translate(${mix(E, H, 0.82)[0]} ${mix(E, H, 0.82)[1]}) rotate(${fa})`}><rect x={-9} y={-20} width={18} height={40} rx={5} fill="#5a3a24" stroke={INK} strokeWidth={2.6} /><circle r={14} fill="#f2c14e" stroke={INK} strokeWidth={3} /><circle r={9.5} fill="#fbf1d2" /></g>}
         {held && (upright ? <g transform={`translate(${H[0]} ${H[1]})`}>{held}</g> : <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)">{held}</g></g>)}
         {!(held && upright) && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>}
@@ -206,7 +220,7 @@ const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?:
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9), slv = o.sleeve === 'long' ? o.top : SKIN;
   if (o.simple) return (
     <g>
-      <Noodle A={S} J={E} B={wr} w={50} w2={37} fill={o.top} />
+      <Noodle A={S} J={E} B={wr} w={50} w2={42} fill={o.top} />
       {held && (upright ? <g transform={`translate(${H[0]} ${H[1]})`}>{held}</g> : <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)">{held}</g></g>)}
       {!(held && upright) && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>}
     </g>

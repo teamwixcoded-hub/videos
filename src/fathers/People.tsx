@@ -32,7 +32,7 @@ const VARIANTS: Record<string, Outfit> = {
   pjs: {style: 'tee', top: '#7a8fd0', shirt: '#fff', pants: '#5a6ab0', shoe: '#f2f0f8', sleeve: 'long'},
 };
 // how far the fingers curl for each pose (0 open .. 1 fist)
-const CURL: Partial<Record<PoseName, number>> = {cup: 0.75, stand: 0.3, rest: 0.4, desk: 0.35, type: 0.35, phone: 0.8, ear: 0.8, cradle: 0.5, clap: 0.1, knock: 0.9, wave: 0.05, film: 0.5, carry: 0.6, fold: 0.45, point: 0.2, hold: 0.5, raise: 0.8};
+const CURL: Partial<Record<PoseName, number>> = {cup: 0.75, stand: 0.3, rest: 0.4, desk: 0.35, type: 0.35, phone: 0.8, ear: 0.8, cradle: 0.5, clap: 0.1, knock: 0.9, wave: -1, film: 0.5, carry: 0.6, fold: 0.45, point: 2, hold: 0.5, raise: 0.8};
 const isSon = (w: Who) => w === 'leo' || w === 'max';
 // body scale by age (sons grow; fathers stay adult)
 export const bodyK = (_w: Who, age: number) => clamp(lerp(0.5, 1, (age - 4) / 18), 0.5, 1);
