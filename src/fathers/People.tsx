@@ -127,7 +127,7 @@ export const Person: React.FC<PersonProps> = (p) => {
   const kids = p.children && pose !== 'ear' ? <g transform={`translate(${shift[0]} ${shift[1]})`}>{p.children}</g> : null;
   if (view === 'front') {
     const q = FRONT[pose](t, raise);
-    const [lvN, lvF, lvT] = lively(t, sd, pose, e * idle);
+    const [lvN, lvF, lvT] = lively(t, sd, sitting ? 'hold' : pose, e * idle);
     const s0 = FRONT.stand(t, 1), L0: V = mixV(s0.L, p.handL ? [p.handL[0], p.handL[1] - 92] : q.L, e), R0: V = mixV(s0.R, p.handR ? [p.handR[0], p.handR[1] - 92] : q.R, e);
     const L: V = [L0[0] + lvF[0], L0[1] + lvF[1]], R: V = [R0[0] + lvN[0], R0[1] + lvN[1]];
     return (
