@@ -88,7 +88,7 @@ export const Reader: React.FC<{p: RP; t: number}> = ({p, t}) => {
   return (
     <SideChar x={p.x ?? 640} y={p.y ?? 612} torso={-6 + ((p.lean ?? -3) + 3) * 0.7} headPitch={headPitch} turn={0.85 + (p.turn ?? 0) * 0.15} face={face}
       handN={handN} handF={handF} footN={[230, 170]} footF={[300, 172]} t={t} seed={0.7}>
-      {mode === 'book' && (p.raise ?? 1) > 0.04 && <BookSide x={lerp(150, 252, rk)} y={lerp(-70, -214, rk)} deg={lerp(-4, -36, rk)} flip={fl} />}
+      {mode === 'book' && (p.raise ?? 1) > 0.04 && <BookSide x={lerp(150, 252, rk)} y={lerp(-70, -214, rk)} deg={lerp(-4, 38, rk)} flip={fl} />}
       {mode === 'toss' && <BookSide shut x={lerp(176, 40, tossK)} y={lerp(-92, -112, tossK)} deg={lerp(-8, -4, tossK)} />}
       {mode === 'shut' && <BookSide shut x={176} y={-92} deg={-8} />}
       {p.bookArm && mode === 'rest' && <BookSide shut x={40} y={-112} deg={-4} />}
