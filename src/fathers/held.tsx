@@ -35,3 +35,13 @@ export const CupHeld: React.FC<{t?: number}> = ({t = 0}) => (
     <path d="M 30,-24 q 24,2 18,18 q -5,10 -22,8" fill="none" stroke={INK} strokeWidth={4} strokeLinecap="round" />
   </g>
 );
+
+// a phone held landscape in front of the face with both hands, filming: seen from the audience side we see its back with the camera lens
+export const PhoneLandscape: React.FC<{rec?: number}> = ({rec = 1}) => (
+  <g transform="translate(0 -418)">
+    <g transform="rotate(90) translate(0 -28)">
+      <g transform="translate(0 -28)"><PhoneBack lit={0.2} /></g>
+    </g>
+    <circle cx={96} cy={-58} r={9} fill="#ff3b3b" opacity={0.5 + 0.5 * rec} />
+  </g>
+);

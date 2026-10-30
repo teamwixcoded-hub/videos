@@ -185,7 +185,7 @@ export type HumanFrontProps = {
   look?: Look; grey?: number; outfit: Outfit; tie?: boolean; t: number; seed?: number; dim?: number; idle?: number; curl?: number; heldR?: React.ReactNode; heldUp?: boolean; children?: React.ReactNode;
 };
 const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?: React.ReactNode; upright?: boolean}> = ({S, T, o, s, curl, held, upright}) => {
-  const {J: E, H} = ik2(S, T, 198, 182, (c) => (c[0][1] > c[1][1] ? c[0] : c[1]));
+  const {J: E, H} = ik2(S, T, 176, 164, (c) => ((c[0][0] - c[1][0]) * (S[0] < 0 ? -1 : 1) > 0 ? c[0] : c[1]));
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9), slv = o.sleeve === 'long' ? o.top : SKIN;
   if (o.simple) return (
     <g>

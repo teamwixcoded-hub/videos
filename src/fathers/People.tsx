@@ -1,7 +1,7 @@
 import React from 'react';
 import {Face, V, shade as shade0} from '../same2d/Char';
 import {HumanFront, HumanSide, Outfit} from './Human';
-import {PhoneBack, CupHeld} from './held';
+import {PhoneBack, CupHeld, PhoneLandscape} from './held';
 
 // ============================================================================================
 // The cast of Two Fathers, drawn with the SAME rig as Same Man (glass bubble head, black oval eyes, thin black limbs, white gloves, white shoes):
@@ -78,12 +78,12 @@ const FRONT: Record<PoseName, (t: number, r: number) => {L: V; R: V; lean?: numb
   type: (t) => ({L: [-76 + Math.sin(t * 9) * 4, -76 + Math.sin(t * 13) * 5], R: [76 + Math.sin(t * 11) * 4, -76 + Math.cos(t * 10) * 5], lean: 4}),
   phone: () => ({L: [-100, -80], R: [70, -270], lean: 3}),
   ear: () => ({L: [-100, -80], R: [142, -408]}),
-  cup: (t) => { const k = sip(t); return {L: [-96, -70], R: [112 - 78 * k, -150 - 290 * k]}; },
+  cup: (t) => { const k = sip(t); return {L: [-84, -30], R: [86 - 64 * k, -170 - 275 * k]}; },
   cradle: () => ({L: [-50, -130], R: [60, -140]}),
-  clap: (t) => { const k = (Math.sin(t * 16) + 1) / 2; return {L: [-98 + 34 * k, -240], R: [98 - 34 * k, -240]}; },
+  clap: (t) => { const k = (Math.sin(t * 15) + 1) / 2; return {L: [-112 + 104 * k, -250 - 20 * k], R: [112 - 104 * k, -250 - 20 * k]}; },
   knock: (t) => ({L: [-100, -80], R: [160 + Math.max(0, Math.sin(t * 14)) * 12, -300]}),
   wave: (t) => ({L: [-100, -80], R: [172, -480 + Math.sin(t * 9) * 30]}),
-  film: (t) => ({L: [-56, -420], R: [56, -420 + Math.sin(t * 2) * 3]}),
+  film: (t) => ({L: [-96, -392 + Math.sin(t * 2) * 3], R: [96, -392 + Math.sin(t * 2.3) * 3]}),
   carry: () => ({L: [-80, -120], R: [80, -120]}),
   fold: () => ({L: [-20, -160], R: [20, -164]}),
   point: () => ({L: [-100, -80], R: [200, -320]}),
@@ -132,7 +132,7 @@ export const Person: React.FC<PersonProps> = (p) => {
     const L: V = [L0[0] + lvF[0], L0[1] + lvF[1]], R: V = [R0[0] + lvN[0], R0[1] + lvN[1]];
     return (
       <HumanFront x={x} y={y} scale={sc} flip={p.flip} lean={(p.lean ?? q.lean ?? 0) + stoop + lvT} head={{turn: clamp(turn, -1, 1), tilt: p.tilt}} face={face} handL={L} handR={R}
-        slump={slump} legs={sitting ? 'sit' : 'none'} heldR={heldNode} heldUp={holds === 'cup'} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} look={who} grey={grey} tie={who === 'adam' && !p.outfit} curl={CURL[pose] ?? 0.35}>{kids}</HumanFront>
+        slump={slump} legs={sitting ? 'sit' : 'none'} heldR={heldNode} heldUp={holds === 'cup'} outfit={outfit} t={t} seed={sd} dim={dim} idle={idle} look={who} grey={grey} tie={who === 'adam' && !p.outfit} curl={CURL[pose] ?? 0.35}>{kids}{view === 'front' && pose === 'film' ? <PhoneLandscape /> : null}</HumanFront>
     );
   }
   const q = SIDE[pose](t, raise), flip = p.flip ?? turn < 0;
