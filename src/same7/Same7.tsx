@@ -125,8 +125,8 @@ const CUES: Cue3[] = [
 const SYNTH = new Set(['amb_night_room', 'amb_kitchen', 'amb_office', 'amb_restaurant']);
 const mixCue = (c: Cue3): Cue3 => {
   if (c.old) return {...c, vol: (c.vol ?? 0.3) * 2};
-  if (c.loop && SYNTH.has(c.file)) return {...c, dir: 'sfx7', vol: Math.min(1, (c.vol ?? 0.1) * 2.6)};
-  if (c.loop) return {...c, vol: Math.min(1, (c.vol ?? 0.1) * 2.5)};
+  if (c.loop && SYNTH.has(c.file)) return {...c, dir: 'sfx7', vol: 0};   // the synthesised room tones are off: they were heard as hiss
+  if (c.loop) return {...c, vol: Math.min(1, (c.vol ?? 0.1) * (c.file === 'amb_morning' ? 1 : 2.5))};
   const a = LEVELS[c.file]?.act ?? -20, k = Math.min(1.6, Math.max(0.5, (c.vol ?? 0.15) / 0.15));
   return {...c, vol: Math.min(1, 0.8 * k * Math.pow(10, (-20 - a) / 20))};
 };
