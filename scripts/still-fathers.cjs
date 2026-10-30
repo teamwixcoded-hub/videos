@@ -17,7 +17,7 @@ const times = process.argv.slice(2).map(Number);
   fs.mkdirSync('out/stills', {recursive: true});
   for (const t of times) {
     const frame = Math.round(t * 30), out = `out/stills/${comp}-${String(t).replace('.', '_')}.png`;
-    await renderStill({composition, serveUrl, frame, output: out, scale: 0.5, imageFormat: 'png', timeoutInMilliseconds: 120000, logLevel: 'error'});
+    await renderStill({composition, serveUrl, frame, output: out, scale: Number(process.env.SCALE || 0.5), imageFormat: 'png', timeoutInMilliseconds: 120000, logLevel: 'error'});
     console.log('ok', out);
   }
 })().catch((e) => { console.error('ERR', String(e && e.message || e).slice(0, 600)); process.exit(1); });
