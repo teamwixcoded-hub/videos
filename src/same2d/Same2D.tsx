@@ -43,7 +43,7 @@ const POPS = [27.1, 28.0, 28.9, 31.2, 34.4].map(S);
 
 export type Ctx = {t: number; l: number; d: number; p: number; from: number};
 export type C3 = [number, number, number];
-const camOf = (c: Ctx, a: C3, b: C3): Cam => {
+export const camOf = (c: Ctx, a: C3, b: C3): Cam => {
   const k = camAt({cx: a[0], cy: a[1], z: a[2]}, {cx: b[0], cy: b[1], z: b[2]}, c.p);
   return {cx: k.cx + Math.sin(c.t * 0.9) * 5, cy: k.cy + Math.sin(c.t * 1.3 + 1) * 4, z: k.z};
 };
@@ -52,7 +52,7 @@ const camOf = (c: Ctx, a: C3, b: C3): Cam => {
 // Reading and scrolling are shown from the side: the book or phone is held OUT in front of the chest at arm's length with the elbows bent a
 // little, the head tipped down toward it. Near hand and far hand are separate targets; everything is hip-space numbers.
 export type SP = {mode?: 'rest' | 'phone' | 'rub'; raise?: number; swipe?: boolean; bounce?: number; lids?: number; smile?: number; open?: number; slump?: number; glow?: number; gaze?: V; tee?: string; brow?: number; browTilt?: number; lean?: number; turn?: number; x?: number; y?: number};
-const Scroller: React.FC<{p: SP; t: number}> = ({p, t}) => {
+export const Scroller: React.FC<{p: SP; t: number}> = ({p, t}) => {
   const mode = p.mode ?? 'phone';
   const rk = back(p.raise ?? 1);
   const fr = (t / 0.95) % 1, flick = mode === 'phone' && (p.swipe ?? true) ? Math.sin(Math.min(1, fr * 2.2) * Math.PI) : 0;
@@ -73,7 +73,7 @@ const Scroller: React.FC<{p: SP; t: number}> = ({p, t}) => {
 };
 
 export type RP = {mode?: 'rest' | 'book' | 'shut' | 'toss' | 'chin'; raise?: number; lids?: number; smile?: number; open?: number; brow?: number; browTilt?: number; turn?: number; gaze?: V; flip?: number; lean?: number; l?: number; x?: number; y?: number; tilt?: number; bookArm?: boolean};
-const Reader: React.FC<{p: RP; t: number}> = ({p, t}) => {
+export const Reader: React.FC<{p: RP; t: number}> = ({p, t}) => {
   const mode = p.mode ?? 'book';
   const rk = back(p.raise ?? 1);
   const fl = p.flip ?? 0, turnF = Math.sin(Math.min(1, Math.max(0, fl)) * Math.PI);
@@ -98,7 +98,7 @@ const Reader: React.FC<{p: RP; t: number}> = ({p, t}) => {
 
 // ---------------- the bedroom scene ----------------
 export type Bed = {cam: [C3, C3]; s?: SP | null; r?: RP | null; day?: boolean; bloom?: number; thorn?: number; drop?: {at: number; side: 'L' | 'R'}[]; vines?: number; glowS?: number; glowR?: number; dim?: number; sat?: number; pull?: boolean; season?: number; books?: number; notes?: number; clutter?: number};
-const bedScene = (c: Ctx, o: Bed) => {
+export const bedScene = (c: Ctx, o: Bed) => {
   const set = bedroom({day: o.day, t: c.t, bloom: o.bloom ?? 0, thorn: o.thorn ?? 0, bookOnArm: !o.r, drop: o.drop, vines: o.vines, glowS: o.glowS, glowR: o.glowR, season: o.season, books: o.books, notes: o.notes, clutter: o.clutter});
   const chars = <g>{o.r && <Reader p={o.r} t={c.t} />}{o.s && <Scroller p={o.s} t={c.t} />}</g>;
   const blurK = 1 + (o.pull ? 1.4 * (1 - ramp(c.l, 0, 0.45)) : 0);   // focus pull on the quick cutaways
@@ -110,24 +110,24 @@ const bedScene = (c: Ctx, o: Bed) => {
 };
 
 export type R = (c: Ctx) => React.ReactNode;
-const sP = (o: SP = {}): SP => ({mode: 'phone', glow: 1, ...o});
-const rB = (o: RP = {}): RP => ({mode: 'book', ...o});
-const B = (a: C3, b: C3, f: (c: Ctx) => Omit<Bed, 'cam'> = () => ({s: sP(), r: rB()}), pull = false): R => (c) => bedScene(c, {...f(c), cam: [a, b], pull});
-const WIDE: [C3, C3] = [[1600, 500, 0.6], [1600, 510, 0.66]];
+export const sP = (o: SP = {}): SP => ({mode: 'phone', glow: 1, ...o});
+export const rB = (o: RP = {}): RP => ({mode: 'book', ...o});
+export const B = (a: C3, b: C3, f: (c: Ctx) => Omit<Bed, 'cam'> = () => ({s: sP(), r: rB()}), pull = false): R => (c) => bedScene(c, {...f(c), cam: [a, b], pull});
+export const WIDE: [C3, C3] = [[1600, 500, 0.6], [1600, 510, 0.66]];
 // medium shots show the whole man with his book or phone; the zoom values are scaled down so most shots are not just a face
-const camS = (z0: number, z1: number, _cy = 0): [C3, C3] => [[2480, 400, z0 * 0.72], [2480, 392, z1 * 0.72]];
-const camR = (z0: number, z1: number, _cy = 0): [C3, C3] => [[760, 400, z0 * 0.72], [760, 392, z1 * 0.72]];
-const sFace = (z0: number, z1: number): [C3, C3] => [[2690, 265, z0], [2690, 260, z1]];
-const rFace = (z0: number, z1: number): [C3, C3] => [[660, 172, z0], [660, 168, z1]];
+export const camS = (z0: number, z1: number, _cy = 0): [C3, C3] => [[2480, 400, z0 * 0.72], [2480, 392, z1 * 0.72]];
+export const camR = (z0: number, z1: number, _cy = 0): [C3, C3] => [[760, 400, z0 * 0.72], [760, 392, z1 * 0.72]];
+export const sFace = (z0: number, z1: number): [C3, C3] => [[2690, 265, z0], [2690, 260, z1]];
+export const rFace = (z0: number, z1: number): [C3, C3] => [[660, 172, z0], [660, 168, z1]];
 // detail cams: parts of the set and the hands, held a beat as cutaways
-const K: Record<string, [C3, C3]> = {
+export const K: Record<string, [C3, C3]> = {
   MOON: [[1600, 380, 2.2], [1640, 376, 2.5]], CLOCKN: [[1815, 615, 3.2], [1830, 612, 3.5]], LAMP: [[1080, 440, 2.6], [1090, 436, 2.9]],
   EYES_S: [[2640, 262, 4.6], [2640, 258, 5.0]], EYES_R: [[705, 165, 4.4], [705, 161, 4.8]], HANDS_S: [[2515, 380, 2.6], [2515, 372, 2.9]], HANDS_R: [[880, 430, 2.4], [885, 424, 2.7]],
   BEDGLOW: [[2500, 420, 1.9], [2500, 412, 2.1]], ARM_R: [[740, 540, 2.6], [745, 536, 2.9]], PLANT: [[1590, 560, 2.4], [1590, 556, 2.7]],
 };
 
 // one man, doubled: "splits his life in two" without a split screen
-const DoubleVision: React.FC<{c: Ctx}> = ({c}) => {
+export const DoubleVision: React.FC<{c: Ctx}> = ({c}) => {
   const k = ramp(c.l, 0.2, 1.0);
   return (
     <AbsoluteFill style={{background: '#0b0d1a'}}>
@@ -138,8 +138,8 @@ const DoubleVision: React.FC<{c: Ctx}> = ({c}) => {
 };
 
 // ---------------- the shots ----------------
-const D365 = {bloom: 1, thorn: 1, vines: 1};
-const gaunt: SP = {mode: 'phone', tee: '#7d6f99', lids: 0.62, smile: 0, brow: -0.4, browTilt: 14, glow: 1.2};
+export const D365 = {bloom: 1, thorn: 1, vines: 1};
+export const gaunt: SP = {mode: 'phone', tee: '#7d6f99', lids: 0.62, smile: 0, brow: -0.4, browTilt: 14, glow: 1.2};
 const sidePax = (x: number, seed: number, tee: string, t: number) => (
   <SideChar x={x} y={690} scale={0.82} dim={0.4} torso={-4} headPitch={22} turn={0.85} face={{gaze: [0.3, 0.9], lids: 0.4}} handN={[210, -170]} handF={[232, -182]} footN={[230, 170]} footF={[300, 172]} tee={tee} t={t} seed={seed}>
     <PhoneSide x={238} y={-214} deg={-18} glow={1} />
