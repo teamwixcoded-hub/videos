@@ -3,7 +3,8 @@ import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remoti
 import {Entry, Ctx} from './kit';
 import {LIST, KWORDS, REWIND, FRIDAY_N, HITS_AT} from './shots';
 import {ramp, bell, GRAIN, AgeTag, Counter, RewindCard, Rain} from './fx';
-import {KineticWord, IconTag, Cinema, Shafts, SpeedLines, Bridge, Dust, kwCues, KW as KWS, TextMode} from '../same2d/fx';
+import {IconTag, SpeedLines, Bridge, Dust, KW as KWS, TextMode} from '../same2d/fx';
+import {TypeLayer, Stamp, StampT, TW} from './type';
 import {gradeAt} from './theme';
 import {PIECES, AUDIO_FILE, TOTAL, FPS, speechDuck, T} from './timeline';
 import {Sfx3, Cue3} from '../same2d/sound';
@@ -29,7 +30,19 @@ const MODE: Record<string, TextMode> = {
 };
 // words an insert already shows (bank, payslip, clock, gifts-to-clocks) are not repeated on top of it
 const SHOWN = new Set(['FULL BANK ACCOUNT.', 'SAME SALARY', 'EXTRA SHIFTS · WEEKENDS', '6:00 PM', 'IT’S RARELY THE GIFTS.', 'IT’S THE TIME.']);
-const WORDS: KWS[] = KWORDS.filter((w) => !SHOWN.has(w.text)).filter((w) => w.style === 'big' || w.style === 'quote').map((w) => { const mode: TextMode = w.style === 'quote' ? 'whisper' : MODE[w.text] ?? 'pop'; return {at: w.at, dur: w.dur, text: w.text, accent: w.accent, mode, big: mode === 'slam' || mode === 'title'}; });
+const WORDS: (KWS & {mode: TextMode})[] = KWORDS.filter((w) => !SHOWN.has(w.text)).filter((w) => w.style === 'big' || w.style === 'quote').map((w) => { const mode: TextMode = w.style === 'quote' ? 'whisper' : MODE[w.text] ?? 'pop'; return {at: w.at, dur: w.dur, text: w.text, accent: w.accent, mode, big: mode === 'slam' || mode === 'title'}; });
+const st = (phrase: string, dur: number, kicker: string, label: string, off = 0, nth = 0): StampT => ({at: T(phrase, nth) + off, dur, kicker, label});
+const STAMPS: StampT[] = [
+  st('adam and sam stood', 3.4, 'THE HOSPITAL', 'ADAM & SAM · NEW FATHERS'), st('to understand adam', 3.2, 'FLASHBACK', 'ADAM’S FATHER · THE FACTORY'), st('he still wears it', 3.2, 'THE ONLY GIFT', 'A WATCH. STILL ON HIS WRIST.'),
+  st('no phone no emails', 3.2, 'EVERY EVENING', 'NO PHONE. NO EMAILS.'), st('his house stayed small', 3.6, 'WHAT IT COST SAM', 'A SMALL HOUSE · AN OLD CAR'), st('a client meeting', 2.8, 'ADAM', 'MISSED THE PARTY'),
+  st('max is 30', 3.4, 'MAX · 30 YEARS OLD', 'STILL REMEMBERS THE KITE'), st('he practiced his one line', 3.2, 'LEO · THE SCHOOL PLAY', 'ONE LINE · THREE WEEKS'), st("adam's seat stayed empty", 2.6, 'THE BEST COSTUME', 'AN EMPTY SEAT'),
+  st('last month leo missed', 3.4, 'LEO · LAST MONTH', 'A CLIENT MEETING. A TOY CAR.'), st("sam's knees are weaker", 3.2, 'SAM · 65', 'MAX WALKS SLOWER'), st('had five cups', 3.6, 'THAT FRIDAY', '5 CUPS · 1 SMALL GLASS OF MILK'),
+  st('an old man wearing', 3.4, 'ON THE HILL', 'THE WATCH. THE KITE.'),
+];
+const QUOTES: TW[] = [
+  {at: T("your children won't remember"), dur: 3.2, text: 'Your children won’t remember most of what you bought them.', mode: 'whisper'}, {at: T('so whatever'), dur: 3.8, text: 'So whatever you’re giving them, make sure it’s what you want passed on.', mode: 'whisper'},
+];
+const TYPEW: TW[] = [...WORDS.map((w): TW => ({at: w.at, dur: Math.max(w.dur, 1.5), text: w.text, accent: w.accent, mode: w.mode === 'whisper' ? 'whisper' : w.mode === 'slam' ? 'slam' : w.mode === 'title' ? 'title' : 'pop'})), ...QUOTES];
 const TAGS = KWORDS.filter((w) => w.style === 'tag'), TIMES = KWORDS.filter((w) => w.style === 'time' && !SHOWN.has(w.text));
 const pillsOf = (text: string): ('adam' | 'sam' | 'leo' | 'max')[] => (text === 'AGE 65' ? ['adam', 'sam'] : text === 'AGE 12' ? ['adam'] : text === 'AGE 5' || text === 'AGE 15' ? ['leo'] : ['leo', 'max']);
 
@@ -48,8 +61,9 @@ const CUES: Cue3[] = [
   tp(T('his thumb goes') + 3.5), tp(T('his thumb goes') + 3.8), tp(T('his thumb goes') + 4.1), tp(T('his thumb goes') + 4.4), tp(T('his thumb goes') + 5.0, 0.2), tp(T('his thumb goes') + 5.3, 0.2), tp(T('his thumb goes') + 5.6, 0.2), tp(T('his thumb goes') + 5.9, 0.2), tp(T('his thumb goes') + 6.6, 0.4),
   {file: 'phone_buzz', at: T('his thumb goes') + 6.65, vol: 0.45}, {file: 'impact_bloom', at: HITS_AT[1], vol: 0.35}, {file: 'shimmer', at: T("it's never too late"), vol: 0.3},
   ...SHOTS.filter((s) => s.fx).map((s): Cue3 => (s.fx === 'w' ? {file: 'whip', at: s.from - 0.05, vol: 0.32} : s.fx === 'f' ? {file: 'shimmer', at: s.from - 0.02, vol: 0.3} : {file: 'whoosh_soft', at: s.from - 0.1, vol: 0.3})),
-  ...WORDS.flatMap((w) => kwCues(w)),
-  ...TAGS.map((w): Cue3 => ({file: 'tag_whoosh', at: w.at, vol: 0.25})), ...TIMES.map((w): Cue3 => ({file: 'tag_whoosh', at: w.at, vol: 0.2})),
+  ...TYPEW.flatMap((w): Cue3[] => (w.mode === 'slam' ? [{file: 'tag_whoosh', at: w.at - 0.08, vol: 0.1}, {file: 'text_slam', at: w.at, vol: 0.26}] : w.mode === 'title' ? [{file: 'tag_whoosh', at: w.at - 0.12, vol: 0.1}, {file: 'text_title', at: w.at, vol: 0.24}] : w.mode === 'whisper' ? [{file: 'text_whisper', at: w.at, vol: 0.14}] : [{file: 'text_pop', at: w.at, vol: 0.14}])),
+  ...STAMPS.map((s): Cue3 => ({file: 'tag_whoosh', at: s.at, vol: 0.12})),
+  ...TAGS.map((w): Cue3 => ({file: 'tag_whoosh', at: w.at, vol: 0.14})), ...TIMES.map((w): Cue3 => ({file: 'tag_whoosh', at: w.at, vol: 0.12})),
 ];
 const CUES4: Cue3[] = [
   n4('phone_ring_close', T("his neighbor's phone rings"), 0.55, {dur: 1.9}), n4('hospital_amb', T('both boys were born'), 0.2, {dur: 22, loop: true}), n4('baby_coo', T('each holding'), 0.35), n4('laptop_lid', T('he closed the laptop') + 0.15, 0.6),
@@ -97,7 +111,7 @@ const TwoFathersMain: React.FC = () => {
       {paperCard && <RewindCard p={(t - REWIND[0]) / (REWIND[1] - REWIND[0])} f={(t - REWIND[0]) * FPS} />}
 
       <Rain t={t} from={T('the way he thought love was supposed to look')} to={T('the other kept it') - 0.1} kind="money" /><Rain t={t} from={T('the way his son actually needed')} to={T('by the end of this video') - 0.15} kind="time" /><Rain t={t} from={T('more money')} to={T('more money') + 2} kind="money" /><Rain t={t} from={T('one hour belonged')} to={T('one hour belonged') + 3} kind="time" />
-      <KineticWord t={t} words={WORDS} />
+      <TypeLayer t={t} words={TYPEW} />{STAMPS.map((s) => <Stamp key={s.at} t={t} s={s} />)}
       {TAGS.map((w) => <AgeTag key={w.at} t={t} from={w.at} to={w.at + w.dur} text={w.text} pills={pillsOf(w.text)} />)}
       {TIMES.map((w) => <IconTag key={w.at} t={t} from={w.at} to={w.at + w.dur} text={w.text} icon={w.text.startsWith('SUNDAY') ? 'sun' : 'clock'} color="#fff" />)}
       {friday && <Counter label="FRIDAY" n={fridayN} o={ramp(t, FRIDAY_N[0], FRIDAY_N[0] + 0.3) * (1 - ramp(t, FRIDAY_N[1], FRIDAY_N[1] + 0.8))} />}
@@ -108,7 +122,7 @@ const TwoFathersMain: React.FC = () => {
           <Audio src={staticFile(AUDIO_FILE)} startFrom={Math.round(p.a * FPS)} endAt={Math.round(p.b * FPS)} />
         </Sequence>
       ))}
-      <Sfx3 cues={[...CUES, ...CUES4]} gain={1} minVol={0.3} duck={speechDuck} />
+      <Sfx3 cues={[...CUES, ...CUES4]} gain={0.8} minVol={0.08} duck={speechDuck} />
       {MUSIC.map((m, i) => <Sequence key={'m' + i} from={Math.round(m.from * FPS)} durationInFrames={Math.round((m.to - m.from) * FPS)}><Music track={m.track} startAt={m.startAt ?? 0} frames={Math.round((m.to - m.from) * FPS)} vol={m.vol} fadeIn={45} fadeOut={60} /></Sequence>)}
     </AbsoluteFill>
   );

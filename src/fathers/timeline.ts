@@ -28,7 +28,7 @@ export const CAPS: {from: number; to: number}[] = (() => {
 export const speechDuck = (t: number) => {
   let amt = 0;
   for (const c of CAPS) { const a = c.from - 0.05, b = c.to + 0.1; if (t < a - 0.15 || t > b + 0.15) continue; amt = Math.max(amt, Math.min(1, (t - (a - 0.15)) / 0.15, (b + 0.15 - t) / 0.15)); }
-  return 1 - 0.35 * amt;
+  return 1 - 0.55 * amt;
 };
 // is someone talking right now? (mouths move only while the narrator speaks a line that character says)
 export const speaking = (t: number, from: number, to: number) => t >= from && t <= to && WORDS.some((w) => t >= w.a - 0.02 && t <= w.b + 0.05);
