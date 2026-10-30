@@ -103,7 +103,7 @@ const Hair: React.FC<{look: Look; turn: number}> = ({look, turn}) => (
 );
 
 export const Head: React.FC<{face: Face; turn: number; t: number; seed: number; idle: number; look?: Look; grey?: number}> = ({face, turn, t, seed, idle, look = 'man', grey = 0}) => {
-  const hairC = greyOf(grey);
+  const hairC = greyOf(grey), bC = grey > 0.45 ? '#8e8aa2' : hairC;
   const {gaze = [0, 0], lids = 0.05, smile = 0, open = 0, brow = 0, browTilt = 0, wide = 0} = face;
   const mid = useId().replace(/:/g, '');
   // irregular blink with the odd double blink
@@ -146,7 +146,22 @@ export const Head: React.FC<{face: Face; turn: number; t: number; seed: number; 
         {look === 'leo' && <path d="M -50,-168 l 10,-26 l 14,22 l 14,-28 l 12,26" fill="none" stroke={hairC} strokeWidth={9} strokeLinecap="round" strokeLinejoin="round" />}
       </g>}
       {look === 'max' && <g transform={`translate(${turn * 30} 0)`} fill={hairC} stroke={INK} strokeWidth={6}>{[[-70, -128, 30], [-30, -160, 34], [18, -168, 36], [62, -146, 32], [92, -108, 26], [-92, -84, 22], [-6, -134, 34]].map(([x, y, r], i) => <circle key={i} cx={x} cy={y} r={r} />)}</g>}
-      {look === 'sam' && <g transform={`translate(${turn * 58} 0)`} fill={hairC} stroke={INK} strokeWidth={6} strokeLinejoin="round"><path d="M -112,36 Q -92,132 0,146 Q 92,132 112,36 Q 74,98 0,104 Q -74,98 -112,36 Z" /><path d="M -42,60 Q 0,42 42,60 Q 0,72 -42,60 Z" /></g>}
+      {look === 'sam' && (
+        /* the beard IS the lower face: the skin itself is coloured from the sideburns round the jaw (a soft edge, a stubble texture, no outline, no separate shape), with a lighter patch round the lips */
+        <g clipPath={`url(#bc${mid})`}><g transform={`translate(${turn * 58} 0)`}>
+          <defs>
+            <clipPath id={'bc' + mid}><circle r={147} /></clipPath>
+            <filter id={'bb' + mid} x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation={2.6} /></filter>
+            <filter id={'bn' + mid}><feGaussianBlur stdDeviation={7} /></filter>
+            <pattern id={'bp' + mid} width={6} height={6} patternUnits="userSpaceOnUse"><circle cx={1.2} cy={1.6} r={1.2} fill={shade(bC, -0.35)} /><circle cx={4.4} cy={3.2} r={1.1} fill={shade(bC, -0.35)} /><circle cx={2.4} cy={5} r={1.1} fill={shade(bC, 0.2)} /></pattern>
+            <mask id={'bm' + mid}><rect x={-200} y={-200} width={400} height={400} fill="#fff" /><ellipse cx={0} cy={76} rx={44} ry={17} fill="#000" filter={`url(#bn${mid})`} /></mask>
+          </defs>
+          <g mask={`url(#bm${mid})`}>
+            <path d="M -152,-14 C -122,34 -84,56 -48,52 Q -24,38 0,48 Q 24,38 48,52 C 84,56 122,34 152,-14 L 160,160 L -160,160 Z" fill={bC} opacity={0.94} filter={`url(#bb${mid})`} />
+            <path d="M -152,-14 C -122,34 -84,56 -48,52 Q -24,38 0,48 Q 24,38 48,52 C 84,56 122,34 152,-14 L 160,160 L -160,160 Z" fill={`url(#bp${mid})`} opacity={0.55} />
+          </g>
+        </g></g>
+      )}
       <g transform={`translate(${turn * 58} 0) scale(${1 - Math.abs(turn) * 0.16} 1)`}>
         <ellipse cx={-96} cy={34} rx={26} ry={15} fill="#f2a6b8" opacity={0.2 + sm * 0.25} />
         <ellipse cx={96} cy={34} rx={26} ry={15} fill="#f2a6b8" opacity={0.2 + sm * 0.25} />
