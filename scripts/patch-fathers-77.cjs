@@ -1,0 +1,18 @@
+const fs=require('fs');
+let s=fs.readFileSync('src/fathers/sets.tsx','utf8');
+s=s.replace('<path d="M 1700,830 L 1700,720 L 2000,720 L 2000,610 L 2300,610 L 2300,500 L 2600,500 L 2600,390 L 2900,390 L 2900,280 L 3400,280 L 3400,830 Z"','<path d="M 1500,830 L 1500,720 L 2400,720 L 2400,610 L 2700,610 L 2700,500 L 3000,500 L 3000,390 L 3300,390 L 3300,280 L 3400,280 L 3400,830 Z"');
+s=s.replace('const x = 1700 + n * 300, y = 830 - 110 * (n + 1);','const x = n === 0 ? 1500 : 2100 + n * 300, y = 830 - 110 * (n + 1);');
+s=s.replace('<rect x={1700} y={826} width={1700}','<rect x={1500} y={826} width={1900}');
+fs.writeFileSync('src/fathers/sets.tsx',s);
+let d=fs.readFileSync('src/fathers/details.tsx','utf8');
+d=d.replace('translate(${1450 + i * 250} ${300 - i * 92})','translate(${1500 + i * 330} ${300 - i * 120})');
+d=d.replace('<path d="M 1500,690 L 3000,140"','<path d="M 1500,650 L 3050,80"').replace('<path d="M 1500,708 L 3000,158"','<path d="M 1500,668 L 3050,98"');
+d=d.replace('top = 690 - (x - 1500) * 0.367, tread = x < 1700 ? 830 : x < 2000 ? 720 : x < 2300 ? 610 : x < 2600 ? 500 : x < 2900 ? 390 : 280;','top = 650 - (x - 1500) * 0.367, tread = x < 1500 ? 830 : x < 2400 ? 720 : x < 2700 ? 610 : x < 3000 ? 500 : x < 3300 ? 390 : 280;');
+d=d.replace('Array.from({length: 11}, (_, i) => { const x = 1560 + i * 140','Array.from({length: 11}, (_, i) => { const x = 1560 + i * 150');
+fs.writeFileSync('src/fathers/details.tsx',d);
+let h=fs.readFileSync('src/fathers/shots.tsx','utf8');
+h=h.split("sit('sam', 50, 1860, 0.62, {turn: -0.8, face: F.soft}, 830)").join("sit('sam', 50, 2000, 0.62, {view: 'front', face: F.soft}, 878)");
+h=h.split("sit('max', 16, 2160, 0.62, {turn: -0.8, face: F.sad, floor: 720} as any, 720)").join("sit('max', 16, 2230, 0.62, {view: 'front', face: F.sad}, 878)");
+h=h.split("sit('max', 16, 2160, 0.62, {turn: -0.8, face: {...F.sad, lids: 0.45}, floor: 720} as any, 720)").join("sit('max', 16, 2230, 0.62, {view: 'front', face: {...F.sad, lids: 0.45}}, 878)");
+h=h.split("Z(1950, 500, ").join("Z(2115, 540, ");
+fs.writeFileSync('src/fathers/shots.tsx',h);
