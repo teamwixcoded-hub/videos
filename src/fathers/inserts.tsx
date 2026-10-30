@@ -5,6 +5,7 @@ import {PhotoArt, PhotoKind, PhotoWall, Cup} from './props';
 import {Clock} from './sets';
 import {ramp, ease} from './fx';
 import {shade} from './People';
+import {ik2} from '../same2d/SideChar';
 
 // ============================================================================================
 // Full-frame inserts (1920 x 1080): documents, clocks and phone screens. Time `t` is seconds into the shot.
@@ -65,25 +66,47 @@ export const ClockInsert: React.FC<{t: number; min: number; hourOffset?: number;
 
 // ---------------------------------------------------------------- laptops on the evening desk: Sam's lid closes at `closeAt`, Adam's stays open
 export const LaptopHand: React.FC<{t: number; who: 'adam' | 'sam'; closeAt?: number}> = ({t, who, closeAt = 1.6}) => {
-  const warm = who === 'sam', k = who === 'sam' ? 1 - Math.pow(ramp(t, closeAt, closeAt + 0.5), 2.2) : 1, lid = 220 * k;
-  const phi = (100 * k * Math.PI) / 180, topY = -330 * Math.sin(phi) + 62 * Math.cos(phi), topW = 340 + 90 * Math.max(0, Math.cos(phi) + 0.17), showScreen = phi > 1.15, handsUp = ramp(t, closeAt - 0.1, closeAt + 0.25);
-  const skin = '#ffffff', sleeve = warm ? '#b4592f' : '#26324f';
-  const type = Math.sin(t * 14) * 4;
+  // side view, the way everyone knows it: a wedge of a base, a lid on a hinge, an arm coming in from the person off-screen. Typing, then the hand pushes the lid down until it clicks shut.
+  const warm = who === 'sam', sleeve = warm ? '#b4592f' : '#26324f', closes = who === 'sam';
+  const H: [number, number] = [560, 764], L = 540;
+  const dur = 0.55, q = closes ? clamp((t - closeAt) / dur, 0, 1) : 0, e = Math.pow(q, 1.7), bounce = q >= 1 ? Math.max(0, Math.sin((t - closeAt - dur) * 26)) * Math.exp(-(t - closeAt - dur) * 14) * 3 : 0;
+  const phi = ((105 * (1 - e) + bounce) * Math.PI) / 180, d: [number, number] = [Math.cos(phi), -Math.sin(phi)], n: [number, number] = [Math.sin(phi), Math.cos(phi)];
+  const P1: [number, number] = [H[0] + L * d[0], H[1] + L * d[1]];
+  const glow = closes ? 1 - ramp(t, closeAt + 0.3, closeAt + dur) : 1;
+  // the hand: typing, reaching for the top edge, pushing it down with the lid, lifting away
+  const tap = Math.abs(Math.sin(t * 13)) * -9, reach = closes ? ramp(t, closeAt - 0.45, closeAt - 0.02) : 0, away = closes ? ramp(t, closeAt + dur + 0.15, closeAt + dur + 0.6) : 0;
+  const typeT: [number, number] = [1010, 742 + tap], topT: [number, number] = [P1[0] - 22 * n[0] + 40 * d[0] * 0 - 14 * n[0] * 0 + 4, P1[1] - 30];
+  const push: [number, number] = [typeT[0] + (topT[0] - typeT[0]) * reach, typeT[1] + (topT[1] - typeT[1]) * reach];
+  const T: [number, number] = [push[0] + away * 380, push[1] - away * 330];
+  const S: [number, number] = [2100, 470], dist = Math.max(640, Math.hypot(T[0] - S[0], T[1] - S[1])), seg = dist * 0.503;
+  const {J: E, H: W} = ik2(S, T, seg, seg, (c) => (c[0][1] > c[1][1] ? c[0] : c[1]));
+  const fa = (Math.atan2(W[1] - E[1], W[0] - E[0]) * 180) / Math.PI;
+  const arm = `M ${S[0]},${S[1]} Q ${2 * E[0] - (S[0] + W[0]) / 2},${2 * E[1] - (S[1] + W[1]) / 2} ${W[0]},${W[1]}`;
+  const slab = [H, P1, [P1[0] - 26 * n[0], P1[1] - 26 * n[1]], [H[0] - 26 * n[0], H[1] - 26 * n[1]]].map((p) => p.join(',')).join(' ');
   return (
     <InsertBG tone={warm ? 'warm' : 'cold'}>
       <rect x={0} y={800} width={1920} height={280} fill={warm ? '#8a5a38' : '#4a4658'} stroke={INK} strokeWidth={5} />
-      <ellipse cx={960} cy={812} rx={760} ry={32} fill="#000" opacity={0.18} />
-      <g transform="translate(960 800)">
-        <path d="M -380,0 L 380,0 L 430,60 L -430,60 Z" fill="#c2c6cc" stroke={INK} strokeWidth={7} strokeLinejoin="round" />
-        {Array.from({length: 5}, (_, r) => Array.from({length: 11}, (_, c) => <rect key={r + '-' + c} x={-330 + c * 60 + r * 4} y={8 + r * 9} width={48} height={7} rx={2} fill="#9aa0a8" opacity={0.6} />))}
-        <path d={`M -380,0 L 380,0 L ${topW},${topY} L ${-topW},${topY} Z`} fill={showScreen ? '#2a2a32' : '#9aa0aa'} stroke={INK} strokeWidth={7} strokeLinejoin="round" />
-        {showScreen && lid > 40 && <path d={`M -318,-14 L 318,-14 L ${298},${topY + 22} L -298,${topY + 22} Z`} fill={warm ? '#fdf4de' : '#e3ecf7'} />}
-        {showScreen && lid > 90 && <g opacity={0.9}>{[0, 1, 2, 3, 4].map((i) => <rect key={i} x={-250} y={-lid * 1.5 + 70 + i * 38 * (lid / 220)} width={300 - i * 24} height={12} rx={5} fill="#aab9cf" />)}<rect x={80} y={-lid * 1.5 + 150 * (lid / 220)} width={150} height={60 * (lid / 220)} rx={8} fill="#7fa0cf" /></g>}
-        {/* hands on the keys */}
-        {!showScreen && k < 0.55 && <ellipse cx={0} cy={topY * 0.5 + 20} rx={300} ry={26} fill="#000" opacity={0.18} />}
-        <g transform={`translate(0 ${type * (1 - handsUp) - handsUp * 160})`} opacity={1 - handsUp * 0.85}>{[-1, 1].map((s) => <g key={s}><path d={`M ${s * 180},120 L ${s * 150},-4 Q ${s * 120},-30 ${s * 90},-8 L ${s * 110},130 Z`} fill={skin} stroke={INK} strokeWidth={5} strokeLinejoin="round" /><path d={`M ${s * 250},260 L ${s * 180},120 L ${s * 110},130 L ${s * 150},300 Z`} fill={sleeve} stroke={INK} strokeWidth={5} strokeLinejoin="round" /></g>)}</g>
+      <ellipse cx={900} cy={806} rx={560} ry={22} fill="#000" opacity={0.3} style={{filter: 'blur(8px)'}} />
+      {/* the screen's light falls over the keys while the lid is open */}
+      {glow > 0.02 && <path d={`M ${H[0]},${H[1]} L ${P1[0]},${P1[1]} L ${P1[0] + 380 * n[0] + 160},${790} L ${H[0] + 260},${790} Z`} fill={warm ? '#fff2cf' : '#cfe2ff'} opacity={0.2 * glow} />}
+      {/* base */}
+      <rect x={520} y={764} width={720} height={36} rx={11} fill="#b9bfc9" stroke={INK} strokeWidth={6} /><rect x={520} y={764} width={720} height={10} rx={5} fill="#e4e8ef" opacity={0.7} />
+      {Array.from({length: 18}, (_, k) => <rect key={k} x={610 + k * 30} y={756} width={22} height={8} rx={2} fill="#4a5060" stroke={INK} strokeWidth={1.6} />)}
+      <rect x={535} y={770} width={44} height={26} rx={8} fill="#7a8190" stroke={INK} strokeWidth={3} />
+      {/* lid on its hinge: the slab, the lit screen face, the logo on the back */}
+      <polygon points={slab} fill="#aab1bd" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+      {phi > 0.18 && <line x1={H[0] + 12 * n[0]} y1={H[1] + 12 * n[1]} x2={P1[0] + 12 * n[0]} y2={P1[1] + 12 * n[1]} stroke={warm ? '#fff6dc' : '#e3efff'} strokeWidth={8} strokeLinecap="round" opacity={glow} />}
+      <circle cx={H[0] + L * 0.5 * d[0] - 13 * n[0] * -1 * 0 - 13 * n[0] * 0 + 26 * n[0] * -0.5} cy={H[1] + L * 0.5 * d[1] - 13 * n[1]} r={14} fill="#f4f7ff" opacity={0.75} stroke={INK} strokeWidth={2} />
+      <circle cx={H[0]} cy={H[1] - 12} r={13} fill="#7a8190" stroke={INK} strokeWidth={4} />
+      {/* the arm comes in from the person off-screen (a sleeve, an elbow, a wrist) and ends in a mitten hand with the thumb up */}
+      <path d={arm} fill="none" stroke={INK} strokeWidth={104} strokeLinecap="round" /><path d={arm} fill="none" stroke={sleeve} strokeWidth={92} strokeLinecap="round" />
+      <path d={`M ${E[0] + (W[0] - E[0]) * 0.74},${E[1] + (W[1] - E[1]) * 0.74} L ${W[0]},${W[1]}`} stroke="#f3efe6" strokeWidth={70} strokeLinecap="butt" opacity={0.95} />
+      <g transform={`translate(${W[0]} ${W[1]}) rotate(${fa - 90 + (closes && reach > 0.6 && away < 0.5 ? 6 : 0)}) scale(-2.1 2.1) translate(0 -8)`}>
+        <path d="M -18,-4 Q -24,26 -16,44 Q 0,50 16,44 Q 24,26 18,-4 Z" fill="#f3f0fb" stroke={INK} strokeWidth={4} strokeLinejoin="round" />
+        <path d="M 14,6 Q 34,10 34,-14 Q 30,-26 20,-16" fill="#f3f0fb" stroke={INK} strokeWidth={4} strokeLinejoin="round" />
+        <path d="M -6,38 Q 0,42 8,38" fill="none" stroke="#d9d3ec" strokeWidth={3} strokeLinecap="round" />
       </g>
-      {warm && k < 0.2 && <text x={960} y={300} textAnchor="middle" fontFamily={HAND} fontWeight={600} fontSize={84} fill="#fff6e6" opacity={ramp(t, closeAt + 0.3, closeAt + 0.7)}>click.</text>}
+      {closes && q >= 1 && <text x={H[0] + 280} y={640} textAnchor="middle" fontFamily={HAND} fontWeight={600} fontSize={84} fill="#fff6e6" opacity={ramp(t, closeAt + dur, closeAt + dur + 0.2) * (1 - away)}>click.</text>}
     </InsertBG>
   );
 };
