@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
 import {B, K, WIDE, camS, camR, sFace, rFace, sP, rB, D365, gaunt, DoubleVision, R, Ctx, bedScene, camOf, kit, bath} from '../same2d/Same2D';
 import {buildPart2, TALK} from '../same2d/part2';
-import {buildActs, ACT_POPS, ACT_STAMPS, ACT_TAGS, ACT_BUBBLES, ACT_CUES, ACT_MUSIC, PAGES} from './acts';
+import {ins, kindOf, buildActs, ACT_POPS, ACT_STAMPS, ACT_TAGS, ACT_BUBBLES, ACT_CUES, ACT_MUSIC, PAGES} from './acts';
 import {ClockInsert, CalendarBlur} from '../same2d/inserts';
 import {YearFlip} from '../same2d/inserts2';
 import {IconTag, SpeedLines, Bridge, Dust, Shafts, Cinema, ramp, bell, Bubble, BigCounter} from '../same2d/fx';
@@ -36,42 +36,42 @@ const LIST1: [number, Fx | undefined, R][] = [
   [T('same man'), undefined, B(K.CLOCKN[0], K.CLOCKN[1], () => ({s: rest(), r: null, glowS: 0.25}), true)],
   [T('same night'), undefined, B(...camS(1.2, 1.34), (c) => night(c, {gaze: [0, 0.2]}))],
   [T('same room'), undefined, B(...WIDE, (c) => night(c, {lids: 0.4}))],
-  [T('in one year'), 'b', (c) => <YearFlip t={c.l} dur={1.5} />],
+  [T('in one year'), 'b', ins('YearFlip', (c) => <YearFlip t={c.l} dur={1.5} />)],
   [T('one of them'), undefined, B(...rFace(2.0, 2.2), () => ({r: rB({smile: 0.7, lids: 0.08}), s: null, ...D365, books: 20, notes: 14, clutter: 1, glowR: 1.2}))],
   [T('the biggest project'), 'w', B(...camR(1.5, 1.7, 420), () => ({r: rB({smile: 0.5}), s: null, ...D365, books: 20, notes: 14, clutter: 1, glowR: 1.2}))],
   [T('the other will be'), 'w', B(...sFace(2.0, 2.2), () => ({s: gaunt, r: null, ...D365, books: 20, notes: 14, clutter: 1, sat: 0.7}))],
-  [T('at 200'), undefined, () => <ClockInsert text="2:00" />],
-  [T('typing'), undefined, (c) => <TypeSearch t={c.l} text="how to fix your life" from={0.7} to={1.85} />],
+  [T('at 200'), undefined, ins('ClockInsert', () => <ClockInsert text="2:00" />)],
+  [T('typing'), undefined, ins('TypeSearch', (c) => <TypeSearch t={c.l} text="how to fix your life" from={0.7} to={1.85} />)],
   [T('into his phone'), undefined, B(K.HANDS_S[0], K.HANDS_S[1], () => ({s: sP(), r: null}), true)],
-  [T('same job'), 'w', (c) => <TripleIcons t={c.l} at={[0.05, T('same salary') - T('same job'), T('same 24') - T('same job')]} />],
-  [T('the only difference'), undefined, (c) => <TableScene t={c.l} hover={0.15 + ramp(c.l, 0.4, 2.0) * 0.4} />],
-  [T('what he does'), undefined, (c) => <TableScene t={c.l + 2} hover={0.55 + ramp(c.l, 0, 1.2) * 0.4} />],
-  [T('10 seconds') - 0.1, 'f', (c) => <TenRing t={c.l} from={0.2} to={1.45} />],
-  [T('and by the end'), undefined, (c) => <MirrorPhone t={c.l} at={0.5} />],
+  [T('same job'), 'w', ins('TripleIcons', (c) => <TripleIcons t={c.l} at={[0.05, T('same salary') - T('same job'), T('same 24') - T('same job')]} />)],
+  [T('the only difference'), undefined, ins('TableScene', (c) => <TableScene t={c.l} hover={0.15 + ramp(c.l, 0.4, 2.0) * 0.4} />)],
+  [T('what he does'), undefined, ins('TableScene', (c) => <TableScene t={c.l + 2} hover={0.55 + ramp(c.l, 0, 1.2) * 0.4} />)],
+  [T('10 seconds') - 0.1, 'f', ins('TenRing', (c) => <TenRing t={c.l} from={0.2} to={1.45} />)],
+  [T('and by the end'), undefined, ins('MirrorPhone', (c) => <MirrorPhone t={c.l} at={0.5} />)],
   [T('exact same choice'), undefined, B(...sFace(2.4, 2.6), (c) => ({s: sP({mode: 'rest', lids: 0.2, glow: 0.6, brow: -0.2, browTilt: -4}), r: null, glowS: 0.6}))],
   [T('every single night'), undefined, B(K.CLOCKN[0], K.CLOCKN[1], () => ({s: sP({mode: 'rest'}), r: null, glowS: 0.3}), true)],
   // ===== ACT 2: MEET DANIEL (33 to 55) =====
   [T('his name is'), 'w', B(...sFace(2.4, 2.7), (c) => night(c, {lids: 0.3, smile: 0.1}))],
   [T("he's 28"), undefined, B(...camS(1.3, 1.45), (c) => night(c, {lids: 0.35}))],
-  [T("it's 11"), undefined, () => <ClockInsert text="11:00" />],
+  [T("it's 11"), undefined, ins('ClockInsert', () => <ClockInsert text="11:00" />)],
   [T('on a tuesday'), undefined, B(...camS(1.3, 1.5), (c) => night(c, {lids: 0.45, slump: ramp(c.l, 0.1, 0.8)}))],
   [T('tired'), undefined, B(...sFace(2.8, 3.0), (c) => night(c, {lids: 0.7, brow: -0.3, browTilt: 8}))],
-  [T('long boring'), undefined, (c) => <CalendarBlur t={c.l} d={1.3} />],
+  [T('long boring'), undefined, ins('CalendarBlur', (c) => <CalendarBlur t={c.l} d={1.3} />)],
   [T('can make you tired'), undefined, B([2650, 300, 2.0], [2650, 296, 2.2], () => ({s: sP({mode: 'rub', lids: 0.7}), r: null, glowS: 0.3}))],
-  [T('on the bedside table'), 'w', (c) => <TableScene t={c.l} hover={0} />],
-  [T('a friend gave'), undefined, (c) => <BookGift t={c.l} />],
-  [T('the bookmark'), undefined, (c) => <BookPageOne t={c.l} />],
-  [T('and next to it'), 'w', (c) => <TableScene t={c.l + 1} hover={ramp(c.l, 0.3, 1.8) * 0.5} />],
+  [T('on the bedside table'), 'w', ins('TableScene', (c) => <TableScene t={c.l} hover={0} />)],
+  [T('a friend gave'), undefined, ins('BookGift', (c) => <BookGift t={c.l} />)],
+  [T('the bookmark'), undefined, ins('BookPageOne', (c) => <BookPageOne t={c.l} />)],
+  [T('and next to it'), 'w', ins('TableScene', (c) => <TableScene t={c.l + 1} hover={ramp(c.l, 0.3, 1.8) * 0.5} />)],
   [T('he picks up the phone'), undefined, B(...camS(1.5, 1.7, 420), (c) => ({s: sP({raise: ramp(c.l, 0.1, 0.9), lids: 0.25, smile: 0.1, glow: ramp(c.l, 0.3, 1)}), r: null}))],
   [T('of course'), undefined, B(...sFace(2.6, 2.8), () => ({s: sP({mode: 'phone', raise: 1, lids: 0.3, smile: 0.35, brow: 0.2}), r: null, glowS: 1}))],
   [T('anyone would'), undefined, B(...WIDE, () => ({s: sP(), r: null}))],
   // ===== ACT 3: THE SPLIT (55 to 64) =====
-  [T("but let's split"), 'w', (c) => <DoubleVision c={c} />],
+  [T("but let's split"), 'w', ins('DoubleVision', (c) => <DoubleVision c={c} />)],
   [T('in one version'), 'w', B(...camS(1.5, 1.7, 420), (c) => ({s: sP({raise: ramp(c.l, 0.3, 1.2), lids: 0.25, smile: 0.1, glow: ramp(c.l, 0.3, 1)}), r: null}))],
   [T('in the other'), 'w', B(...camR(1.5, 1.7, 420), () => ({r: rB({smile: 0.2, raise: 0.4}), s: null, glowR: 1.1}))],
   [T('just this once'), undefined, B(...rFace(2.0, 2.2), () => ({r: rB({smile: 0.3, lids: 0.15}), s: null, glowR: 1.1}))],
   [T('picks up the book'), undefined, B(...camR(1.5, 1.7, 420), (c) => ({r: rB({raise: ramp(c.l, 0.05, 0.9), flip: ramp(c.l, 0.9, 1.1), smile: 0.2}), s: null, glowR: 1.1}))],
-  [63.2, undefined, (c) => <BookOpening t={c.l} at={0.05} />],
+  [63.2, undefined, ins('BookOpening', (c) => <BookOpening t={c.l} at={0.05} />)],
 ];
 
 // the rest of the film (Acts 4 to 16) lives in acts.tsx and reuses the scene makers published by part2
@@ -111,7 +111,26 @@ LANE.forEach((it, n) => { const nx = LANE[n + 1]; if (!nx) return; const item = 
 // ---------------- sound: soft, under the voice ----------------
 const typing = (from: number, to: number, step: number): Cue3[] => { const out: Cue3[] = []; for (let t = from; t < to; t += step) out.push({file: 'phone_tap', at: t, vol: 0.08}); return out; };
 const textCue = (w: TW): Cue3[] => (w.mode === 'slam' ? [{file: 'tag_whoosh', at: w.at - 0.08, vol: 0.1}, {file: 'text_slam', at: w.at, vol: 0.26}] : w.mode === 'title' ? [{file: 'tag_whoosh', at: w.at - 0.12, vol: 0.1}, {file: 'text_title', at: w.at, vol: 0.24}] : w.mode === 'whisper' ? [{file: 'text_whisper', at: w.at, vol: 0.14}] : [{file: 'text_pop', at: w.at, vol: 0.14}]);
+// every full-frame insert, every change of place, every tag and every speech bubble announces itself with a sound
+const INSERT_SOUND: Record<string, [string, number, number][]> = {   // [file, offset s, volume]
+  ClockInsert: [['kw_pop', 0.05, 0.2]], PhoneFeed: [['phone_swipe', 0.3, 0.16]], CoinReward: [['coin_ping', 0.2, 0.18]], BookPageOne: [['page_turn', 0.1, 0.18]], BookRead: [['page_flutter', 0.1, 0.16]],
+  PlanterInsert: [['shimmer', 0.1, 0.16]], TableScene: [['kw_pop', 0.1, 0.16]], ChatPhone: [['phone_notif', 0.2, 0.2]], FeedPhoto: [['reward_pop', 0.3, 0.18]], TypeSearch: [['kw_pop', 0.1, 0.14]],
+  NestedPhones: [['kw_pop', 0.1, 0.16]], TenRing: [['kw_pop', 0.1, 0.2]], CountCard: [['kw_pop', 0.1, 0.18]], IconGrid: [['counter_tick', 0.3, 0.16], ['counter_tick', 0.6, 0.16], ['counter_tick', 0.9, 0.16]],
+  NodeNetwork: [['shimmer', 0.1, 0.18]], PhoneFaceDown: [['kw_pop', 0.1, 0.14]], YearFlip: [['counter_whir', 0.1, 0.16]], Choice: [['kw_pop', 0.2, 0.2], ['kw_pop', 0.5, 0.2]], CommentCard: [['kw_pop', 0.1, 0.16]],
+  EndCard: [['shimmer', 0.1, 0.2]], TeaPour: [['kw_pop', 0.05, 0.14]], BookOpening: [['kw_pop', 0.05, 0.14]], PullGauge: [['kw_pop', 0.2, 0.16]], BillInsert: [['receipt_print', 0.05, 0.16]], DoubleVision: [['shimmer', 0.1, 0.16]],
+};
+const SCENE_SOUND: Record<string, string> = {'scene:kitE': 'spoon_bowl', 'scene:meet': 'page_flutter', 'scene:dine': 'glass_clink', 'scene:mgr': 'door_open', 'scene:office': 'page_flutter', 'scene:kit': 'spoon_bowl', 'scene:bath': 'brush_teeth'};
+const SHOT_CUES: Cue3[] = SHOTS.flatMap((s, i): Cue3[] => {
+  const k = kindOf(s.C), prev = i > 0 ? kindOf(SHOTS[i - 1].C) : 'room', out: Cue3[] = [];
+  const isScene = k.startsWith('scene:'), isInsert = !isScene && k !== 'room', wasAway = prev !== 'room';
+  if (isInsert) { if (!s.fx) out.push({file: 'whoosh_soft', at: s.from - 0.02, vol: 0.18}); for (const [f, o, v] of INSERT_SOUND[k] ?? [['kw_pop', 0.1, 0.16]]) out.push({file: f, at: s.from + o, vol: v}); }
+  else if (isScene) { if (prev !== k) { if (!s.fx) out.push({file: 'whoosh_soft', at: s.from - 0.02, vol: 0.16}); out.push({file: SCENE_SOUND[k] ?? 'cloth_shift', at: s.from + 0.1, vol: 0.16}); } }
+  else if (wasAway && !s.fx) out.push({file: 'cloth_shift', at: s.from + 0.05, vol: 0.18});
+  return out;
+});
+const TAG_BUBBLE_CUES: Cue3[] = [{file: 'tag_whoosh', at: T("it's 11"), vol: 0.14}, {file: 'pill_pop', at: T("it's 11") + 0.3, vol: 0.14}, ...ACT_TAGS.flatMap((g): Cue3[] => [{file: 'tag_whoosh', at: g.from, vol: 0.14}, {file: 'pill_pop', at: g.from + 0.3, vol: 0.14}]), ...ACT_BUBBLES.flatMap((b): Cue3[] => [{file: 'pill_pop', at: b.from + 0.05, vol: 0.2}])];
 const CUES: Cue3[] = [
+  ...SHOT_CUES, ...TAG_BUBBLE_CUES,
   {file: 'amb_night_room', at: 0, dur: 64.2, loop: true, vol: 0.13, fadeIn: 1.5, fadeOut: 1.2},
   ...ACT_CUES,
   ...WHIP_AT.map((at): Cue3 => ({file: 'whip', at: at - 0.08, vol: 0.12})), ...FLASH_AT.map((at): Cue3 => ({file: 'flash_boom', at, vol: 0.16})), ...BRIDGE_AT.map((at): Cue3 => ({file: 'shimmer', at: at - 0.2, vol: 0.16})),
