@@ -216,7 +216,16 @@ const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?:
   // a hanging arm is nearly straight down along the body, not a wing
   let Tg = T;
   if (T[1] > S[1] + 250) { const dx = T[0] - S[0], dy = T[1] - S[1], d = Math.hypot(dx, dy) || 1, want = 0.975 * 340; Tg = [S[0] + (dx / d) * want, S[1] + (dy / d) * want]; }
-  const hangF = T[1] > S[1] + 250, sg = S[0] < 0 ? -1 : 1, {J: E, H} = ik2(S, Tg, 176, 164, hangF ? (c) => ((c[0][0] - c[1][0]) * (S[0] < 0 ? -1 : 1) > 0 ? c[0] : c[1]) : (c) => ((c[0][1] + (c[0][0] - S[0]) * sg * 0.25) > (c[1][1] + (c[1][0] - S[0]) * sg * 0.25) ? c[0] : c[1]));
+  // a raised arm: the upper arm hangs from the shoulder as low as it can (elbow beside or in front of the waist, never winged out) and only swings up when the hand is too high to reach; the forearm is then shorter (foreshortened toward the camera)
+  const hangF = T[1] > S[1] + 250, ox = S[0] < 0 ? -1 : 1;
+  let {J: E, H} = ik2(S, Tg, 176, 164, (c) => ((c[0][0] - c[1][0]) * ox > 0 ? c[0] : c[1]));
+  if (!hangF) {
+    for (let d = 8; d <= 172; d += 4) {
+      const th = (d * Math.PI) / 180, cands: V[] = [[S[0] + ox * 176 * Math.sin(th), S[1] + 176 * Math.cos(th)], [S[0] - ox * 176 * Math.sin(th), S[1] + 176 * Math.cos(th)]];
+      const ok = cands.find((c) => Math.hypot(c[0] - T[0], c[1] - T[1]) <= 178);
+      if (ok) { E = ok; H = T; break; }
+    }
+  }
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9), slv = o.sleeve === 'long' ? o.top : SKIN;
   if (o.simple) return (
     <g>
