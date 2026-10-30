@@ -157,7 +157,7 @@ const Same7Main: React.FC = () => {
       <AbsoluteFill style={{background: '#000', opacity: fadeOut}} />
 
       <Sequence from={0} durationInFrames={SAME7_FRAMES}><Audio src={staticFile(AUDIO_FILE)} startFrom={0} endAt={SAME7_FRAMES} /></Sequence>
-      <Sfx3 cues={CUES} gain={0.8} minVol={0.08} duck={speechDuck} />
+      <Sfx3 cues={CUES.map((c) => ({...c, vol: (c.vol ?? 0.5) * (c.loop ? 1.5 : 1.8)}))} gain={1} minVol={0.2} duck={speechDuck} />
       <Sequence from={0} durationInFrames={Math.round(56 * FPS)}><Music track="low" frames={Math.round(56 * FPS)} vol={0.1} fadeIn={60} fadeOut={90} /></Sequence>
       <Sequence from={Math.round(55.5 * FPS)} durationInFrames={Math.round(9 * FPS)}><Music track="wonder" frames={Math.round(9 * FPS)} vol={0.08} fadeIn={45} fadeOut={60} /></Sequence>
       {ACT_MUSIC.map((m, i) => <Sequence key={'am' + i} from={Math.round(m.from * FPS)} durationInFrames={Math.round((m.to - m.from) * FPS)}><Music track={m.track} frames={Math.round((m.to - m.from) * FPS)} vol={m.vol} fadeIn={60} fadeOut={75} /></Sequence>)}

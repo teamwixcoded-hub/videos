@@ -35,5 +35,5 @@ export const CAPS: {from: number; to: number}[] = (() => {
 export const speechDuck = (t: number) => {
   let amt = 0;
   for (const c of CAPS) { const a = c.from - 0.05, b = c.to + 0.1; if (t < a - 0.15 || t > b + 0.15) continue; amt = Math.max(amt, Math.min(1, (t - (a - 0.15)) / 0.15, (b + 0.15 - t) / 0.15)); }
-  return 1 - 0.55 * amt;
+  return 1 - 0.35 * amt;
 };
