@@ -127,7 +127,7 @@ export const Person: React.FC<PersonProps> = (p) => {
   const kids = p.children && pose !== 'ear' ? <g transform={`translate(${shift[0]} ${shift[1]})`}>{p.children}</g> : null;
   if (view === 'front') {
     const q = FRONT[pose](t, raise);
-    const [lvN, lvF, lvT] = lively(t, sd, pose, e);
+    const [lvN, lvF, lvT] = lively(t, sd, pose, e * idle);
     const s0 = FRONT.stand(t, 1), L0: V = mixV(s0.L, p.handL ? [p.handL[0], p.handL[1] - 92] : q.L, e), R0: V = mixV(s0.R, p.handR ? [p.handR[0], p.handR[1] - 92] : q.R, e);
     const L: V = [L0[0] + lvF[0], L0[1] + lvF[1]], R: V = [R0[0] + lvN[0], R0[1] + lvN[1]];
     return (
@@ -143,7 +143,7 @@ export const Person: React.FC<PersonProps> = (p) => {
   const footF: V = sitting ? [300, 172] : walking ? [-sw * 112, 392 - Math.max(0, cw) * 52] : [-54 - rest * 0.5, 395];
   const arms = walking && pose === 'stand' ? -sw * 64 : 0;
   const s1 = SIDE.stand(t, 1), handN0: V = p.hN ?? mixV(s1.N, [q.N[0] + arms, q.N[1]], e), handF0: V = p.hF ?? mixV(s1.F, [q.F[0] - arms, q.F[1]], e);
-  const [lvN, lvF, lvT] = walking ? [[0, 0], [0, 0], 0] as [V, V, number] : lively(t, sd, pose, e);
+  const [lvN, lvF, lvT] = walking ? [[0, 0], [0, 0], 0] as [V, V, number] : lively(t, sd, pose, e * idle);
   const handN: V = [handN0[0] + lvN[0], handN0[1] + lvN[1]], handF: V = [handF0[0] + lvF[0], handF0[1] + lvF[1]];
   const bob = walking ? Math.abs(Math.sin(walk * Math.PI * 2)) * 12 * sc : 0;
   return (

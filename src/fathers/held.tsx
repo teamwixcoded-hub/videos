@@ -7,7 +7,7 @@ import {INK} from './theme';
 
 // a smartphone seen from behind: dark glass back with a sheen, a camera island, a lit edge toward the face. Long axis along the hand, so held to the ear it runs up the cheek
 export const PhoneBack: React.FC<{lit?: number}> = ({lit = 1}) => (
-  <g transform="translate(0 70)">
+  <g transform="translate(0 28)">
     <defs>
       <linearGradient id="phb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#3a3f5c" /><stop offset="0.5" stopColor="#20233a" /><stop offset="1" stopColor="#12142a" /></linearGradient>
     </defs>

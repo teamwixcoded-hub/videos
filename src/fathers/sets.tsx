@@ -241,7 +241,7 @@ export const party = (o: {t: number; adamHere?: boolean}): SetOut => ({
 // the school auditorium: stage and curtains up top, rows of seat backs in the dark below. The seat at (seatX, 880) is Adam's, empty, with a costume tag
 export const AUD = {seatX: 1260, samX: 2160};
 const SPEC_C = ['#e0455a', '#4a8bd8', '#47b57a', '#d2733c', '#8a56b8', '#2fa39a', '#e8b030', '#c94a7e'];
-const ROW_Y = [600, 740, 880], ROW_S = [0.8, 0.92, 1.04];
+const ROW_Y = [760, 890, 1020], ROW_S = [0.8, 0.92, 1.04];
 const Spectator: React.FC<{x: number; y: number; i: number; t: number; sc: number; applause?: boolean}> = ({x, y, i, t, sc, applause}) => {
   const bob = Math.sin(t * 1.3 + i * 1.7) * 3, col = SPEC_C[i % SPEC_C.length], hair = ['#2b2634', '#4a2d1d', '#9a9aa8', '#8a5a36'][i % 4], up = applause ? Math.abs(Math.sin(t * 9 + i)) * 46 : 0;
   return (
@@ -264,6 +264,8 @@ export const auditorium = (o: {t: number; curtain?: number; spot?: number; leoOn
         <rect x={-400} y={-200} width={4000} height={1500} fill="#0d0f18" />
         <rect x={700} y={80} width={1800} height={460} fill="#232940" stroke={INK} strokeWidth={3.6} />
         <rect x={700} y={430} width={1800} height={110} fill="#5c432b" stroke={INK} strokeWidth={3} />
+        <rect x={700} y={540} width={1800} height={86} fill="#3a2a1c" stroke={INK} strokeWidth={3.4} />{Array.from({length: 18}, (_, i) => <g key={i}><rect x={700 + i * 100 + 4} y={552} width={92} height={60} rx={4} fill="#4a3523" stroke={INK} strokeWidth={2} /><circle cx={750 + i * 100} cy={548} r={7} fill="#ffd27a" /><circle cx={750 + i * 100} cy={548} r={22} fill="#ffd27a" opacity={0.22} /></g>)}
+        <rect x={600} y={626} width={2000} height={400} fill="#090a12" />
         <rect x={780} y={110} width={1640} height={320} fill="#22273c" />
         <path d="M 1600,80 L 1250,440 L 1950,440 Z" fill="#ffc610" opacity={0.28 * (o.spot ?? 1)} />
         <path d={`M 700,60 L ${700 + 880 * (1 - c)},60 Q ${700 + 840 * (1 - c)},300 ${700 + 800 * (1 - c)},560 L 700,560 Z`} fill="#651e1c" stroke={INK} strokeWidth={3} />

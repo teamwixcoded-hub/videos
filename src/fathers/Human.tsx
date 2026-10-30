@@ -32,6 +32,7 @@ const Mitten: React.FC<{curl?: number; s?: number}> = ({curl = 0.35, s = 1}) => 
     <path d={`M -18,-4 Q -24,26 -16,44 Q 0,${54 - curl * 14} 16,44 Q 24,26 18,-4 Z`} fill={SKIN} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
     <path d={`M 14,6 Q 34,12 32,${34 - curl * 6} Q 26,40 18,30`} fill={SKIN} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
     <path d="M -6,38 Q 0,42 8,38" fill="none" stroke={SKIN_D} strokeWidth={3} strokeLinecap="round" />
+    {[0, 1, 2].map((i) => <path key={i} d={`M -14,${10 + i * 11} Q 0,${13 + i * 11} 14,${10 + i * 11}`} fill="none" stroke={SKIN_D} strokeWidth={2.4} strokeLinecap="round" />)}
   </g>
 );
 
