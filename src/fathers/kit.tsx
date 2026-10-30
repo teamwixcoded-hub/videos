@@ -74,7 +74,7 @@ export const F = {
 };
 
 const mk = (set: SetOut, cam: Cam, chars: React.ReactNode, blurK = 0.5, extra?: React.ReactNode) => (
-  <Stage cam={cam} far={set.far} mid={set.mid} chars={<>{chars}{extra}</>} front={set.front} fg={set.fg} rim={set.rim} blurK={blurK} />
+  <Stage cam={cam} far={set.far} mid={set.mid} chars={<>{chars}{extra}</>} front={set.front} fg={set.fg} rim={set.rim} blurK={0} />
 );
 type CamArg = Cam | [Cam, Cam];
 const camOf = (c: Ctx, a: CamArg) => { const k = Array.isArray(a) ? mixCam(a[0], a[1], c.p) : a; const push = Array.isArray(a) ? 1 : 1 + 0.07 * ease(Math.min(1, c.p)); return {cx: k.cx + Math.sin(c.t * 0.9) * 9 + (Array.isArray(a) ? 0 : (c.p - 0.5) * 40), cy: k.cy + Math.sin(c.t * 1.3 + 1) * 6, z: k.z * push}; };

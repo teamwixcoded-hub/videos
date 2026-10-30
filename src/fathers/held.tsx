@@ -1,5 +1,6 @@
 import React from 'react';
 import {INK} from './theme';
+import {SK, SKD} from './FlatHead';
 
 // ============================================================================================
 // Things people HOLD. They are drawn in the hand's own frame (wrist at the origin, fingers along +y), under the fingers, so the hand really wraps around them.
@@ -34,9 +35,9 @@ export const CupHeld: React.FC<{t?: number; k?: number}> = ({t = 0, k = 0}) => (
     <path d="M -18,-24 q -3,20 2,36" fill="none" stroke="#fff" strokeWidth={3.4} strokeLinecap="round" opacity={0.75} />
     <path d="M 30,-24 q 24,2 18,18 q -5,10 -22,8" fill="none" stroke={INK} strokeWidth={4} strokeLinecap="round" />
     {/* the fist: palm behind the cup, four finger bumps across the front, the thumb standing up on the near side */}
-    <path d="M -34,-6 Q -40,22 -22,28 L 22,28 Q 40,22 34,-6 Z" fill="#f3f0fb" stroke={INK} strokeWidth={3.4} strokeLinejoin="round" />
-    {[-20, -7, 6, 19].map((x) => <path key={x} d={`M ${x - 6},-10 Q ${x},-18 ${x + 6},-10 L ${x + 6},12 Q ${x},18 ${x - 6},12 Z`} fill="#f3f0fb" stroke={INK} strokeWidth={2.6} strokeLinejoin="round" />)}
-    <path d="M -34,2 Q -50,-6 -44,-30 Q -40,-42 -32,-34 Q -30,-18 -26,-4" fill="#f3f0fb" stroke={INK} strokeWidth={3} strokeLinejoin="round" />
+    <path d="M -34,-6 Q -40,22 -22,28 L 22,28 Q 40,22 34,-6 Z" fill={SK()} stroke={INK} strokeWidth={3.4} strokeLinejoin="round" />
+    {[-20, -7, 6, 19].map((x) => <path key={x} d={`M ${x - 6},-10 Q ${x},-18 ${x + 6},-10 L ${x + 6},12 Q ${x},18 ${x - 6},12 Z`} fill={SK()} stroke={INK} strokeWidth={2.6} strokeLinejoin="round" />)}
+    <path d="M -34,2 Q -50,-6 -44,-30 Q -40,-42 -32,-34 Q -30,-18 -26,-4" fill={SK()} stroke={INK} strokeWidth={3} strokeLinejoin="round" />
   </g>
 );
 
@@ -45,6 +46,6 @@ export const PhoneLandscape: React.FC<{rec?: number}> = ({rec = 1}) => (
   <g transform="translate(0 -418)">
     <g transform="rotate(90)"><g transform="translate(0 -71)"><PhoneBack lit={0.2} /></g></g>
     <circle cx={96} cy={-58} r={9} fill="#ff3b3b" opacity={0.5 + 0.5 * rec} />
-    {[-1, 1].map((s) => <g key={s}>{[-26, -4, 18].map((y, i) => <path key={i} d={`M ${s * 88},${y} Q ${s * 112},${y + 2} ${s * 106},${y + 15} L ${s * 88},${y + 15} Z`} fill="#f3f0fb" stroke={INK} strokeWidth={3} strokeLinejoin="round" />)}<path d={`M ${s * 60},-70 Q ${s * 78},-96 ${s * 92},-72 Q ${s * 84},-58 ${s * 66},-60 Z`} fill="#f3f0fb" stroke={INK} strokeWidth={3} strokeLinejoin="round" /></g>)}
+    {[-1, 1].map((s) => <g key={s}>{[-26, -4, 18].map((y, i) => <path key={i} d={`M ${s * 88},${y} Q ${s * 112},${y + 2} ${s * 106},${y + 15} L ${s * 88},${y + 15} Z`} fill={SK()} stroke={INK} strokeWidth={3} strokeLinejoin="round" />)}<path d={`M ${s * 60},-70 Q ${s * 78},-96 ${s * 92},-72 Q ${s * 84},-58 ${s * 66},-60 Z`} fill={SK()} stroke={INK} strokeWidth={3} strokeLinejoin="round" /></g>)}
   </g>
 );

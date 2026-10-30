@@ -15,11 +15,13 @@ const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
 const rnd = (i: number, k: number) => { const x = Math.sin(i * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
 
 export const InsertBG: React.FC<{tone?: 'cold' | 'warm' | 'dark' | 'paper'; children: React.ReactNode}> = ({tone = 'warm', children}) => {
-  const glow = {cold: '#4aa8ff', warm: '#ffb25a', dark: '#4aa8ff', paper: '#ffb25a'}[tone];
+  // flat 2D backdrop: one solid colour, a few big flat shapes and a dotted pattern (no blur, no bokeh)
+  const base = {cold: '#1d2a5c', warm: '#3d2a3a', dark: '#1a2150', paper: '#3a2f3a'}[tone], shape = {cold: '#27387a', warm: '#553a4a', dark: '#232d6a', paper: '#4a3d4a'}[tone], dot = {cold: '#4aa8ff', warm: '#ffb25a', dark: '#4aa8ff', paper: '#ffb25a'}[tone];
   return (
-    <AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 45%, #1b2150 0%, #0a0d20 75%)', overflow: 'hidden'}}>
+    <AbsoluteFill style={{background: base, overflow: 'hidden'}}>
       <svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{position: 'absolute', inset: 0}}>
-        {Array.from({length: 16}, (_, i) => <circle key={i} cx={(i * 263) % 1920} cy={(i * 191) % 1080} r={30 + (i % 4) * 22} fill={glow} opacity={0.06 + (i % 3) * 0.03} style={{filter: 'blur(14px)'}} />)}
+        <circle cx={260} cy={220} r={420} fill={shape} /><circle cx={1700} cy={900} r={520} fill={shape} /><circle cx={1500} cy={120} r={180} fill={shape} opacity={0.7} />
+        {Array.from({length: 9}, (_, r) => Array.from({length: 16}, (_, c) => <circle key={r + '-' + c} cx={60 + c * 120 + (r % 2) * 60} cy={60 + r * 120} r={3.2} fill={dot} opacity={0.2} />))}
         {children}
       </svg>
     </AbsoluteFill>
