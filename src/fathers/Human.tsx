@@ -1,7 +1,5 @@
 import React, {useId} from 'react';
-import {Face, V, Look, shade, INK} from '../same2d/Char';
-import {HeadFor} from './ImgHead';
-import {setSkin, SK, SKD} from './FlatHead';
+import {Head, Face, V, Look, shade, INK} from '../same2d/Char';
 import {ik2} from '../same2d/SideChar';
 
 // ============================================================================================
@@ -13,6 +11,7 @@ import {ik2} from '../same2d/SideChar';
 const clamp = (x: number, a: number, b: number) => Math.min(b, Math.max(a, x));
 const rot = (p: V, deg: number): V => { const r = (deg * Math.PI) / 180, c = Math.cos(r), s = Math.sin(r); return [p[0] * c - p[1] * s, p[0] * s + p[1] * c]; };
 const mix = (a: V, b: V, k: number): V => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
+const SKIN = '#f3f0fb', SKIN_D = '#d9d3ec';
 
 export type Outfit = {style: 'suit' | 'cardigan' | 'tee' | 'hoodie'; top: string; shirt: string; pants: string; shoe: string; sleeve: 'long' | 'short'; sole?: string; watch?: boolean; simple?: boolean};
 
@@ -30,10 +29,10 @@ const Noodle: React.FC<{A: V; J: V; B: V; w: number; fill: string}> = ({A, J, B,
 };
 const Mitten: React.FC<{curl?: number; s?: number}> = ({curl = 0.35, s = 1}) => (
   <g transform={`scale(${s})`}>
-    <path d={`M -18,-4 Q -24,26 -16,44 Q 0,${54 - curl * 14} 16,44 Q 24,26 18,-4 Z`} fill={SK()} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
-    <path d={`M 14,6 Q 34,12 32,${34 - curl * 6} Q 26,40 18,30`} fill={SK()} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
-    <path d="M -6,38 Q 0,42 8,38" fill="none" stroke={SKD()} strokeWidth={3} strokeLinecap="round" />
-    {[0, 1, 2].map((i) => <path key={i} d={`M -14,${10 + i * 11} Q 0,${13 + i * 11} 14,${10 + i * 11}`} fill="none" stroke={SKD()} strokeWidth={2.4} strokeLinecap="round" />)}
+    <path d={`M -18,-4 Q -24,26 -16,44 Q 0,${54 - curl * 14} 16,44 Q 24,26 18,-4 Z`} fill={SKIN} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
+    <path d={`M 14,6 Q 34,12 32,${34 - curl * 6} Q 26,40 18,30`} fill={SKIN} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
+    <path d="M -6,38 Q 0,42 8,38" fill="none" stroke={SKIN_D} strokeWidth={3} strokeLinecap="round" />
+    {[0, 1, 2].map((i) => <path key={i} d={`M -14,${10 + i * 11} Q 0,${13 + i * 11} 14,${10 + i * 11}`} fill="none" stroke={SKIN_D} strokeWidth={2.4} strokeLinecap="round" />)}
   </g>
 );
 
@@ -43,15 +42,15 @@ export const HumanHand: React.FC<{curl?: number; s?: number; dim?: boolean}> = (
   const bend = curl * 34;
   return (
     <g transform={`scale(${s})`} style={dim ? {filter: 'brightness(0.85)'} : undefined}>
-      <g transform={`translate(19 14) rotate(${-18 - curl * 24})`}><Taper A={[0, 0]} B={[8, 30]} r1={11} r2={8.6} fill={SK()} sw={2.8} /></g>
-      <path d="M -19,-2 Q -22,18 -20,36 Q -14,46 0,46 Q 14,46 20,36 Q 22,16 19,-2 Z" fill={SK()} stroke={INK} strokeWidth={3.4} strokeLinejoin="round" />
-      <path d="M -10,22 Q 0,30 12,20" fill="none" stroke={SKD()} strokeWidth={2.4} strokeLinecap="round" />
+      <g transform={`translate(19 14) rotate(${-18 - curl * 24})`}><Taper A={[0, 0]} B={[8, 30]} r1={11} r2={8.6} fill={SKIN} sw={2.8} /></g>
+      <path d="M -19,-2 Q -22,18 -20,36 Q -14,46 0,46 Q 14,46 20,36 Q 22,16 19,-2 Z" fill={SKIN} stroke={INK} strokeWidth={3.4} strokeLinejoin="round" />
+      <path d="M -10,22 Q 0,30 12,20" fill="none" stroke={SKIN_D} strokeWidth={2.4} strokeLinecap="round" />
       <ellipse cx={-8} cy={12} rx={9} ry={5} fill="#fff" opacity={0.7} />
       {fingers.map((f, i) => (
-        <g key={i} transform={`translate(${f.x} 38) rotate(${(i - 1.5) * 5 - bend * (0.5 + i * 0.12)})`}><Taper A={[0, 0]} B={[0, f.l * (1 - curl * 0.28)]} r1={8.4} r2={7} fill={SK()} sw={2.8} /></g>
+        <g key={i} transform={`translate(${f.x} 38) rotate(${(i - 1.5) * 5 - bend * (0.5 + i * 0.12)})`}><Taper A={[0, 0]} B={[0, f.l * (1 - curl * 0.28)]} r1={8.4} r2={7} fill={SKIN} sw={2.8} /></g>
       ))}
-      <path d="M -18,38 Q 0,46 18,38" fill={SK()} stroke="none" />
-      <rect x={-17} y={-12} width={34} height={14} rx={5} fill={SKD()} stroke={INK} strokeWidth={3} />
+      <path d="M -18,38 Q 0,46 18,38" fill={SKIN} stroke="none" />
+      <rect x={-17} y={-12} width={34} height={14} rx={5} fill={SKIN_D} stroke={INK} strokeWidth={3} />
     </g>
   );
 };
@@ -63,7 +62,7 @@ const HumanArm: React.FC<{S: V; T: V; o: Outfit; dim?: boolean; curl?: number; s
   if (hang) { const dx = T[0] - S[0], dy = T[1] - S[1], d = Math.hypot(dx, dy) || 1, want = 0.965 * 355; Tg = [S[0] + (dx / d) * want, S[1] + (dy / d) * want]; }
   const {J: E, H} = ik2(S, Tg, 185, 170, hang ? (c) => (c[0][0] < c[1][0] ? c[0] : c[1]) : (c) => (c[0][1] > c[1][1] ? c[0] : c[1]));
   const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9);
-  const slv = o.sleeve === 'long' ? o.top : SK(), cuff = o.style === 'suit' ? o.shirt : null;
+  const slv = o.sleeve === 'long' ? o.top : SKIN, cuff = o.style === 'suit' ? o.shirt : null;
   return (
     o.simple ? (
       <g style={dim ? {filter: 'brightness(0.9)'} : undefined}>
@@ -116,10 +115,10 @@ const HumanLeg: React.FC<{HJ: V; T: V; o: Outfit; dim?: boolean; up?: boolean; l
 
 export type HumanSideProps = {
   x: number; y: number; scale?: number; flip?: boolean; torso: number; headPitch?: number; turn?: number; face?: Face; handN: V; handF: V; footN: V; footF: V; legUp?: boolean;
-  look?: Look; grey?: number; outfit: Outfit; tie?: boolean; t: number; seed?: number; dim?: number; idle?: number; slump?: number; curlN?: number; curlF?: number; age?: number; heldN?: React.ReactNode; heldUp?: boolean; children?: React.ReactNode;
+  look?: Look; grey?: number; outfit: Outfit; tie?: boolean; t: number; seed?: number; dim?: number; idle?: number; slump?: number; curlN?: number; curlF?: number; heldN?: React.ReactNode; heldUp?: boolean; children?: React.ReactNode;
 };
 
-export const HumanSide: React.FC<HumanSideProps> = ({x, y, scale = 1, flip, torso, headPitch = 8, turn = 0.85, face = {}, handN, handF, footN, footF, legUp, look = 'man', grey = 0, outfit, tie, t, seed = 0, dim = 0, idle = 1, slump = 0, curlN = 0.35, curlF = 0.35, age, heldN, heldUp, children}) => {
+export const HumanSide: React.FC<HumanSideProps> = ({x, y, scale = 1, flip, torso, headPitch = 8, turn = 0.85, face = {}, handN, handF, footN, footF, legUp, look = 'man', grey = 0, outfit, tie, t, seed = 0, dim = 0, idle = 1, slump = 0, curlN = 0.35, curlF = 0.35, heldN, heldUp, children}) => {
   const id = useId().replace(/:/g, '');
   const inh = Math.sin(t * 1.9 + seed);
   // weight shift: the pelvis drifts one way, the chest answers, the head lags a beat behind and settles
@@ -169,8 +168,8 @@ export const HumanSide: React.FC<HumanSideProps> = ({x, y, scale = 1, flip, tors
         <path d="M 2,-340 L 2,-300" stroke="none" />
       </g>
       <g transform={`translate(${NECK[0] + shiftX * 0.4} ${NECK[1]}) rotate(${headRot}) translate(24 -128)`}>
-        <rect x={-30} y={116} width={60} height={86} rx={22} fill={SK()} stroke={INK} strokeWidth={5} />
-        <HeadFor age={age} face={face} turn={turn} t={t} seed={seed} idle={idle} look={look} grey={grey} />
+        <rect x={-30} y={116} width={60} height={86} rx={22} fill={SKIN} stroke={INK} strokeWidth={5} />
+        <Head face={face} turn={turn} t={t} seed={seed} idle={idle} look={look} grey={grey} />
       </g>
       <HumanLeg HJ={HJ} T={footN} o={o} up={legUp} />
       {children}
@@ -183,14 +182,14 @@ export const HumanSide: React.FC<HumanSideProps> = ({x, y, scale = 1, flip, tors
 // front view: sitting at a desk, clapping, filming, on a bench. Shoulders and waist, jacket or tee, two arms with elbows, trousers and shoes.
 export type HumanFrontProps = {
   x: number; y: number; scale?: number; flip?: boolean; lean?: number; head?: {turn?: number; tilt?: number}; face?: Face; handL: V; handR: V; slump?: number; legs?: 'none' | 'sit';
-  look?: Look; grey?: number; outfit: Outfit; tie?: boolean; t: number; seed?: number; dim?: number; idle?: number; curl?: number; age?: number; heldR?: React.ReactNode; heldUp?: boolean; noHands?: boolean; children?: React.ReactNode;
+  look?: Look; grey?: number; outfit: Outfit; tie?: boolean; t: number; seed?: number; dim?: number; idle?: number; curl?: number; heldR?: React.ReactNode; heldUp?: boolean; noHands?: boolean; children?: React.ReactNode;
 };
 const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?: React.ReactNode; upright?: boolean; noHand?: boolean}> = ({S, T, o, s, curl, held, upright, noHand}) => {
   // a hanging arm is nearly straight down along the body, not a wing
   let Tg = T;
   if (T[1] > S[1] + 250) { const dx = T[0] - S[0], dy = T[1] - S[1], d = Math.hypot(dx, dy) || 1, want = 0.975 * 340; Tg = [S[0] + (dx / d) * want, S[1] + (dy / d) * want]; }
   const {J: E, H} = ik2(S, Tg, 176, 164, (c) => ((c[0][0] - c[1][0]) * (S[0] < 0 ? -1 : 1) > 0 ? c[0] : c[1]));
-  const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9), slv = o.sleeve === 'long' ? o.top : SK();
+  const fa = (Math.atan2(H[1] - E[1], H[0] - E[0]) * 180) / Math.PI, wr = mix(E, H, 0.9), slv = o.sleeve === 'long' ? o.top : SKIN;
   if (o.simple) return (
     <g>
       <Noodle A={S} J={E} B={wr} w={44} fill={o.top} />
@@ -209,7 +208,7 @@ const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?:
     </g>
   );
 };
-export const HumanFront: React.FC<HumanFrontProps> = ({x, y, scale = 1, flip, lean = 0, head = {}, face = {}, handL, handR, slump = 0, legs = 'none', look = 'man', grey = 0, outfit, tie, t, seed = 0, dim = 0, idle = 1, curl = 0.35, age, heldR, heldUp, noHands, children}) => {
+export const HumanFront: React.FC<HumanFrontProps> = ({x, y, scale = 1, flip, lean = 0, head = {}, face = {}, handL, handR, slump = 0, legs = 'none', look = 'man', grey = 0, outfit, tie, t, seed = 0, dim = 0, idle = 1, curl = 0.35, heldR, heldUp, noHands, children}) => {
   const id = useId().replace(/:/g, '');
   const inh = Math.sin(t * 1.9 + seed), sway = Math.sin(t * 0.55 + seed * 2) * 1.0 * idle, sy = slump * 30 - inh * 2.6 * idle, o = outfit;
   const j = (a: number, b: number): V => [Math.sin(t * 1.3 + seed + a) * 2.2 * idle, Math.cos(t * 1.1 + seed * 2 + b) * 2.2 * idle];
@@ -253,9 +252,9 @@ export const HumanFront: React.FC<HumanFrontProps> = ({x, y, scale = 1, flip, le
           <path d={`M -44,${-334 + sy} Q 0,-292 44,${-334 + sy}`} fill="none" stroke={topD} strokeWidth={13} strokeLinecap="round" />
           {o.style === 'hoodie' && <path d="M -16,-300 L -12,-216 M 16,-300 L 12,-216" stroke="#eef0fa" strokeWidth={4.4} strokeLinecap="round" />}
         </g>}
-        <rect x={-27} y={-376 + sy} width={54} height={58} rx={18} fill={SK()} stroke={INK} strokeWidth={5} />
+        <rect x={-27} y={-376 + sy} width={54} height={58} rx={18} fill={SKIN} stroke={INK} strokeWidth={5} />
         <g transform={`translate(0 ${-352 + sy}) rotate(${(head.tilt ?? 0) + Math.sin(t * 0.71 + seed * 1.7 - 0.5) * 1.4 * idle - sway * 0.6}) translate(${(Math.sin(t * 0.43 + seed) * 4 * idle)} ${-172 + inh * 1.2 * idle})`}>
-          <HeadFor age={age} face={face} turn={head.turn ?? 0} t={t} seed={seed} idle={idle} look={look} grey={grey} />
+          <Head face={face} turn={head.turn ?? 0} t={t} seed={seed} idle={idle} look={look} grey={grey} />
         </g>
         {children}
         <FrontArm S={SL} T={hl} o={o} s={-1} curl={curl} noHand={noHands} />
