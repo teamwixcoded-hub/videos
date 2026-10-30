@@ -144,10 +144,10 @@ export const BookSide: React.FC<{x: number; y: number; deg?: number; shut?: bool
           <path d="M -62,22 L 62,22 L 58,32 L -58,32 Z" fill={PG} stroke={INK} strokeWidth={4} strokeLinejoin="round" /><path d="M -50,27 L 50,27" stroke={EDGE} strokeWidth={2.5} />
         </g>
       ) : (
-        <g transform="scale(0.85)">
+        <g transform="scale(1.12)">
           {/* an OPEN book held in front of the reader, its PAGES turned to his face: seen from beside, the spread is foreshortened (narrow and slanted) and the far cover shows as a dark edge on the side away from him */}
           <path d="M 36,-82 L 54,-70 L 54,116 L 36,132 Z" fill={COV_D} stroke={INK} strokeWidth={5} strokeLinejoin="round" />
-          <g transform="translate(-10 0) skewY(-9) scale(0.74 1)">
+          <g transform="translate(-10 0) skewY(-7) scale(0.84 1)">
             <path d="M -128,-54 C -92,-84 -42,-90 0,-80 C 42,-90 92,-84 128,-54 L 128,130 C 92,154 42,154 0,132 C -42,154 -92,154 -128,130 Z" fill={COV} stroke={INK} strokeWidth={9} strokeLinejoin="round" />
             {[10, 6, 2].map((o, i) => <g key={i}><path d={`M -118,${112 + o} C -80,${130 + o} -36,${128 + o} 0,${110 + o} L 0,${118 + o} C -36,${136 + o} -80,${138 + o} -118,${120 + o} Z`} fill={i % 2 ? EDGE : PG} stroke={INK} strokeWidth={3} /><path d={`M 118,${112 + o} C 80,${130 + o} 36,${128 + o} 0,${110 + o} L 0,${118 + o} C 36,${136 + o} 80,${138 + o} 118,${120 + o} Z`} fill={i % 2 ? EDGE : PG} stroke={INK} strokeWidth={3} /></g>)}
             <path d="M 0,-72 C -36,-88 -86,-84 -118,-52 L -118,112 C -86,86 -36,88 0,108 Z" fill={PG} stroke={INK} strokeWidth={7} strokeLinejoin="round" />

@@ -42,12 +42,12 @@ const LOOK: Partial<Record<Look, {tee: string; tie?: boolean}>> = {man: {tee: '#
 type PersonP = {k: Look; x: number; y: number; flip?: boolean; pose?: 'sit' | 'stand'; hn?: V; hf?: V; face?: Face; torso?: number; pitch?: number; talk?: number; t: number; seed?: number; tee?: string; turn?: number; children?: React.ReactNode; dim?: number};
 export const Person: React.FC<PersonP> = (p) => {
   const sit = (p.pose ?? 'sit') === 'sit', talk = p.talk ?? 0, sd = p.seed ?? 0;
-  const g = Math.sin(p.t * 3.1 + sd) * 30 * talk, g2 = Math.sin(p.t * 2.3 + 1) * 24 * talk;
+  const env = talk > 0 ? TALK.env(p.t) : 0, g = Math.sin(p.t * 3.1 + sd) * 30 * talk * env, g2 = Math.sin(p.t * 2.3 + 1) * 24 * talk * env;
   const baseN: V = sit ? [150, -44] : [34, 30], baseF: V = sit ? [200, -44] : [70, 42];
-  const hn: V = p.hn ?? (talk ? [baseN[0] + g, baseN[1] - 120 * talk + g2] : baseN);
-  const face: Face = {smile: 0.1, lids: 0.1, ...p.face, open: (p.face?.open ?? 0) + talk * 0.32 * Math.abs(Math.sin(p.t * 13 + sd))};
+  const hn: V = p.hn ?? (talk ? [baseN[0] + g, baseN[1] - 120 * talk * env + g2] : baseN);
+  const face: Face = {smile: 0.1, lids: 0.1, ...p.face, open: (p.face?.open ?? 0) + (talk > 0 ? talk * TALK.mouth(p.t, sd) : 0)};
   return (
-    <SideChar x={p.x} y={p.y} flip={p.flip} dim={p.dim} torso={p.torso ?? (sit ? -4 : -2)} headPitch={p.pitch ?? 6} turn={p.turn ?? 0.85} face={face}
+    <SideChar x={p.x} y={p.y} flip={p.flip} dim={p.dim} torso={p.torso ?? (sit ? -4 : -2)} headPitch={(p.pitch ?? 6) + (talk > 0 ? TALK.env(p.t) * Math.sin(p.t * 6 + sd) * 3 : 0)} turn={p.turn ?? 0.85} face={face}
       handN={hn} handF={p.hf ?? baseF} footN={sit ? [230, 170] : [40, 385]} footF={sit ? [300, 172] : [100, 385]} look={p.k} tie={LOOK[p.k]!.tie} tee={p.tee ?? LOOK[p.k]!.tee} t={p.t} seed={sd}>
       {p.children}
     </SideChar>
@@ -62,6 +62,8 @@ const ScBook: React.FC<{t: number; smile?: number}> = ({t, smile = 0.2}) => (
 
 // scene makers shared with the new cut (src/same7); filled the first time buildPart2 runs
 export let SC2: any = null;
+// how the speaking characters move: the new cut replaces these with narration-driven lip sync (src/same7); the old cut keeps a constant flutter
+export const TALK = {mouth: (t: number, sd: number) => Math.abs(Math.sin(t * 13 + sd)) * 0.32, env: (_t: number) => 1};
 export const buildPart2 = (api: Api): Item[] => {
   const {B, bedScene, sP, rB, WIDE, camS, camR, sFace, rFace, K, camOf, kit, bath} = api;
   const mk = (setFn: (t: number) => SetL, rim: string, filter?: string, extraFront?: React.ReactNode) =>

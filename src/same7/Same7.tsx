@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
 import {B, K, WIDE, camS, camR, sFace, rFace, sP, rB, D365, gaunt, DoubleVision, R, Ctx, bedScene, camOf, kit, bath} from '../same2d/Same2D';
-import {buildPart2} from '../same2d/part2';
+import {buildPart2, TALK} from '../same2d/part2';
 import {buildActs, ACT_POPS, ACT_STAMPS, ACT_TAGS, ACT_BUBBLES, ACT_CUES, ACT_MUSIC, PAGES} from './acts';
 import {ClockInsert, CalendarBlur} from '../same2d/inserts';
 import {YearFlip} from '../same2d/inserts2';
@@ -14,7 +14,10 @@ import {TypeSearch, TripleIcons, TenRing, MirrorPhone} from './inserts';
 import {TableScene, BookGift, BookPageOne, BookOpening} from './book';
 import {SideTag} from './tags';
 import {LEVELS} from './data/levels';
-import {FPS, AUDIO_FILE, T, TA, FULL_TOTAL, speechDuck} from './timeline';
+import {FPS, AUDIO_FILE, T, TA, FULL_TOTAL, speechDuck, mouth, talkEnv} from './timeline';
+// the characters speak with the narrator: mouths follow the spoken words, hands move while a phrase lasts
+TALK.mouth = (t) => mouth(t) * 0.75;
+TALK.env = talkEnv;
 
 // ============================================================================================
 // SAME MAN v2, built around the new voice-over (docs/same-man-v2-plan.md). Only the first minute (Acts 1 to 3, 0 to 64 s) is built so far; BUILT_END grows as acts are added.

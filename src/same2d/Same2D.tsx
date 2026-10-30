@@ -76,7 +76,7 @@ export type RP = {mode?: 'rest' | 'book' | 'shut' | 'toss' | 'chin'; raise?: num
 export const Reader: React.FC<{p: RP; t: number}> = ({p, t}) => {
   const mode = p.mode ?? 'book';
   const rk = back(p.raise ?? 1);
-  const fl = p.flip ?? 0, turnF = Math.sin(Math.min(1, Math.max(0, fl)) * Math.PI);
+  const fl = p.flip ?? (mode === 'book' ? (() => { const f = ((t + 0.7) % 4.6) / 0.9; return f < 1 ? f : 0; })() : 0), turnF = Math.sin(Math.min(1, Math.max(0, fl)) * Math.PI);
   const tossK = ramp(p.l ?? 0, 0.2, 0.8);
   const restN: V = [112, -62], restF: V = [152, -44];
   // the book is held out in front of the chest at arm's length, elbows bent a little, near hand under the book, far hand turns the page

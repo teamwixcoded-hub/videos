@@ -37,3 +37,17 @@ export const speechDuck = (t: number) => {
   for (const c of CAPS) { const a = c.from - 0.05, b = c.to + 0.1; if (t < a - 0.15 || t > b + 0.15) continue; amt = Math.max(amt, Math.min(1, (t - (a - 0.15)) / 0.15, (b + 0.15 - t) / 0.15)); }
   return 1 - 0.35 * amt;
 };
+
+// lip sync: how far a mouth is open at time t (0 closed .. 1 wide). Every spoken word opens and closes once per syllable; between words the mouth rests closed.
+export const mouth = (t: number): number => {
+  for (const w of WORDS) {
+    if (t < w.a) break;
+    if (t <= w.b + 0.04) { const u = (t - w.a) / Math.max(0.08, w.b - w.a), syl = Math.max(1, Math.round((w.b - w.a) / 0.17)); return Math.abs(Math.sin(u * Math.PI * syl)) * (0.45 + 0.55 * Math.sin(Math.min(1, u) * Math.PI)); }
+  }
+  return 0;
+};
+// 0..1 while a phrase is being spoken (smooth edges), used to move the hands and head
+export const talkEnv = (t: number): number => {
+  for (const c of CAPS) { if (t < c.from - 0.12) break; if (t <= c.to + 0.18) return Math.min(1, (t - (c.from - 0.12)) / 0.12, (c.to + 0.18 - t) / 0.12); }
+  return 0;
+};

@@ -10,7 +10,7 @@ import {TableScene, BookPageOne, BookOpening} from './book';
 import {BookRead, PullGauge, NestedPhones, CountCard, Choice, CommentCard} from './inserts2';
 import type {TW, StampT} from '../fathers/type';
 import type {Cue3} from '../same2d/sound';
-import {T, TA, FULL_TOTAL} from './timeline';
+import {T, TA, FULL_TOTAL, mouth} from './timeline';
 
 // ============================================================================================
 // SAME MAN v2, ACTS 4 to 16 (64 s to the end), every shot placed on its words (docs/same-man-v2-plan.md). `k` is the kit of building blocks exported by Same2D / part2.
@@ -194,8 +194,8 @@ export const buildActs = (k: any): Entry[] => {
     [T('at the book with the bookmark'), undefined, (c: Ctx) => <BookPageOne t={c.l} />],
     [tDown - 0.2, undefined, (c: Ctx) => <PhoneFaceDown t={c.l} at={0.45} />],
     [T('the glow dies'), undefined, B(...sFace(2.1, 2.3), (c: Ctx) => ({s: sP({mode: 'rest', lids: 0.25, smile: 0, glow: Math.max(0, 1 - c.l * 1.2)}), r: null, glowS: Math.max(0.2, 1 - c.l)}))],
-    [TA('okay', T('the glow dies')), undefined, B(...sFace(2.2, 2.4), () => ({s: sP({mode: 'rest', lids: 0.1, smile: 0.2, brow: 0.2}), r: null, glowS: 0.6}))],
-    [TA('ten pages', T('the glow dies')), undefined, B(...sFace(2.3, 2.5), () => ({s: sP({mode: 'rest', lids: 0.1, smile: 0.35}), r: null, glowS: 0.6}))],
+    [TA('okay', T('the glow dies')), undefined, B(...sFace(2.2, 2.4), (c: Ctx) => ({s: sP({mode: 'rest', lids: 0.1, smile: 0.2, brow: 0.2, open: mouth(c.t) * 0.8}), r: null, glowS: 0.6}))],
+    [TA('ten pages', T('the glow dies')), undefined, B(...sFace(2.3, 2.5), (c: Ctx) => ({s: sP({mode: 'rest', lids: 0.1, smile: 0.35, open: mouth(c.t) * 0.8}), r: null, glowS: 0.6}))],
     [TA('he opens the book', T('the glow dies')), 'w', (c: Ctx) => <BookOpening t={c.l} at={0.15} />],
     [T('he reads the first line'), undefined, (c: Ctx) => <BookRead t={c.l} passes={1} per={1.1} />],
     [T('then he reads it again'), undefined, (c: Ctx) => <BookRead t={c.l} passes={1} per={1.2} />],
