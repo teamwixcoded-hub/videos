@@ -92,7 +92,7 @@ const TwoFathersMain: React.FC = () => {
       <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 52%, rgba(0,0,0,.55) 100%)'}} />
       <AbsoluteFill style={{backgroundImage: GRAIN, backgroundPosition: `${(frame * 37) % 220}px ${(frame * 91) % 220}px`, mixBlendMode: 'overlay', opacity: 0.12, pointerEvents: 'none'}} />
       {BRIDGE_AT.map((b) => <Bridge key={b} t={t} at={b} />)}
-      {fl > 0 && <><AbsoluteFill style={{background: '#fff', opacity: fl * 0.9}} /><SpeedLines o={Math.min(1, fl * 1.6)} /></>}
+      {fl > 0 && <><AbsoluteFill style={{background: '#fff', opacity: fl * 0.9}} /><SpeedLines o={Math.min(1, fl * 1.6)} /><div style={{position: 'absolute', left: 0, right: 0, top: '50%', height: 8 + fl * 26, transform: 'translateY(-50%)', background: 'linear-gradient(90deg, transparent, rgba(150,200,255,.95) 30%, #fff 50%, rgba(150,200,255,.95) 70%, transparent)', opacity: Math.min(1, fl * 1.4), filter: 'blur(7px)'}} /></>}
       {burst > 0.01 && <AbsoluteFill style={{background: 'radial-gradient(circle at 50% 46%, rgba(255,244,210,.98) 0%, rgba(255,214,140,.6) 30%, rgba(255,214,140,0) 62%)', opacity: burst}} />}
       <AbsoluteFill style={{background: '#000', opacity: fadeIn}} />
       {!paperCard && <Dust t={t} dense={!warm} />}
