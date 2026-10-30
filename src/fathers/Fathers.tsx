@@ -51,7 +51,7 @@ const n4 = (file: string, at: number, vol: number, extra: Partial<Cue3> = {}): C
 const tp = (at: number, vol = 0.25): Cue3 => ({file: 'phone_tap', at, vol});
 const CUES: Cue3[] = [
   {file: 'room_tone', old: true, at: 0, vol: 0.14, dur: 20, loop: true, fadeOut: 1.2}, {file: 'clock_tick', at: T('and every sunday at eight'), vol: 0.3, dur: 2.2, loop: true},
-  {file: 'tape_rewind', at: REWIND[0] - 0.4, vol: 0.5}, {file: 'paper_scatter', at: REWIND[0], vol: 0.4},
+  {file: 'tape_rewind', at: REWIND[0] - 0.2, vol: 0.12, rate: 0.9, fadeIn: 0.35, fadeOut: 0.6}, {file: 'paper_scatter', at: REWIND[0] + 0.1, vol: 0.1, fadeIn: 0.1, fadeOut: 0.4}, {file: 'text_whisper', at: REWIND[0] + 0.9, vol: 0.12},
   {file: 'typing_keys', at: T('adam kept working'), vol: 0.16, dur: 5, loop: true}, {file: 'typing_keys', at: T('sam worked too'), vol: 0.16, dur: 2.5, loop: true},
   {file: 'amb_office', at: T('and every evening at six'), vol: 0.12, dur: 14, loop: true}, {file: 'amb_kitchen', at: T('max and his father argued'), vol: 0.14, dur: 5.5, loop: true},
   {file: 'amb_night_room', at: T('at 15'), vol: 0.12, dur: 12, loop: true}, {file: 'amb_night_room', at: T('one night'), vol: 0.12, dur: 24, loop: true}, {file: 'amb_morning', at: T('that friday'), vol: 0.12, dur: 31, loop: true},
@@ -62,8 +62,11 @@ const CUES: Cue3[] = [
   {file: 'phone_buzz', at: T('his thumb goes') + 6.65, vol: 0.45}, {file: 'impact_bloom', at: HITS_AT[1], vol: 0.35}, {file: 'shimmer', at: T("it's never too late"), vol: 0.3},
   ...SHOTS.filter((s) => s.fx).map((s): Cue3 => (s.fx === 'w' ? {file: 'whip', at: s.from - 0.05, vol: 0.32} : s.fx === 'f' ? {file: 'shimmer', at: s.from - 0.02, vol: 0.3} : {file: 'whoosh_soft', at: s.from - 0.1, vol: 0.3})),
   ...TYPEW.flatMap((w): Cue3[] => (w.mode === 'slam' ? [{file: 'tag_whoosh', at: w.at - 0.08, vol: 0.1}, {file: 'text_slam', at: w.at, vol: 0.26}] : w.mode === 'title' ? [{file: 'tag_whoosh', at: w.at - 0.12, vol: 0.1}, {file: 'text_title', at: w.at, vol: 0.24}] : w.mode === 'whisper' ? [{file: 'text_whisper', at: w.at, vol: 0.14}] : [{file: 'text_pop', at: w.at, vol: 0.14}])),
-  ...STAMPS.map((s): Cue3 => ({file: 'tag_whoosh', at: s.at, vol: 0.12})),
-  ...TAGS.map((w): Cue3 => ({file: 'tag_whoosh', at: w.at, vol: 0.14})), ...TIMES.map((w): Cue3 => ({file: 'tag_whoosh', at: w.at, vol: 0.12})),
+  ...STAMPS.flatMap((s): Cue3[] => [{file: 'tag_whoosh', at: s.at, vol: 0.12}, {file: 'kw_pop', at: s.at + 0.3, vol: 0.1}]),
+  ...TYPEW.filter((w) => w.accent !== undefined && w.mode !== 'whisper').map((w): Cue3 => ({file: 'shimmer', at: w.at + 0.55, vol: 0.07})),
+  ...Array.from({length: 12}, (_, i): Cue3 => ({file: 'counter_tick', at: FRIDAY_N[0] + i * 0.28 + 0.1, vol: 0.09})),
+  {file: 'phone_notif', at: T('next time') + 0.1, vol: 0.14}, {file: 'phone_notif', at: T('next time') + 0.7, vol: 0.12},
+  ...TAGS.flatMap((w): Cue3[] => [{file: 'tag_whoosh', at: w.at, vol: 0.14}, {file: 'reward_pop', at: w.at + 0.3, vol: 0.1}]), ...TIMES.flatMap((w): Cue3[] => [{file: 'tag_whoosh', at: w.at, vol: 0.12}, {file: 'counter_tick', at: w.at + 0.25, vol: 0.1}]),
 ];
 const CUES4: Cue3[] = [
   n4('phone_ring_close', T("his neighbor's phone rings"), 0.55, {dur: 1.9}), n4('hospital_amb', T('both boys were born'), 0.2, {dur: 22, loop: true}), n4('baby_coo', T('each holding'), 0.35), n4('laptop_lid', T('he closed the laptop') + 0.15, 0.6),
@@ -122,7 +125,7 @@ const TwoFathersMain: React.FC = () => {
           <Audio src={staticFile(AUDIO_FILE)} startFrom={Math.round(p.a * FPS)} endAt={Math.round(p.b * FPS)} />
         </Sequence>
       ))}
-      <Sfx3 cues={[...CUES, ...CUES4]} gain={0.8} minVol={0.08} duck={speechDuck} />
+      <Sfx3 cues={[...CUES, ...CUES4].map((c) => (c.file.startsWith('phone_ring') ? {...c, vol: (c.vol ?? 0.5) * 0.4, fadeIn: 0.15, fadeOut: 0.45} : c.file === 'phone_buzz' ? {...c, vol: (c.vol ?? 0.5) * 0.5, fadeIn: 0.05, fadeOut: 0.25} : c))} gain={0.8} minVol={0.08} duck={speechDuck} />
       {MUSIC.map((m, i) => <Sequence key={'m' + i} from={Math.round(m.from * FPS)} durationInFrames={Math.round((m.to - m.from) * FPS)}><Music track={m.track} startAt={m.startAt ?? 0} frames={Math.round((m.to - m.from) * FPS)} vol={m.vol} fadeIn={45} fadeOut={60} /></Sequence>)}
     </AbsoluteFill>
   );

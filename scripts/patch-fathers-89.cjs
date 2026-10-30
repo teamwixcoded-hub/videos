@@ -1,0 +1,10 @@
+const fs=require('fs');let f=fs.readFileSync('src/fathers/Fathers.tsx','utf8');
+const r=(a,b)=>{if(!f.includes(a))throw new Error('MISSING '+a.slice(0,60));f=f.replace(a,b)};
+// 30 YEARS EARLIER: a soft tape sweep and a light paper rustle, then a quiet whisper as the line appears
+r("{file: 'tape_rewind', at: REWIND[0] - 0.4, vol: 0.5}, {file: 'paper_scatter', at: REWIND[0], vol: 0.4},","{file: 'tape_rewind', at: REWIND[0] - 0.2, vol: 0.12, rate: 0.9, fadeIn: 0.35, fadeOut: 0.6}, {file: 'paper_scatter', at: REWIND[0] + 0.1, vol: 0.1, fadeIn: 0.1, fadeOut: 0.4}, {file: 'text_whisper', at: REWIND[0] + 0.9, vol: 0.12},");
+// more small sounds that belong to the text
+r("  ...STAMPS.map((s): Cue3 => ({file: 'tag_whoosh', at: s.at, vol: 0.12})),","  ...STAMPS.flatMap((s): Cue3[] => [{file: 'tag_whoosh', at: s.at, vol: 0.12}, {file: 'kw_pop', at: s.at + 0.3, vol: 0.1}]),\n  ...TYPEW.filter((w) => w.accent !== undefined && w.mode !== 'whisper').map((w): Cue3 => ({file: 'shimmer', at: w.at + 0.55, vol: 0.07})),\n  ...Array.from({length: 12}, (_, i): Cue3 => ({file: 'counter_tick', at: FRIDAY_N[0] + i * 0.28 + 0.1, vol: 0.09})),\n  {file: 'phone_notif', at: T('next time') + 0.1, vol: 0.14}, {file: 'phone_notif', at: T('next time') + 0.7, vol: 0.12},");
+r("...TAGS.map((w): Cue3 => ({file: 'tag_whoosh', at: w.at, vol: 0.14})), ...TIMES.map((w): Cue3 => ({file: 'tag_whoosh', at: w.at, vol: 0.12}))","...TAGS.flatMap((w): Cue3[] => [{file: 'tag_whoosh', at: w.at, vol: 0.14}, {file: 'reward_pop', at: w.at + 0.3, vol: 0.1}]), ...TIMES.flatMap((w): Cue3[] => [{file: 'tag_whoosh', at: w.at, vol: 0.12}, {file: 'counter_tick', at: w.at + 0.25, vol: 0.1}])");
+// phone rings and buzzes: soft, with a slow fade in and out
+r("<Sfx3 cues={[...CUES, ...CUES4]}","<Sfx3 cues={[...CUES, ...CUES4].map((c) => (c.file.startsWith('phone_ring') ? {...c, vol: (c.vol ?? 0.5) * 0.4, fadeIn: 0.15, fadeOut: 0.45} : c.file === 'phone_buzz' ? {...c, vol: (c.vol ?? 0.5) * 0.5, fadeIn: 0.05, fadeOut: 0.25} : c))}");
+fs.writeFileSync('src/fathers/Fathers.tsx',f);
