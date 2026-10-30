@@ -61,7 +61,14 @@ export const TableScene: React.FC<{t: number; hover: number; tag?: string}> = ({
         <circle cx={0} cy={-40} r={110} fill="#4aa8ff" opacity={0.12 + 0.1 * pulse} /><text x={0} y={-100} textAnchor="middle" fontFamily={MONT} fontWeight={800} fontSize={64} fill="#fff" opacity={0.85}>11:04</text>
         <rect x={-76} y={-40} width={152} height={44} rx={14} fill="#16305c" /><rect x={-76} y={18} width={152} height={44} rx={14} fill="#16305c" opacity={0.7} /><circle cx={-54} cy={-18} r={10} fill="#ff5a6e" opacity={0.5 + 0.5 * pulse} /></g>
       <g transform="translate(1330 640) rotate(7) scale(0.62)"><BookClosed tag={tag} /></g>
-      <g transform={`translate(${hx} ${hy})`}><ellipse cx={0} cy={0} rx={96} ry={80} fill="#fff" stroke={INK} strokeWidth={8} /><ellipse cx={-60} cy={-34} rx={30} ry={44} fill="#fff" stroke={INK} strokeWidth={8} transform="rotate(-30 -60 -34)" /><rect x={-26} y={70} width={52} height={400} fill="#1b1922" stroke={INK} strokeWidth={8} /></g>
+      <g transform={`translate(${hx} ${hy})`}>
+        <path d="M -52,-520 L 52,-520 L 46,20 L -46,20 Z" fill="#7d6fcf" stroke={INK} strokeWidth={8} strokeLinejoin="round" /><path d="M -34,-500 L -30,10" stroke="#fff" strokeWidth={8} strokeLinecap="round" opacity={0.18} />
+        <rect x={-50} y={14} width={100} height={26} rx={10} fill="#6a5cc0" stroke={INK} strokeWidth={7} />
+        <path d="M -52,40 Q -62,100 -48,130 Q 0,150 48,130 Q 62,100 52,40 Z" fill="#fff" stroke={INK} strokeWidth={8} strokeLinejoin="round" />
+        {[-34, -11, 12, 35].map((fx, i) => <path key={i} d={`M ${fx},122 Q ${fx + 2},${158 + (i === 1 || i === 2 ? 14 : 0)} ${fx - 2},${180 + (i === 1 || i === 2 ? 14 : 0) - i % 2 * 6}`} stroke={INK} strokeWidth={26} strokeLinecap="round" fill="none" />)}
+        {[-34, -11, 12, 35].map((fx, i) => <path key={'f' + i} d={`M ${fx},122 Q ${fx + 2},${158 + (i === 1 || i === 2 ? 14 : 0)} ${fx - 2},${180 + (i === 1 || i === 2 ? 14 : 0) - i % 2 * 6}`} stroke="#fff" strokeWidth={14} strokeLinecap="round" fill="none" />)}
+        <path d="M -48,60 Q -86,86 -70,124" stroke={INK} strokeWidth={26} strokeLinecap="round" fill="none" /><path d="M -48,60 Q -86,86 -70,124" stroke="#fff" strokeWidth={14} strokeLinecap="round" fill="none" />
+      </g>
     </InsertBG>
   );
 };
