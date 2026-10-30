@@ -65,7 +65,8 @@ export const ClockInsert: React.FC<{t: number; min: number; hourOffset?: number;
 
 // ---------------------------------------------------------------- laptops on the evening desk: Sam's lid closes at `closeAt`, Adam's stays open
 export const LaptopHand: React.FC<{t: number; who: 'adam' | 'sam'; closeAt?: number}> = ({t, who, closeAt = 1.6}) => {
-  const warm = who === 'sam', k = who === 'sam' ? 1 - ramp(t, closeAt, closeAt + 0.22) : 1, lid = 220 * k;
+  const warm = who === 'sam', k = who === 'sam' ? 1 - Math.pow(ramp(t, closeAt, closeAt + 0.5), 2.2) : 1, lid = 220 * k;
+  const phi = (100 * k * Math.PI) / 180, topY = -330 * Math.sin(phi) + 62 * Math.cos(phi), topW = 340 + 90 * Math.max(0, Math.cos(phi) + 0.17), showScreen = phi > 1.15, handsUp = ramp(t, closeAt - 0.1, closeAt + 0.25);
   const skin = '#ffffff', sleeve = warm ? '#b4592f' : '#26324f';
   const type = Math.sin(t * 14) * 4;
   return (
@@ -75,11 +76,12 @@ export const LaptopHand: React.FC<{t: number; who: 'adam' | 'sam'; closeAt?: num
       <g transform="translate(960 800)">
         <path d="M -380,0 L 380,0 L 430,60 L -430,60 Z" fill="#c2c6cc" stroke={INK} strokeWidth={7} strokeLinejoin="round" />
         {Array.from({length: 5}, (_, r) => Array.from({length: 11}, (_, c) => <rect key={r + '-' + c} x={-330 + c * 60 + r * 4} y={8 + r * 9} width={48} height={7} rx={2} fill="#9aa0a8" opacity={0.6} />))}
-        <path d={`M -380,0 L 380,0 L ${340},${-lid * 1.5} L -340,${-lid * 1.5} Z`} fill="#2a2a32" stroke={INK} strokeWidth={7} strokeLinejoin="round" />
-        {lid > 40 && <path d={`M -318,-14 L 318,-14 L ${298},${-lid * 1.5 + 22} L -298,${-lid * 1.5 + 22} Z`} fill={warm ? '#fdf4de' : '#e3ecf7'} />}
-        {lid > 90 && <g opacity={0.9}>{[0, 1, 2, 3, 4].map((i) => <rect key={i} x={-250} y={-lid * 1.5 + 70 + i * 38 * (lid / 220)} width={300 - i * 24} height={12} rx={5} fill="#aab9cf" />)}<rect x={80} y={-lid * 1.5 + 150 * (lid / 220)} width={150} height={60 * (lid / 220)} rx={8} fill="#7fa0cf" /></g>}
+        <path d={`M -380,0 L 380,0 L ${topW},${topY} L ${-topW},${topY} Z`} fill={showScreen ? '#2a2a32' : '#9aa0aa'} stroke={INK} strokeWidth={7} strokeLinejoin="round" />
+        {showScreen && lid > 40 && <path d={`M -318,-14 L 318,-14 L ${298},${topY + 22} L -298,${topY + 22} Z`} fill={warm ? '#fdf4de' : '#e3ecf7'} />}
+        {showScreen && lid > 90 && <g opacity={0.9}>{[0, 1, 2, 3, 4].map((i) => <rect key={i} x={-250} y={-lid * 1.5 + 70 + i * 38 * (lid / 220)} width={300 - i * 24} height={12} rx={5} fill="#aab9cf" />)}<rect x={80} y={-lid * 1.5 + 150 * (lid / 220)} width={150} height={60 * (lid / 220)} rx={8} fill="#7fa0cf" /></g>}
         {/* hands on the keys */}
-        <g transform={`translate(0 ${type})`}>{[-1, 1].map((s) => <g key={s}><path d={`M ${s * 180},120 L ${s * 150},-4 Q ${s * 120},-30 ${s * 90},-8 L ${s * 110},130 Z`} fill={skin} stroke={INK} strokeWidth={5} strokeLinejoin="round" /><path d={`M ${s * 250},260 L ${s * 180},120 L ${s * 110},130 L ${s * 150},300 Z`} fill={sleeve} stroke={INK} strokeWidth={5} strokeLinejoin="round" /></g>)}</g>
+        {!showScreen && k < 0.55 && <ellipse cx={0} cy={topY * 0.5 + 20} rx={300} ry={26} fill="#000" opacity={0.18} />}
+        <g transform={`translate(0 ${type * (1 - handsUp) - handsUp * 160})`} opacity={1 - handsUp * 0.85}>{[-1, 1].map((s) => <g key={s}><path d={`M ${s * 180},120 L ${s * 150},-4 Q ${s * 120},-30 ${s * 90},-8 L ${s * 110},130 Z`} fill={skin} stroke={INK} strokeWidth={5} strokeLinejoin="round" /><path d={`M ${s * 250},260 L ${s * 180},120 L ${s * 110},130 L ${s * 150},300 Z`} fill={sleeve} stroke={INK} strokeWidth={5} strokeLinejoin="round" /></g>)}</g>
       </g>
       {warm && k < 0.2 && <text x={960} y={300} textAnchor="middle" fontFamily={HAND} fontWeight={600} fontSize={84} fill="#fff6e6" opacity={ramp(t, closeAt + 0.3, closeAt + 0.7)}>click.</text>}
     </InsertBG>

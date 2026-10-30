@@ -44,7 +44,7 @@ export type PersonProps = {
   who: Who; age?: number; x: number; y: number; scale?: number; flip?: boolean; t: number; seed?: number; dim?: number; idle?: number;
   turn?: number; lean?: number; tilt?: number; slump?: number; face?: FaceP; legs?: 'stand' | 'sit' | 'none'; sitDrop?: number; walk?: number;
   pose?: PoseName; outfit?: string; top?: string; raise?: number; view?: 'front' | 'side'; handL?: V; handR?: V; enter?: number;
-  children?: React.ReactNode;
+  hN?: V; hF?: V; children?: React.ReactNode;
 };
 
 // ---- side view (facing +x): near hand / far hand in the rig's hip space; torso lean and head pitch ----
@@ -142,7 +142,7 @@ export const Person: React.FC<PersonProps> = (p) => {
   const footN: V = sitting ? [230, 170] : walking ? [sw * 112, 392 - Math.max(0, -cw) * 52] : [60 + rest, 390];
   const footF: V = sitting ? [300, 172] : walking ? [-sw * 112, 392 - Math.max(0, cw) * 52] : [-54 - rest * 0.5, 395];
   const arms = walking && pose === 'stand' ? -sw * 64 : 0;
-  const s1 = SIDE.stand(t, 1), handN0: V = mixV(s1.N, [q.N[0] + arms, q.N[1]], e), handF0: V = mixV(s1.F, [q.F[0] - arms, q.F[1]], e);
+  const s1 = SIDE.stand(t, 1), handN0: V = p.hN ?? mixV(s1.N, [q.N[0] + arms, q.N[1]], e), handF0: V = p.hF ?? mixV(s1.F, [q.F[0] - arms, q.F[1]], e);
   const [lvN, lvF, lvT] = walking ? [[0, 0], [0, 0], 0] as [V, V, number] : lively(t, sd, pose, e);
   const handN: V = [handN0[0] + lvN[0], handN0[1] + lvN[1]], handF: V = [handF0[0] + lvF[0], handF0[1] + lvF[1]];
   const bob = walking ? Math.abs(Math.sin(walk * Math.PI * 2)) * 12 * sc : 0;

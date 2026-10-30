@@ -78,6 +78,39 @@ const giftScene = (c: Ctx) => SC.door(c, [Z(1600, 520, 1.3), Z(1600, 520, 1.5)],
   {Pe(c, stand('adam', 60, 1250, 0.9, {outfit: 'work', turn: 0.7, pose: 'hold', face: F.soft, children: <g transform="translate(40 -20)"><rect x={160} y={-120} width={120} height={80} rx={10} fill="#e4dfd0" stroke="#1d1a2e" strokeWidth={4} /><path d="M 170,-100 L 270,-100 M 170,-80 L 250,-80 M 170,-62 L 262,-62" stroke="#9a9482" strokeWidth={4} /></g>}))}
   {Pe(c, stand('adam', 12, 1760, 0.55, {outfit: 'kid', turn: -0.7, face: {...F.soft, wide: 0.4}}))}</>);
 
+// ---------------- Adam's father at the factory: take a crate off table A, turn, walk to table B, set it down, walk back (a 6 s cycle) ----------------
+const sm = (x: number) => { const k = Math.min(1, Math.max(0, x)); return k * k * (3 - 2 * k); };
+const mixN = (a: number, b: number, k: number) => a + (b - a) * k;
+const CRATE = (w: number, h: number) => <g><rect x={-w / 2} y={-h / 2} width={w} height={h} rx={5} fill="#c9954a" stroke="#1d1a2e" strokeWidth={4} /><rect x={-w / 2} y={-h / 2} width={w} height={h * 0.26} fill="#e0b068" stroke="#1d1a2e" strokeWidth={3} /><rect x={-10} y={-h / 2} width={20} height={h} fill="#d9c9a0" opacity={0.6} /><path d={`M ${-w / 2 + 12},${h / 2 - 16} h 26 M ${-w / 2 + 12},${h / 2 - 8} h 16`} stroke="#6a4a24" strokeWidth={3} strokeLinecap="round" /></g>;
+const BENCH = (x: number, crate: boolean, k = 1) => (
+  <g>
+    <rect x={x - 100} y={650} width={200} height={16} rx={4} fill="#5a4a3a" stroke="#1d1a2e" strokeWidth={4} /><rect x={x - 90} y={666} width={12} height={164} fill="#3a2f26" /><rect x={x + 78} y={666} width={12} height={164} fill="#3a2f26" />
+    {crate && <g transform={`translate(${x} ${611 - 40 * (1 - k)})`} opacity={k}><g transform="scale(0.7225)">{CRATE(150, 106)}</g></g>}
+  </g>
+);
+const factoryWork = (c: Ctx, off: number, camA: ReturnType<typeof Z>, camB: ReturnType<typeof Z>) => {
+  const P = 6, u = (c.l + off) % P, XA = 1300, XB = 970;
+  const reach = sm(u / 0.7), lift = sm((u - 0.7) / 0.5), walkL = sm((u - 1.5) / 1.5), place = sm((u - 3.0) / 0.6), rel = sm((u - 3.7) / 0.3), walkR = sm((u - 4.2) / 1.4);
+  const x = u < 1.5 ? XA : u < 3.0 ? mixN(XA, XB, walkL) : u < 4.2 ? XB : mixN(XB, XA, walkR);
+  const face = u >= 1.2 && u < 4.0 ? -0.5 : 0.5;
+  const walking = (u >= 1.5 && u < 3.0) || (u >= 4.2 && u < 5.6);
+  const walk = walking ? (u < 3.0 ? u - 1.5 : u - 4.2) * 1.8 + 0.01 : 0;
+  const REST: [number, number] = [26, 92], PICK: [number, number] = [225, 110], CARRY: [number, number] = [212, -70], SET: [number, number] = [232, 110];
+  let hn: [number, number], hf: [number, number], lean: number;
+  if (u < 0.7) { hn = [mixN(REST[0], PICK[0], reach), mixN(REST[1], PICK[1], reach)]; hf = [hn[0] - 26, hn[1] + 8]; lean = 28 * reach; }
+  else if (u < 1.2) { hn = [mixN(PICK[0], CARRY[0], lift), mixN(PICK[1], CARRY[1], lift)]; hf = [hn[0] - 40, hn[1] + 6]; lean = mixN(28, 5, lift); }
+  else if (u < 3.0) { hn = CARRY; hf = [CARRY[0] - 44, CARRY[1] + 8]; lean = 5; }
+  else if (u < 3.7) { hn = [mixN(CARRY[0], SET[0], place), mixN(CARRY[1], SET[1], place)]; hf = [hn[0] - 40, hn[1] + 6]; lean = mixN(5, 28, place); }
+  else if (u < 4.2) { hn = [mixN(SET[0], REST[0], rel), mixN(SET[1], REST[1], rel)]; hf = [hn[0] - 26, hn[1] + 8]; lean = mixN(28, 3, rel); }
+  else { hn = REST; hf = [10, 98]; lean = 3; }
+  const hold = u < 0.7 ? 0 : u < 1.2 ? lift : u < 3.0 ? 1 : u < 3.7 ? 1 - place : 0;
+  const carrying = u >= 0.7 && u < 3.7;
+  const crate = carrying ? <g transform={`translate(${hn[0] + mixN(18, 40, hold) - 190} ${hn[1] + mixN(10, -34, hold) + 20})`}>{CRATE(150, 106)}</g> : null;
+  const p0 = stand('adam', 60, x, 0.85, {outfit: 'work', pose: carrying ? 'carry' : 'stand', turn: face, face: F.tired, walk, hN: hn, hF: hf, lean, children: crate});
+  const aOn = u < 0.7 || u >= 4.8, aK = u < 0.7 ? 1 : sm((u - 4.8) / 0.4), bOn = u >= 3.7 && u < 5.6, bK = u < 5.2 ? 1 : 1 - sm((u - 5.2) / 0.4);
+  return SC.fac(c, [camA, camB], <>{BENCH(1475, aOn, aK)}{BENCH(794, bOn, bK)}{Pe(c, p0)}</>);
+};
+
 export const KWORDS: KW[] = [
   {at: T('paid-off'), dur: 1.3, text: 'PAID OFF.', style: 'big'}, {at: T('a full bank account'), dur: 1.4, text: 'FULL BANK ACCOUNT.', style: 'big'}, {at: T('and a son who loves him'), dur: 1.5, text: 'A SON WHO LOVES HIM.', style: 'big', accent: 3},
   {at: T('every sunday at eight'), dur: 2.0, text: 'SUNDAY · 8:00 AM', style: 'time'}, {at: T("that doesn't ring"), dur: 1.6, text: 'IT DOESN’T RING.', style: 'big'},
@@ -149,8 +182,8 @@ export const LIST: Entry[] = [
   // ================= ADAM'S FATHER =================
   [T('to understand adam'), 'w', (c) => SC.liv(c, [Z(1800, 480, 1.4), Z(1900, 450, 1.7)], {}, adamAt(c, 65, {face: {...F.soft, gaze: [-0.8, 0.1]}}), 0.4)],
   [T('you have to know about his father'), undefined, (c) => SC.liv(c, [Z(640, 330, 2.0), Z(640, 320, 2.6)], {}, null, 0.1)],
-  [T("adam's father worked double shifts"), 'f', (c) => SC.fac(c, [Z(1500, 540, 1.0), Z(1700, 540, 1.25)], Pe(c, stand('adam', 60, 1500, 0.85, {outfit: 'work', pose: 'carry', turn: 0.5, face: F.tired, children: <g><rect x={-55} y={-60} width={110} height={80} rx={8} fill="#c9954a" stroke="#1d1a2e" strokeWidth={4} /><rect x={-55} y={-60} width={110} height={20} fill="#e0b068" stroke="#1d1a2e" strokeWidth={3} /></g>})))],
-  [T('for 30 years'), undefined, (c) => SC.fac(c, [Z(2000, 560, 1.3), Z(2100, 540, 1.5)], Pe(c, stand('adam', 60, 2000, 0.85, {outfit: 'work', pose: 'carry', turn: -0.5, face: {...F.tired, lids: 0.45}, children: <g><rect x={-55} y={-60} width={110} height={80} rx={8} fill="#c9954a" stroke="#1d1a2e" strokeWidth={4} /><rect x={-55} y={-60} width={110} height={20} fill="#e0b068" stroke="#1d1a2e" strokeWidth={3} /></g>})))],
+  [T("adam's father worked double shifts"), 'f', (c) => factoryWork(c, 0, Z(1250, 540, 1.1), Z(1250, 540, 1.3))],
+  [T('for 30 years'), undefined, (c) => factoryWork(c, 2.5, Z(1150, 540, 1.25), Z(1250, 540, 1.1))],
   [T('adam barely saw him'), undefined, (c) => SC.liv(c, [Z(1950, 520, 1.4), Z(1980, 500, 1.6)], {night: true, seats: false}, Pe(c, stand('adam', 8, 1960, 0.7, {outfit: 'kid', turn: 0.7, face: {...F.sad, gaze: [0.9, 0.1]}})), 0.4)],
   [T('but on his 12th birthday'), 'w', (c) => SC.kit(c, [Z(1500, 540, 1.2), Z(1500, 520, 1.35)], {night: true}, <>{Pe(c, sit('adam', 12, 1600, 0.55, {outfit: 'kid', turn: 0.2, face: {...F.sad, gaze: [0.9, 0]}}, FL))}<g transform="translate(1600 704)"><rect x={-60} y={-18} width={120} height={22} rx={6} fill="#f6efe2" stroke="#1d1a2e" strokeWidth={3} /><rect x={-6} y={-60} width={12} height={42} fill="#e0455a" stroke="#1d1a2e" strokeWidth={2.6} /><ellipse cx={0} cy={-64} rx={7} ry={11} fill="#ffcf5a" /></g></>)],
   [T('his father came home late'), undefined, (c) => SC.door(c, [Z(1500, 500, 1.2), Z(1560, 500, 1.4)], {label: 'HOME', boxes: 0, glow: 0.4}, Pe(c, stand('adam', 60, 1250 + ramp(c.l, 0, 1.4) * 80, 0.9, {outfit: 'work', turn: 0.7, face: F.tired})))],

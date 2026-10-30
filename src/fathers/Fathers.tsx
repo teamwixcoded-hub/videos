@@ -98,7 +98,7 @@ const TwoFathersMain: React.FC = () => {
       {!paperCard && <Dust t={t} dense={!warm} />}
       {paperCard && <RewindCard p={(t - REWIND[0]) / (REWIND[1] - REWIND[0])} f={(t - REWIND[0]) * FPS} />}
 
-      <Rain t={t} from={T('the way he thought love was supposed to look')} to={T('the way he thought love was supposed to look') + 3} kind="money" /><Rain t={t} from={T('the way his son actually needed')} to={T('the way his son actually needed') + 3.2} kind="time" /><Rain t={t} from={T('more money')} to={T('more money') + 2} kind="money" /><Rain t={t} from={T('one hour belonged')} to={T('one hour belonged') + 3} kind="time" />
+      <Rain t={t} from={T('the way he thought love was supposed to look')} to={T('the other kept it') - 0.1} kind="money" /><Rain t={t} from={T('the way his son actually needed')} to={T('by the end of this video') - 0.15} kind="time" /><Rain t={t} from={T('more money')} to={T('more money') + 2} kind="money" /><Rain t={t} from={T('one hour belonged')} to={T('one hour belonged') + 3} kind="time" />
       <KineticWord t={t} words={WORDS} />
       {TAGS.map((w) => <AgeTag key={w.at} t={t} from={w.at} to={w.at + w.dur} text={w.text} pills={pillsOf(w.text)} />)}
       {TIMES.map((w) => <IconTag key={w.at} t={t} from={w.at} to={w.at + w.dur} text={w.text} icon={w.text.startsWith('SUNDAY') ? 'sun' : 'clock'} color="#fff" />)}
