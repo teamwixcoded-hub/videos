@@ -1,0 +1,13 @@
+const fs = require('fs');
+let s = fs.readFileSync('src/same7/Same7.tsx', 'utf8');
+const r = (a, b) => { if (!s.includes(a)) throw new Error('MISSING ' + a.slice(0, 60)); s = s.split(a).join(b); };
+r("import {ClockInsert, PhoneBook, PageInsert, BookOpenInsert, CalendarBlur} from '../same2d/inserts';", "import {ClockInsert, CalendarBlur} from '../same2d/inserts';");
+r("import {TypeSearch, TripleIcons, TenRing, MirrorPhone} from './inserts';", "import {TypeSearch, TripleIcons, TenRing, MirrorPhone} from './inserts';\nimport {TableScene, BookGift, BookPageOne, BookOpening} from './book';");
+r('<PhoneBook t={c.l} hover={0.15 + ramp(c.l, 0.4, 2.0) * 0.4} />', '<TableScene t={c.l} hover={0.15 + ramp(c.l, 0.4, 2.0) * 0.4} />');
+r('<PhoneBook t={c.l + 2} hover={0.55 + ramp(c.l, 0, 1.2) * 0.4} />', '<TableScene t={c.l + 2} hover={0.55 + ramp(c.l, 0, 1.2) * 0.4} />');
+r('<PhoneBook t={c.l} hover={0} />', '<TableScene t={c.l} hover={0} />');
+r('<PhoneBook t={c.l + 1} hover={ramp(c.l, 0.3, 1.8) * 0.5} />', '<TableScene t={c.l + 1} hover={ramp(c.l, 0.3, 1.8) * 0.5} />');
+r('<BookOpenInsert t={c.l} openAt={0.15} flips={[]} />', '<BookGift t={c.l} />');
+r('<PageInsert t={c.l} loops={1} per={2.2} mark />', '<BookPageOne t={c.l} />');
+r('<BookOpenInsert t={c.l} openAt={0.05} flips={[0.6]} />', '<BookOpening t={c.l} at={0.05} />');
+fs.writeFileSync('src/same7/Same7.tsx', s);

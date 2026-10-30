@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame} from 'remotion';
 import {B, K, WIDE, camS, camR, sFace, rFace, sP, rB, D365, gaunt, DoubleVision, R, Ctx} from '../same2d/Same2D';
-import {ClockInsert, PhoneBook, PageInsert, BookOpenInsert, CalendarBlur} from '../same2d/inserts';
+import {ClockInsert, CalendarBlur} from '../same2d/inserts';
 import {YearFlip} from '../same2d/inserts2';
 import {IconTag, SpeedLines, Bridge, Dust, Shafts, Cinema, ramp, bell} from '../same2d/fx';
 import {Sfx3, Cue3} from '../same2d/sound';
@@ -9,6 +9,7 @@ import {Music} from '../components/Music';
 import {GRAIN} from '../fathers/fx';
 import {TypeLayer, Stamp, StampT, TW} from '../fathers/type';
 import {TypeSearch, TripleIcons, TenRing, MirrorPhone} from './inserts';
+import {TableScene, BookGift, BookPageOne, BookOpening} from './book';
 import {SideTag} from './tags';
 import {FPS, AUDIO_FILE, T, speechDuck} from './timeline';
 
@@ -37,8 +38,8 @@ const LIST: [number, Fx | undefined, R][] = [
   [T('typing'), undefined, (c) => <TypeSearch t={c.l} text="how to fix your life" from={0.7} to={1.85} />],
   [T('into his phone'), undefined, B(K.HANDS_S[0], K.HANDS_S[1], () => ({s: sP(), r: null}), true)],
   [T('same job'), 'w', (c) => <TripleIcons t={c.l} at={[0.05, T('same salary') - T('same job'), T('same 24') - T('same job')]} />],
-  [T('the only difference'), undefined, (c) => <PhoneBook t={c.l} hover={0.15 + ramp(c.l, 0.4, 2.0) * 0.4} />],
-  [T('what he does'), undefined, (c) => <PhoneBook t={c.l + 2} hover={0.55 + ramp(c.l, 0, 1.2) * 0.4} />],
+  [T('the only difference'), undefined, (c) => <TableScene t={c.l} hover={0.15 + ramp(c.l, 0.4, 2.0) * 0.4} />],
+  [T('what he does'), undefined, (c) => <TableScene t={c.l + 2} hover={0.55 + ramp(c.l, 0, 1.2) * 0.4} />],
   [T('10 seconds') - 0.1, 'f', (c) => <TenRing t={c.l} from={0.2} to={1.45} />],
   [T('and by the end'), undefined, (c) => <MirrorPhone t={c.l} at={0.5} />],
   [T('exact same choice'), undefined, B(...sFace(2.4, 2.6), (c) => ({s: sP({mode: 'rest', lids: 0.2, glow: 0.6, brow: -0.2, browTilt: -4}), r: null, glowS: 0.6}))],
@@ -51,10 +52,10 @@ const LIST: [number, Fx | undefined, R][] = [
   [T('tired'), undefined, B(...sFace(2.8, 3.0), (c) => night(c, {lids: 0.7, brow: -0.3, browTilt: 8}))],
   [T('long boring'), undefined, (c) => <CalendarBlur t={c.l} d={1.3} />],
   [T('can make you tired'), undefined, B([2650, 300, 2.0], [2650, 296, 2.2], () => ({s: sP({mode: 'rub', lids: 0.7}), r: null, glowS: 0.3}))],
-  [T('on the bedside table'), 'w', (c) => <PhoneBook t={c.l} hover={0} />],
-  [T('a friend gave'), undefined, (c) => <BookOpenInsert t={c.l} openAt={0.15} flips={[]} />],
-  [T('the bookmark'), undefined, (c) => <PageInsert t={c.l} loops={1} per={2.2} mark />],
-  [T('and next to it'), 'w', (c) => <PhoneBook t={c.l + 1} hover={ramp(c.l, 0.3, 1.8) * 0.5} />],
+  [T('on the bedside table'), 'w', (c) => <TableScene t={c.l} hover={0} />],
+  [T('a friend gave'), undefined, (c) => <BookGift t={c.l} />],
+  [T('the bookmark'), undefined, (c) => <BookPageOne t={c.l} />],
+  [T('and next to it'), 'w', (c) => <TableScene t={c.l + 1} hover={ramp(c.l, 0.3, 1.8) * 0.5} />],
   [T('he picks up the phone'), undefined, B(...camS(1.5, 1.7, 420), (c) => ({s: sP({raise: ramp(c.l, 0.1, 0.9), lids: 0.25, smile: 0.1, glow: ramp(c.l, 0.3, 1)}), r: null}))],
   [T('of course'), undefined, B(...sFace(2.6, 2.8), () => ({s: sP({mode: 'phone', raise: 1, lids: 0.3, smile: 0.35, brow: 0.2}), r: null, glowS: 1}))],
   [T('anyone would'), undefined, B(...WIDE, () => ({s: sP(), r: null}))],
@@ -64,7 +65,7 @@ const LIST: [number, Fx | undefined, R][] = [
   [T('in the other'), 'w', B(...camR(1.5, 1.7, 420), () => ({r: rB({smile: 0.2, raise: 0.4}), s: null, glowR: 1.1}))],
   [T('just this once'), undefined, B(...rFace(2.0, 2.2), () => ({r: rB({smile: 0.3, lids: 0.15}), s: null, glowR: 1.1}))],
   [T('picks up the book'), undefined, B(...camR(1.5, 1.7, 420), (c) => ({r: rB({raise: ramp(c.l, 0.05, 0.9), flip: ramp(c.l, 0.9, 1.1), smile: 0.2}), s: null, glowR: 1.1}))],
-  [63.2, undefined, (c) => <BookOpenInsert t={c.l} openAt={0.05} flips={[0.6]} />],
+  [63.2, undefined, (c) => <BookOpening t={c.l} at={0.05} />],
 ];
 
 type Shot = {from: number; to: number; fx?: Fx; C: R};
