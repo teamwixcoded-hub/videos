@@ -41,6 +41,8 @@ const MaskWord: React.FC<{text: string; k: number; size: number; gold: boolean; 
 
 export const Headline: React.FC<{w: TW; l: number}> = ({w, l}) => {
   const words = w.text.split(' '), n = words.length, mode = w.mode;
+  // balanced rows: as few rows as needed so that no row is longer than about 18 characters
+  const rows: string[][] = (() => { const nr = Math.max(1, Math.ceil(w.text.length / 18)); if (nr === 1) return [words]; const target = w.text.length / nr, out: string[][] = []; let cur: string[] = [], cl = 0; for (const wd of words) { if (cur.length && cl + wd.length / 2 > target && out.length < nr - 1) { out.push(cur); cur = []; cl = 0; } cur.push(wd); cl += wd.length + 1; } out.push(cur); return out; })();
   const out = smooth(w.dur - 0.32, w.dur, l);
   const size = mode === 'slam' ? (w.text.length > 14 ? 150 : 178) : mode === 'title' ? (w.text.length > 20 ? 110 : 132) : (w.text.length > 24 ? 84 : w.text.length > 14 ? 100 : 118);
   const lower = mode === 'pop';
@@ -57,12 +59,15 @@ export const Headline: React.FC<{w: TW; l: number}> = ({w, l}) => {
       <div style={{position: 'absolute', left: 0, right: 0, bottom: lower ? 0 : undefined, top: lower ? undefined : '50%', height: lower ? 360 : size * 3.4, marginTop: lower ? 0 : -size * 1.7, background: lower ? 'linear-gradient(0deg, rgba(3,6,18,.7), rgba(3,6,18,0))' : 'radial-gradient(ellipse at center, rgba(3,6,18,.62) 0%, rgba(3,6,18,.34) 50%, rgba(3,6,18,0) 76%)', opacity: smooth(0, 0.3, l) * (1 - out)}} />
       <div style={{position: 'relative', maxWidth: 1700, padding: `${size * 0.1}px ${size * 0.4}px`, ...slamStyle, ...exitStyle}}>
         {mode === 'title' && <>{line(-1)}{line(1)}</>}
-        <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', columnGap: size * 0.28, rowGap: size * 0.04}}>
-          {words.map((wd, i) => {
-            const d0 = mode === 'slam' ? 0 : i * stag, k = mode === 'slam' ? 1 : clamp((l - d0) / 0.62);
-            const gold = w.accent === i;
-            return <MaskWord key={i} text={wd} k={k} size={size} gold={gold} track={mode === 'slam' ? [0.05, 0.05] : [0.22, 0.045]} underline={gold ? (l - d0 - 0.45) / 0.5 : 0} font={DIGI} />;
-          })}
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', rowGap: size * 0.06}}>
+          {(() => { let gi = 0; return rows.map((row, ri) => (
+            <div key={ri} style={{display: 'flex', justifyContent: 'center', columnGap: size * 0.28}}>
+              {row.map((wd) => {
+                const i = gi++, d0 = mode === 'slam' ? 0 : i * stag, k = mode === 'slam' ? 1 : clamp((l - d0) / 0.62), gold = w.accent === i;
+                return <MaskWord key={i} text={wd} k={k} size={size} gold={gold} track={mode === 'slam' ? [0.05, 0.05] : [0.22, 0.045]} underline={gold ? (l - d0 - 0.45) / 0.5 : 0} font={DIGI} />;
+              })}
+            </div>
+          )); })()}
         </div>
         {mode === 'title' && sweep > 0 && sweep < 1 && <div style={{position: 'absolute', top: 0, bottom: 0, left: `${lerp(-10, 105, sweep)}%`, width: 120, transform: 'skewX(-18deg)', background: 'linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.28), rgba(255,255,255,0))', mixBlendMode: 'overlay'}} />}
         {mode === 'slam' && <div style={{position: 'absolute', left: '-6%', right: '-6%', top: '50%', height: 5, marginTop: -2, background: 'linear-gradient(90deg, transparent, rgba(150,210,255,.95), #fff, rgba(150,210,255,.95), transparent)', filter: 'blur(4px)', opacity: Math.max(0, 1 - l / 0.45), transform: `scaleX(${lerp(0.3, 1.1, eoExpo(l / 0.4))})`}} />}

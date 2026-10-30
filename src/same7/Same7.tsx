@@ -74,20 +74,28 @@ for (let i = 1; i < SHOTS.length; i++) if (SHOTS[i].from <= SHOTS[i - 1].from) t
 const WHIP_AT = SHOTS.filter((s) => s.fx === 'w').map((s) => s.from), FLASH_AT = SHOTS.filter((s) => s.fx === 'f').map((s) => s.from), BRIDGE_AT = SHOTS.filter((s) => s.fx === 'b').map((s) => s.from);
 
 // ---------------- words on screen ----------------
-const TYPEW: TW[] = [
-  {at: T('same man'), dur: 3.4, text: 'SAME MAN. SAME NIGHT. SAME ROOM.', accent: 0, mode: 'pop'},
-  {at: T('in one year'), dur: 1.5, text: 'IN ONE YEAR', accent: 2, mode: 'pop'},
-  {at: T('the other will be'), dur: 2.0, text: 'AWAKE AT 2:00 AM.', accent: 2, mode: 'pop'},
-  {at: T('the only difference'), dur: 2.2, text: 'THE ONLY DIFFERENCE', accent: 3, mode: 'pop'},
-  {at: T('you make this exact'), dur: 3.6, text: 'YOU MAKE THIS CHOICE EVERY NIGHT.', accent: 4, mode: 'pop'},
-  {at: T('anyone would'), dur: 1.3, text: 'ANYONE WOULD.', accent: 0, mode: 'pop'},
-  {at: T('split this night'), dur: 2.4, text: 'ONE NIGHT. TWO WAYS.', accent: 2, mode: 'title'},
+// TEXT RULES (one voice for the whole film): one short idea per text, at most 2 lines of about 18 characters each, never two texts at the same time in the lower third.
+//  - key phrases (pop) sit centred in the lower third; stamps (kicker + label) sit lower-left; day / time tags and the IN BED / IN THE CHAIR pills sit at the top.
+//  - titles are not centred over faces any more: everything is lower third, except words that sit on a plain insert.
+const pop = (phrase: string, dur: number, text: string, accent?: number, off = 0): TW => ({at: T(phrase) + off, dur, text, accent, mode: 'pop'});
+const TYPE_RAW: TW[] = [
+  pop('same man', 1.2, 'SAME MAN.', 0), pop('same night', 1.2, 'SAME NIGHT.', 0), pop('same room', 1.3, 'SAME ROOM.', 0),
+  pop('in one year', 1.5, 'IN ONE YEAR', 2),
+  pop('the other will be', 2.0, 'AWAKE AT 2:00 AM.', 2),
+  pop('the only difference', 2.2, 'THE ONLY DIFFERENCE', 3),
+  pop('you make this exact', 2.4, 'YOU MAKE THIS CHOICE', 3), pop('every single night', 1.6, 'EVERY NIGHT.', 0),
+  pop('anyone would', 1.3, 'ANYONE WOULD.', 0),
+  pop('split this night', 2.4, 'ONE NIGHT. TWO WAYS.', 2),
 ];
 const st = (phrase: string, dur: number, kicker: string, label: string, off = 0): StampT => ({at: T(phrase) + off, dur, kicker, label});
-const STAMPS: StampT[] = [
-  st('the biggest project', 2.4, 'IN ONE YEAR', 'LEAD THE BIGGEST PROJECT'), st('his name is', 2.9, 'HIS NAME IS', 'DANIEL · 28'), st('a friend gave', 2.6, 'A GIFT FROM A FRIEND', 'THREE MONTHS AGO'),
+const STAMPS_RAW: StampT[] = [
+  st('the biggest project', 2.2, 'THE PROMOTION', 'BIGGEST PROJECT'), st('his name is', 2.9, 'HIS NAME IS', 'DANIEL · 28'), st('a friend gave', 2.6, 'A GIFT FROM A FRIEND', '3 MONTHS AGO'),
   st('the bookmark', 2.3, 'THE BOOKMARK', 'STILL ON PAGE ONE'),
 ];
+// the lower third is one lane: pops and stamps are sorted by start time and each one ends before the next begins
+const LANE = [...TYPE_RAW.map((w) => ({k: 'p' as const, at: w.at, i: TYPE_RAW.indexOf(w)})), ...STAMPS_RAW.map((s, i) => ({k: 's' as const, at: s.at, i}))].sort((a, b) => a.at - b.at);
+const TYPEW: TW[] = TYPE_RAW.map((w) => ({...w})), STAMPS: StampT[] = STAMPS_RAW.map((s) => ({...s}));
+LANE.forEach((it, n) => { const nx = LANE[n + 1]; if (!nx) return; const item = it.k === 'p' ? TYPEW[it.i] : STAMPS[it.i]; item.dur = Math.max(0.8, Math.min(item.dur, nx.at - it.at - 0.12)); });
 
 // ---------------- sound: soft, under the voice ----------------
 const typing = (from: number, to: number, step: number): Cue3[] => { const out: Cue3[] = []; for (let t = from; t < to; t += step) out.push({file: 'phone_tap', at: t, vol: 0.08}); return out; };
