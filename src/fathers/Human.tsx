@@ -54,7 +54,7 @@ const Mitten: React.FC<{curl?: number; s?: number}> = ({curl = 0.35, s = 1}) => 
   const thumb = open ? 'M 18,12 Q 30,18 38,34' : (fist || point) ? 'M 18,12 Q 26,24 17,38' : `M 18,12 Q ${26 + 2 * c},${22} ${28 - 5 * c},${34 - 3 * c}`;
   const palm = 'M -17,-2 L -19,20 Q -21,36 -19,40 Q 0,47 19,40 Q 21,36 19,20 L 17,-2';
   return (
-    <g transform={`scale(${s})`} strokeLinecap="round" strokeLinejoin="round">
+    <g transform={`scale(${s} ${Math.abs(s)})`} strokeLinecap="round" strokeLinejoin="round">
       <path d={palm} fill={SKIN} stroke={INK} strokeWidth={4} />
       <g fill="none" stroke={INK} strokeWidth={13.6}>{fingers.map((d, k) => <path key={k} d={d} />)}<path d={thumb} strokeWidth={14.4} /></g>
       <g fill="none" stroke={SKIN} strokeWidth={9.4}>{fingers.map((d, k) => <path key={k} d={d} />)}<path d={thumb} strokeWidth={10} /></g>
@@ -217,7 +217,7 @@ export type HumanFrontProps = {
 const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?: React.ReactNode; upright?: boolean; noHand?: boolean}> = ({S, T, o, s, curl, held, upright, noHand}) => {
   // a hanging arm is nearly straight down along the body, not a wing
   let Tg = T;
-  if (T[1] > S[1] + 250) { const dx = T[0] - S[0], dy = T[1] - S[1], d = Math.hypot(dx, dy) || 1, want = d > 331 ? Math.min(d, 356) : 331; Tg = [S[0] + (dx / d) * want, S[1] + (dy / d) * want]; }
+  if (T[1] > S[1] + 250) { const dx = T[0] - S[0], dy = T[1] - S[1], d = Math.hypot(dx, dy) || 1, want = d > 338 ? Math.min(d, 356) : 338; Tg = [S[0] + (dx / d) * want, S[1] + (dy / d) * want]; }
   // a raised arm: the upper arm hangs from the shoulder as low as it can (elbow beside or in front of the waist, never winged out) and only swings up when the hand is too high to reach; the forearm is then shorter (foreshortened toward the camera)
   const hangF = T[1] > S[1] + 250, ox = S[0] < 0 ? -1 : 1;
   let {J: E, H} = ik2(S, Tg, 176, 164, (c) => ((c[0][0] - c[1][0]) * ox > 0 ? c[0] : c[1]));
@@ -235,7 +235,7 @@ const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?:
       {held && !upright && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>}
       {held && (upright ? <g transform={`translate(${H[0]} ${H[1]})`}>{held}</g> : <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)">{held}</g></g>)}
       {held && !upright && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform={`translate(0 -6) scale(${s} 1)`} fill={SKIN} stroke={INK} strokeWidth={3.4} strokeLinecap="round" strokeLinejoin="round"><rect x={-60} y={44} width={26} height={78} rx={13} />{[52, 72, 92, 112].map((y, i) => <path key={y} d={`M -50,${y} Q -20,${y - 6 - i} ${-6 - (i % 2) * 4},${y + 4}`} fill="none" stroke={INK} strokeWidth={19} />)}{[52, 72, 92, 112].map((y, i) => <path key={'s' + y} d={`M -50,${y} Q -20,${y - 6 - i} ${-6 - (i % 2) * 4},${y + 4}`} fill="none" stroke={SKIN} strokeWidth={13} />)}<rect x={42} y={50} width={18} height={30} rx={9} /></g></g>}
-      {!held && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><Mitten curl={curl} s={s * 1.25} /></g></g>}
+      {!held && !noHand && <g transform={`translate(${H[0]} ${H[1]}) rotate(${fa - 90})`}><g transform="translate(0 -6)"><g transform={hangF ? 'scale(0.72 1)' : undefined}><Mitten curl={curl} s={(hangF ? -s : s) * 1.25} /></g></g></g>}
     </g>
   );
   return (
