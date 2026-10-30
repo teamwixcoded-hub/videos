@@ -254,8 +254,8 @@ export const kitchenMore = (): Detail => ({
 export const stairsMore = (): Detail => ({
   mid: (
     <g>
-      <g transform="translate(2650 830)"><rect x={-60} y={-460} width={120} height={460} fill="#6a4a30" stroke={INK} strokeWidth={4} /><rect x={-44} y={-440} width={88} height={190} fill="#4a3220" stroke={INK} strokeWidth={3} /><rect x={-44} y={-232} width={88} height={190} fill="#4a3220" stroke={INK} strokeWidth={3} /><circle cx={34} cy={-220} r={7} fill="#e8c27a" /></g>
-      <g transform="translate(1000 830)"><rect x={-70} y={-10} width={140} height={10} rx={3} fill="#8a3a4a" stroke={INK} strokeWidth={3} /><ellipse cx={0} cy={-10} rx={90} ry={12} fill="#8a3a4a" opacity={0.0} /></g>
+      <g transform="translate(900 830)"><rect x={-60} y={-460} width={120} height={460} fill="#6a4a30" stroke={INK} strokeWidth={4} /><rect x={-44} y={-440} width={88} height={190} fill="#4a3220" stroke={INK} strokeWidth={3} /><rect x={-44} y={-232} width={88} height={190} fill="#4a3220" stroke={INK} strokeWidth={3} /><circle cx={34} cy={-220} r={7} fill="#e8c27a" /></g>
+      <g transform="translate(1300 830)"><rect x={-70} y={-10} width={140} height={10} rx={3} fill="#8a3a4a" stroke={INK} strokeWidth={3} /><ellipse cx={0} cy={-10} rx={90} ry={12} fill="#8a3a4a" opacity={0.0} /></g>
     </g>
   ),
 });
@@ -354,14 +354,15 @@ export const roomDetail = (o: {t: number}): Detail => ({
 export const stairsDetail = (): Detail => ({
   far: (
     <g>
-      {[0, 1, 2, 3, 4].map((i) => <g key={i} transform={`translate(${380 + i * 210} ${380 - i * 52}) rotate(${-2 + i})`}><rect x={-62} y={-48} width={124} height={96} fill="#6a4a30" stroke={INK} strokeWidth={4} /><rect x={-50} y={-36} width={100} height={72} fill={['#c9b99a', '#b9c8d8', '#d8c0b0', '#c9d8b9', '#d8d0a0'][i]} /><circle cx={-12} cy={-6} r={12} fill="#f4f2fb" stroke={INK} strokeWidth={2} /><circle cx={16} cy={2} r={9} fill="#f4f2fb" stroke={INK} strokeWidth={2} /></g>)}
+      {[0, 1, 2, 3, 4].map((i) => <g key={i} transform={`translate(${1450 + i * 250} ${300 - i * 92})`}><rect x={-62} y={-48} width={124} height={96} fill="#6a4a30" stroke={INK} strokeWidth={4} /><rect x={-50} y={-36} width={100} height={72} fill={['#c9b99a', '#b9c8d8', '#d8c0b0', '#c9d8b9', '#d8d0a0'][i]} /><circle cx={-12} cy={-6} r={12} fill="#f4f2fb" stroke={INK} strokeWidth={2} /><circle cx={16} cy={2} r={9} fill="#f4f2fb" stroke={INK} strokeWidth={2} /></g>)}
       <g transform="translate(2500 160)"><rect x={0} y={0} width={240} height={320} fill="#10183a" stroke={INK} strokeWidth={5} /><path d="M 120,0 L 120,320 M 0,160 L 240,160" stroke="#6a5a4a" strokeWidth={6} /><circle cx={180} cy={60} r={20} fill="#fff3b0" /></g>
     </g>
   ),
   mid: (
     <g>
-      <path d="M 300,760 L 2350,160" fill="none" stroke="#3a2a20" strokeWidth={16} strokeLinecap="round" /><path d="M 300,820 L 2350,220" fill="none" stroke={INK} strokeWidth={5} />
-      {Array.from({length: 14}, (_, i) => <line key={i} x1={300 + i * 158} y1={760 - i * 46} x2={300 + i * 158} y2={850 - i * 46} stroke="#3a2a20" strokeWidth={8} />)}
+      <path d="M 1500,690 L 3000,140" fill="none" stroke="#3a2a20" strokeWidth={18} strokeLinecap="round" /><path d="M 1500,708 L 3000,158" fill="none" stroke={INK} strokeWidth={4} />
+      {Array.from({length: 11}, (_, i) => { const x = 1560 + i * 140, top = 690 - (x - 1500) * 0.367, tread = x < 1700 ? 830 : x < 2000 ? 720 : x < 2300 ? 610 : x < 2600 ? 500 : x < 2900 ? 390 : 280; return <line key={i} x1={x} y1={top} x2={x} y2={tread - 12} stroke="#3a2a20" strokeWidth={8} />; })}
+      <rect x={1488} y={660} width={26} height={170} rx={6} fill="#3a2a20" stroke={INK} strokeWidth={3} />
       <g transform="translate(260 830)"><path d="M -60,0 q 0,-26 40,-26 l 50,0 l 0,26 Z" fill="#2a2a38" stroke={INK} strokeWidth={3} /><path d="M 50,0 q 0,-20 40,-20 l 40,0 l 0,20 Z" fill="#3a2f26" stroke={INK} strokeWidth={3} /></g>
     </g>
   ),

@@ -372,8 +372,15 @@ export const leoRoom = (o: {t: number}): SetOut => ({
 
 // the stairs of Sam's house, a warm lamp
 export const stairs = (o: {t: number}): SetOut => ({
-  far: (<g><Wall c1="#6a4634" c2="#533527" />{[0, 1, 2, 3, 4].map((i) => <rect key={i} x={1100 + i * 220} y={300 + i * 110} width={2200} height={110} fill={i % 2 ? '#65492f' : '#70502d'} stroke={INK} strokeWidth={2.4} />)}<g transform="translate(700 340)"><rect x={-14} y={0} width={28} height={110} fill="#493625" stroke={INK} strokeWidth={1.8} /><path d="M -60,0 L 60,0 L 36,-80 L -36,-80 Z" fill="#f9b700" stroke={INK} strokeWidth={2.4} /><ellipse cx={0} cy={-30} rx={190} ry={150} fill="#f9b700" opacity={0.2} /></g></g>),
-  mid: (<g><Floor c1="#65492f" c2="#533723" /><rect x={1240} y={720} width={1500} height={110} fill="#65492f" stroke={INK} strokeWidth={3} /><rect x={1460} y={610} width={1400} height={110} fill="#70502d" stroke={INK} strokeWidth={3} /></g>),
+  far: (<g><Wall c1="#6a4634" c2="#533527" /><g transform="translate(900 340)"><rect x={-14} y={0} width={28} height={110} fill="#493625" stroke={INK} strokeWidth={1.8} /><path d="M -60,0 L 60,0 L 36,-80 L -36,-80 Z" fill="#f9b700" stroke={INK} strokeWidth={2.4} /><ellipse cx={0} cy={-30} rx={190} ry={150} fill="#f9b700" opacity={0.2} /></g>
+    {/* the wall under the flight is darker; the stringer follows the steps */}
+    <path d="M 1700,830 L 1700,720 L 2000,720 L 2000,610 L 2300,610 L 2300,500 L 2600,500 L 2600,390 L 2900,390 L 2900,280 L 3400,280 L 3400,830 Z" fill="#3b261b" opacity={0.55} /></g>),
+  mid: (<g><Floor c1="#65492f" c2="#533723" />{[0, 1, 2, 3, 4].map((n) => { const x = 1700 + n * 300, y = 830 - 110 * (n + 1); return (
+    <g key={n}><rect x={x} y={y} width={3400 - x} height={110 * (n + 1)} fill="#4a3220" stroke={INK} strokeWidth={3} />
+      <rect x={x} y={y + 14} width={14} height={96} fill="#2e1d12" opacity={0.55} />
+      <rect x={x - 14} y={y} width={3400 - x + 14} height={16} rx={4} fill="#a67a47" stroke={INK} strokeWidth={3} />
+      <rect x={x - 14} y={y + 16} width={3400 - x + 14} height={7} fill="#2e1d12" opacity={0.5} /></g>); })}
+    <rect x={1700} y={826} width={1700} height={8} fill="#1d130d" opacity={0.5} /></g>),
   rim: 'rgba(255,205,130,.9)',
 });
 

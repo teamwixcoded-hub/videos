@@ -50,9 +50,9 @@ const four = (c: Ctx, cups = 0) => SC.tea(c, [Z(1760, 580, 1.25), Z(1760, 570, 1
   {Pe(c, sit('adam', 65, 1440, 0.6, {turn: 0.2, face: F.soft, view: 'front', pose: 'cup'}))}{Pe(c, sit('sam', 65, 1660, 0.6, {turn: 0.1, face: F.smile, view: 'front', pose: 'cup'}))}
   {Pe(c, sit('leo', 30, 1880, 0.6, {turn: -0.1, face: F.smile, view: 'front', pose: 'cup'}))}{Pe(c, sit('max', 30, 2100, 0.6, {turn: -0.2, face: F.grin, view: 'front', pose: 'cup'}))}</>);
 const tint = (a: string, b: string, k: number) => <AbsoluteFill style={{background: `linear-gradient(90deg, ${a}, ${b})`, opacity: k, mixBlendMode: 'soft-light', pointerEvents: 'none'}} />;
-const leoNight = (c: Ctx, z = 1.3) => SC.room(c, [Z(1700, 520, z), Z(1660, 500, z + 0.2)], Pe(c, sit('leo', 16, 1360, 0.8, {pose: 'phone', face: {...F.worried, gaze: [0, 0.6], smile: 0}, turn: 0.2})));
+const leoNight = (c: Ctx, z = 1.3) => SC.room(c, [Z(1950, 500, z), Z(1660, 500, z + 0.2)], Pe(c, sit('leo', 16, 1360, 0.8, {pose: 'phone', face: {...F.worried, gaze: [0, 0.6], smile: 0}, turn: 0.2})));
 const samDoor = (c: Ctx) => SC.door(c, [Z(930, 520, 1.3), Z(940, 520, 1.45)], {label: 'DAD', boxes: 0, glow: 0}, Pe(c, stand('max', 16, 1280, 0.9, {pose: 'knock', turn: 0.8, face: F.sad})));
-const stairsSm = (c: Ctx) => SC.stairs(c, [Z(1700, 520, 1.2), Z(1700, 500, 1.4)], <>{Pe(c, sit('sam', 50, 1800, 0.62, {turn: -0.3, face: F.soft}, 840))}{Pe(c, sit('max', 16, 2060, 0.62, {turn: -0.3, face: F.sad}, 840))}</>);
+const stairsSm = (c: Ctx) => SC.stairs(c, [Z(1950, 500, 1.2), Z(1950, 500, 1.4)], <>{Pe(c, sit('sam', 50, 1860, 0.62, {turn: -0.8, face: F.soft}, 830))}{Pe(c, sit('max', 16, 2160, 0.62, {turn: -0.8, face: F.sad, floor: 720} as any, 720))}</>);
 const friday = (c: Ctx, side: 'adam' | 'sam') => {
   const d = side === 'adam' ? doorA : doorS, step = ramp(c.l, 0.5, 2.0), px = d[0] + (side === 'adam' ? 40 : -40) * step;
   const p = at(side, 65, px, 735 + 8 * step, 0.3 + 0.01 * step, {turn: side === 'adam' ? 0.7 : -0.7, face: F.soft});
@@ -237,7 +237,7 @@ export const LIST: Entry[] = [
   // ================= LEO TURNS FIVE =================
   [T('when leo turned five'), 'f', (c) => SC.pty(c, [Z(1700, 560, 1.0), Z(2000, 600, 1.4)], {}, <>{partyGuests(c)}{Pe(c, stand('leo', 5, 1500, 0.8, {face: F.grin, turn: 0.3}))}{Pe(c, stand('max', 5, 1250, 0.8, {face: F.smile, turn: 0.3}))}</>)],
   [T('adam missed the party'), undefined, (c) => SC.pty(c, [Z(1900, 560, 1.2), Z(2300, 600, 1.7)], {}, <>{partyGuests(c)}{Pe(c, stand('aunt', 40, 1700, 0.8, {pose: 'film', turn: -0.4, face: F.smile, top: '#2fa39a'}))}{Pe(c, stand('leo', 5, 1450, 0.8, {face: F.grin, turn: 0.3}))}</>)],
-  [T('a client meeting'), undefined, (c) => deskScene(c, [Z(1700, 540, 1.3), Z(1700, 520, 1.5)], 40, {face: F.tired, pose: 'phone'}, 700)],
+  [T('a client meeting'), undefined, (c) => deskScene(c, [Z(1700, 540, 1.3), Z(1950, 500, 1.5)], 40, {face: F.tired, pose: 'phone'}, 700)],
   [T('but he came home'), 'w', (c) => SC.pty(c, [Z(1100, 560, 1.0), Z(1250, 560, 1.2)], {}, Pe(c, stand('adam', 40, 700 + ramp(c.l, 0, 2.2) * 500, 0.85, {pose: 'carry', face: F.smile, turn: 0.5, children: <g><rect x={-55} y={-60} width={110} height={80} rx={8} fill="#c9954a" stroke="#1d1a2e" strokeWidth={4} /><rect x={-55} y={-60} width={110} height={20} fill="#e0b068" stroke="#1d1a2e" strokeWidth={3} /></g>})))],
   [T('still wrapped with a bow'), undefined, (c) => SC.pty(c, [Z(1500, 650, 2.2), Z(1500, 650, 2.6)], {}, <GiftPile x={1500} y={770} n={1} s={0.9} />)],
   [T('leo played with it'), undefined, (c) => SC.pty(c, faceCam(stand('leo', 5, 1500, 0.9), 2.4, 40), {}, Pe(c, stand('leo', 5, 1500, 0.9, {face: {smile: 1, open: 0.6, wide: 0.6, brow: 0.5}, turn: 0.1})))],
@@ -263,7 +263,7 @@ export const LIST: Entry[] = [
   [T("adam's seat stayed empty"), undefined, (c) => SC.aud(c, [Z(1260, 800, 1.5), Z(1560, 440, 1.2)], {}, leoTree(c))],
   [T("he'd paid for the best costume"), undefined, (c) => SC.aud(c, [Z(1600, 360, 2.2), Z(1600, 350, 2.7)], {}, leoTree(c, 0.62, {face: {smile: 0.6, brow: 0.3, gaze: [Math.sin(c.t * 1.6) * 0.9, 0.3]}}))],
   [T('next time'), undefined, (c) => <Chat t={c.l} title="Leo" lines={[{side: 'them', text: 'Are you coming?', at: 0.1}, {side: 'me', text: 'Next time. I promise.', at: 0.7}]} />],
-  [T('there was always a next time'), undefined, (c) => deskScene(c, [Z(1700, 540, 1.3), Z(1700, 520, 1.5)], 45, {face: F.tired, pose: 'phone'}, 700)],
+  [T('there was always a next time'), undefined, (c) => deskScene(c, [Z(1700, 540, 1.3), Z(1950, 500, 1.5)], 45, {face: F.tired, pose: 'phone'}, 700)],
   [T('sam sat in the front row'), 'w', (c) => SC.aud(c, [Z(2160, 870, 1.5), Z(2160, 850, 1.8)], {}, Pe(c, sit('sam', 45, 2160, 0.62, {pose: 'film', turn: -0.2, face: F.grin}, 1158)))],
   [T('and clapping too loud') - 0.4, undefined, (c) => SC.aud(c, [Z(2160, 870, 1.7), Z(2160, 850, 2.0)], {applause: true}, Pe(c, sit('sam', 45, 2160, 0.62, {pose: 'clap', turn: -0.2, face: {...F.grin, open: 0.6}}, 1158)))],
   [T('max pretended to be embarrassed'), undefined, (c) => SC.aud(c, [Z(1600, 380, 2.2), Z(1600, 370, 2.7)], {applause: true}, Pe(c, at('max', 10, 1600, 540, 0.62, {face: {smile: 0.7, lids: 0.3, gaze: [0.9, 0.3], brow: -0.1}, turn: 0.2})))],
@@ -279,7 +279,7 @@ export const LIST: Entry[] = [
   // ================= AGE 15 =================
   [T('at 15'), 'f', (c) => SC.room(c, [Z(1400, 520, 1.2), Z(1350, 480, 1.5)], Pe(c, sit('leo', 15, 1360, 0.8, {pose: 'phone', face: {...F.calm, gaze: [0, 0.5]}, turn: 0.2})))],
   [T('the best shoes'), undefined, (c) => SC.door(c, [Z(1300, 760, 1.6), Z(1250, 740, 1.9)], {boxes: 4})],
-  [T('a closed bedroom door'), undefined, (c) => SC.door(c, [Z(1700, 520, 1.0), Z(1700, 520, 1.25)], {boxes: 4})],
+  [T('a closed bedroom door'), undefined, (c) => SC.door(c, [Z(1950, 500, 1.0), Z(1950, 500, 1.25)], {boxes: 4})],
   [T('adam knocked once'), undefined, (c) => SC.door(c, [Z(1500, 420, 1.4), Z(1560, 420, 1.5)], {boxes: 4}, Pe(c, stand('adam', 50, 1300, 0.9, {pose: 'knock', turn: 0.8, face: F.soft})))],
   [T('need anything'), undefined, (c) => SC.door(c, faceCam(stand('adam', 50, 1300, 0.9), 2.6, 0), {boxes: 4}, Pe(c, stand('adam', 50, 1300, 0.9, {turn: 0.7, face: {...say(c, T('need anything'), TE('need anything'), {tilt: 8, brow: 0.3})}})))],
   [TE('need anything') + 0.3, undefined, (c) => SC.room(c, faceCam(sit('leo', 15, 1360, 0.8, {pose: 'phone'}), 2.3, 20), Pe(c, sit('leo', 15, 1360, 0.8, {pose: 'phone', turn: 0.2, face: {...say(c, 216.95, 217.3, {tilt: 6}), gaze: [0, 0.3]}})))],
@@ -288,7 +288,7 @@ export const LIST: Entry[] = [
   [T('he wanted to say something else'), undefined, (c) => SC.door(c, faceCam(stand('adam', 50, 1300, 0.9), 2.4, 0), {boxes: 4}, Pe(c, stand('adam', 50, 1300, 0.9, {turn: 0.7, face: {...F.worried, gaze: [0.3, -0.1]}})))],
   [T('but he had never heard'), undefined, (c) => SC.fac(c, [Z(1600, 520, 1.1), Z(1650, 520, 1.3)], Pe(c, stand('adam', 60, 1550, 0.85, {outfit: 'work', turn: 0.4, pose: 'stand', face: {...F.tired, lids: 0.4}, dim: 0.25})))],
   [T("he didn't know how it was supposed"), undefined, (c) => SC.door(c, [Z(1500, 540, 1.1), Z(1500, 540, 1.25)], {boxes: 4}, Pe(c, stand('adam', 50, 1300, 0.9, {turn: 0.8, face: F.sad})))],
-  [T('so he went back to work'), 'w', (c) => deskScene(c, [Z(1700, 540, 1.3), Z(1700, 520, 1.4)], 50, {face: F.sad, pose: 'rest'}, 660)],
+  [T('so he went back to work'), 'w', (c) => deskScene(c, [Z(1700, 540, 1.3), Z(1950, 500, 1.4)], 50, {face: F.sad, pose: 'rest'}, 660)],
   // ================= MAX AND HIS FATHER =================
   [T('max and his father argued'), 'w', (c) => SC.kit(c, faceCam(stand('sam', 45, 1250, 0.8), 2.3, 30), {}, Pe(c, stand('sam', 45, 1250, 0.8, {turn: 0.5, face: {...F.angry, open: 0.3 + 0.3 * Math.abs(Math.sin(c.t * 10))}})))],
   [T('grades'), undefined, (c) => SC.kit(c, faceCam(stand('max', 16, 1950, 0.85), 2.3, 30), {}, Pe(c, stand('max', 16, 1950, 0.85, {turn: -0.5, face: {...F.angry, open: 0.3 + 0.3 * Math.abs(Math.sin(c.t * 11))}})))],
@@ -300,8 +300,8 @@ export const LIST: Entry[] = [
   [T('leo locked his door'), 'w', (c) => leoNight(c)],
   [T('max knocked on'), 'w', (c) => <Split left={leoNight(c)} right={samDoor(c)} wipe={ramp(c.l, 0, 0.8)} />],
   [T("sam didn't fix anything"), undefined, (c) => <Split left={leoNight(c)} right={stairsSm(c)} wipe={1 + ramp(c.l, 0, 1.2)} divider={1 - ramp(c.l, 0.5, 1.2)} />],
-  [T('he just sat on the stairs') + 1.2, undefined, (c) => SC.stairs(c, [Z(1700, 520, 1.3), Z(1700, 500, 1.6)], <>{Pe(c, sit('sam', 50, 1800, 0.62, {turn: -0.3, face: F.soft}, 840))}{Pe(c, sit('max', 16, 2060, 0.62, {turn: -0.3, face: F.sad}, 840))}</>)],
-  [T('until it was late'), undefined, (c) => <AbsoluteFill>{SC.stairs(c, [Z(1700, 500, 1.6), Z(1700, 500, 1.8)], <>{Pe(c, sit('sam', 50, 1800, 0.62, {turn: -0.3, face: F.soft}, 840))}{Pe(c, sit('max', 16, 2060, 0.62, {turn: -0.3, face: {...F.sad, lids: 0.45}}, 840))}</>)}{tint('rgba(30,50,130,.9)', 'rgba(30,50,130,.9)', ramp(c.l, 0, 2.6))}</AbsoluteFill>],
+  [T('he just sat on the stairs') + 1.2, undefined, (c) => SC.stairs(c, [Z(1950, 500, 1.3), Z(1950, 500, 1.6)], <>{Pe(c, sit('sam', 50, 1860, 0.62, {turn: -0.8, face: F.soft}, 830))}{Pe(c, sit('max', 16, 2160, 0.62, {turn: -0.8, face: F.sad, floor: 720} as any, 720))}</>)],
+  [T('until it was late'), undefined, (c) => <AbsoluteFill>{SC.stairs(c, [Z(1950, 500, 1.6), Z(1950, 500, 1.8)], <>{Pe(c, sit('sam', 50, 1860, 0.62, {turn: -0.8, face: F.soft}, 830))}{Pe(c, sit('max', 16, 2160, 0.62, {turn: -0.8, face: {...F.sad, lids: 0.45}, floor: 720} as any, 720))}</>)}{tint('rgba(30,50,130,.9)', 'rgba(30,50,130,.9)', ramp(c.l, 0, 2.6))}</AbsoluteFill>],
   // ================= GROWN UP =================
   [T('leo grew up successful'), 'f', (c) => SC.off(c, [Z(1600, 520, 1.0), Z(1700, 530, 1.3)], {clockMin: 480}, <>{Pe(c, sit('leo', 25, 1700, 0.7, {pose: 'desk', face: F.calm, turn: 0.1}, FL + 76))}<Laptop x={1700} y={690} s={0.9} open={1} /></>)],
   [T('he sends money home'), undefined, (c) => <LeoTransfer t={c.l} />],
@@ -310,7 +310,7 @@ export const LIST: Entry[] = [
   [T('every sunday at eight', 1), undefined, (c) => <SundayFlip t={c.l} who="sam" week={0} />],
   [T('he always picks up') - 0.2, undefined, (c) => SC.liv(c, faceCam(sit('sam', 60, LR.chairX, 0.66), 2.5, 20), {warm: true}, samAt(c, 60, {pose: 'ear', face: {smile: 1, open: 0.7 * Math.abs(Math.sin(c.t * 7)), brow: 0.3}}), 0.3)],
   [T('then last spring'), 'w', (c) => SC.hos(c, [Z(1100, 560, 1.0), faceCam(stand('leo', 30, 900, 0.85), 2.4, 100)], {track: 0.6}, Pe(c, stand('leo', 30, 900, 0.85, {pose: 'cradle', turn: 0.3, face: F.soft, children: <Baby />})))],
-  [T('last month leo missed'), undefined, (c) => deskScene(c, [Z(1700, 540, 1.3), Z(1700, 520, 1.5)], 30, {face: F.tired, pose: 'phone'}, 700)],
+  [T('last month leo missed'), undefined, (c) => deskScene(c, [Z(1700, 540, 1.3), Z(1950, 500, 1.5)], 30, {face: F.tired, pose: 'phone'}, 700)],
   [T("his little boy's first birthday"), undefined, (c) => SC.pty(c, [Z(1500, 640, 1.5), Z(1500, 640, 1.7)], {}, <>{Pe(c, stand('leo', 3, 1450, 0.7, {face: F.smile, turn: 0.2, top: '#e0455a'}))}<g transform="translate(1700 700)"><rect x={-60} y={-20} width={120} height={28} rx={8} fill="#f6efe2" stroke="#1d1a2e" strokeWidth={3} /><rect x={-5} y={-50} width={10} height={32} fill="#e0455a" /></g></>)],
   [T('but he sent the biggest toy car'), undefined, (c) => SC.door(c, [Z(1500, 560, 1.1), Z(1500, 560, 1.25)], {label: 'LEO JR', boxes: 1, glow: 0.6}, <GiftPile x={1300} y={FL + 6} n={1} s={0.9} />)],
   [T('which brings us back'), 'w', (c) => SC.liv(c, [W0, Z(1620, 540, 1.1)], {giftN: 8, dust: 0.8, clockMin: 60}, adamAt(c, 65))],
