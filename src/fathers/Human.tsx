@@ -215,7 +215,7 @@ export type HumanFrontProps = {
 const FrontArm: React.FC<{S: V; T: V; o: Outfit; s: number; curl: number; held?: React.ReactNode; upright?: boolean; noHand?: boolean}> = ({S, T, o, s, curl, held, upright, noHand}) => {
   // a hanging arm is nearly straight down along the body, not a wing
   let Tg = T;
-  if (T[1] > S[1] + 250) { const dx = T[0] - S[0], dy = T[1] - S[1], d = Math.hypot(dx, dy) || 1, want = 0.975 * 340; Tg = [S[0] + (dx / d) * want, S[1] + (dy / d) * want]; }
+  if (T[1] > S[1] + 250) { const dx = T[0] - S[0], dy = T[1] - S[1], d = Math.hypot(dx, dy) || 1, want = d > 331 ? Math.min(d, 356) : 331; Tg = [S[0] + (dx / d) * want, S[1] + (dy / d) * want]; }
   // a raised arm: the upper arm hangs from the shoulder as low as it can (elbow beside or in front of the waist, never winged out) and only swings up when the hand is too high to reach; the forearm is then shorter (foreshortened toward the camera)
   const hangF = T[1] > S[1] + 250, ox = S[0] < 0 ? -1 : 1;
   let {J: E, H} = ik2(S, Tg, 176, 164, (c) => ((c[0][0] - c[1][0]) * ox > 0 ? c[0] : c[1]));
