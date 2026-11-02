@@ -3,6 +3,7 @@
 Built around the new voice-over public/audio/same-man-7.mp3 (6:42.3, words in src/same7/data/words.ts; T()/TA() in timeline.ts). One man, Daniel: IN BED (scroller rig) and IN THE CHAIR (reader rig) in one bedroom.
 Same7.tsx = first minute + composition (grade, fx, tags, bubbles, sound, music); acts.tsx = Acts 4-16 (shots, pops, stamps, tags, bubbles, cues, music beds); book.tsx = hardcover book, table scene; inserts.tsx / inserts2.tsx = new inserts; tags.tsx = IN BED / IN THE CHAIR pills.
 Reuses Same2D (exports B, K, camS... and part2 SC2 scene makers). Text rules: one short idea per text, <=2 rows of ~18 chars, one lower-third lane (pops + stamps never overlap), tags and pills on top. Music = existing beds (tf_*, routine, hope, wonder, resolve) at 0.08-0.12; sound gain 0.8, speech duck 0.55.
+Render on a laptop: node scripts/render-same7.cjs [frames=all 12159] [concurrency=2] -> out/same7-full.mp4 (150-frame chunks, resumable). Needs no images or .env; everything it plays is in git. New computer: git clone, npm install, npm run dev (comp Same7).
 Check without Studio: COMP=Same7 node scripts/still-fathers.cjs <seconds...> (<= 8 per run), then node scripts/contact.cjs out.png f1.png ...
 # READ THIS FIRST: current work is "Same Man. Same Night." in 2D vector code (`Same2D`)
 
