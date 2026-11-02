@@ -1,5 +1,6 @@
 import React from 'react';
-import {Head, HeadProps, Hand, Seg, ik, shade, INK, V, HandKind, chinOf, defaultHeadScale} from './Hero';
+import {Limb, limbAt} from './limb';
+import {Head, HeadProps, Hand, ik, shade, INK, V, HandKind, chinOf, defaultHeadScale} from './Hero';
 
 // ============================================================================================
 // WINTER ARC side view: the same man facing +x (flip for -x). Origin = the floor under the start of the pose, y up is negative.
@@ -48,16 +49,16 @@ export const SideHero: React.FC<SideProps> = ({fat = 0, muscle = 0, top = 'tee',
     const k = far ? 0.8 : 1, sk = shade(skin, k), fb = shade(fabric, k);
     const {el, wr} = ik(sh, hand, 122, 116, dir);
     const ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]) * 180 / Math.PI;
-    const mid: V = [sh[0] + (el[0] - sh[0]) * 0.45, sh[1] + (el[1] - sh[1]) * 0.45], bi: V = [sh[0] + (el[0] - sh[0]) * 0.5, sh[1] + (el[1] - sh[1]) * 0.5];
     const bare = top === 'bare' || top === 'tank';
+    const geom = {pts: [sh, el, wr] as [V, V, V], w: [armW * 1.06, armW * 0.9, foreW * 0.84] as [number, number, number], bump: [{t: 0.26, amt: armW * (0.08 + muscle * 0.5 + fat * 0.14), sigma: 0.14}, {t: 0.72, amt: armW * (0.04 + muscle * 0.16), sigma: 0.16}]};
+    const bi = limbAt(geom.pts, 0.26);
     return (
       <g>
-        <Seg a={el} b={wr} w1={foreW} w2={foreW * 0.78} fill={sk} ink /><Seg a={sh} b={el} w1={armW} w2={armW * 0.86} fill={sk} ink />
-        {muscle > 0.2 && <ellipse cx={bi[0]} cy={bi[1]} rx={armW * (0.5 + muscle * 0.3)} ry={armW * (0.46 + muscle * 0.28)} fill={INK} />}
-        <Seg a={el} b={wr} w1={foreW} w2={foreW * 0.78} fill={longSleeve ? fb : sk} /><Seg a={sh} b={el} w1={armW} w2={armW * 0.86} fill={bare ? sk : fb} />
-        {muscle > 0.2 && bare && <ellipse cx={bi[0]} cy={bi[1]} rx={armW * (0.5 + muscle * 0.3) - 5} ry={armW * (0.46 + muscle * 0.28) - 5} fill={sk} />}
-        {top === 'tee' && <g><Seg a={sh} b={mid} w1={armW + 12} w2={armW + 8} fill={INK} /><Seg a={sh} b={mid} w1={armW + 2} w2={armW} fill={fb} /></g>}
-        <circle cx={sh[0]} cy={sh[1]} r={armW * 0.58} fill={bare ? sk : fb} />
+        <Limb {...geom} fill={sk} />
+        {top === 'tee' && <Limb {...geom} t1={0.4} extra={8} flat fill={fb} stroke={8} />}
+        {longSleeve && <g><Limb {...geom} t1={0.92} extra={5} flat fill={fb} stroke={8} /><Limb {...geom} t0={0.84} t1={0.92} extra={8} flat fill={shade(fabric, 0.8 * k)} stroke={7} /></g>}
+        {muscle > 0.2 && bare && <ellipse cx={bi[0] + 2} cy={bi[1] - 8} rx={armW * 0.26} ry={armW * 0.17} fill="#fff" opacity={0.3} />}
+        <circle cx={sh[0]} cy={sh[1]} r={armW * 0.52 + 2} fill={bare ? sk : fb} />
         <Hand p={wr} ang={ang} kind={kind} r={armW * 0.66 + 4} skin={sk} />
         {held && <PropArt k={held} p={wr} ang={ang} />}
       </g>
@@ -66,13 +67,13 @@ export const SideHero: React.FC<SideProps> = ({fat = 0, muscle = 0, top = 'tee',
   const leg = (foot: V, far: boolean) => {
     const k = far ? 0.8 : 1, pc = shade(pants, k);
     const {el: kn} = ik(hip, foot, 124, 124, P.kneeDir ?? 1);
+    const geom = {pts: [hip, kn, foot] as [V, V, V], w: [legW * 1.04, calfW * 1.02, calfW * 0.6] as [number, number, number], bump: [{t: 0.3, amt: legW * (0.04 + muscle * 0.18 + fat * 0.1), sigma: 0.16}, {t: 0.72, amt: calfW * (0.08 + muscle * 0.28), sigma: 0.14}]};
     return (
       <g>
-        <Seg a={kn} b={foot} w1={calfW} w2={calfW * 0.62} fill={pc} ink /><Seg a={hip} b={kn} w1={legW} w2={calfW} fill={pc} ink />
-        <Seg a={kn} b={foot} w1={calfW} w2={calfW * 0.62} fill={pc} /><Seg a={hip} b={kn} w1={legW} w2={calfW} fill={pc} />
-        {shorts && <Seg a={hip} b={[hip[0] + (kn[0] - hip[0]) * 0.55, hip[1] + (kn[1] - hip[1]) * 0.55]} w1={legW + 6} w2={legW - 2} fill={shade(pants, 1.18 * k)} />}
+        <Limb {...geom} fill={pc} />
+        {shorts && <Limb {...geom} t1={0.5} extra={6} flat fill={shade(pants, 1.18 * k)} stroke={8} />}
         <g transform={`translate(${foot[0]} ${foot[1]})`}>
-          <path d="M -34,30 Q -40,-8 -8,-16 L 20,-14 Q 56,-8 66,20 Q 70,36 54,36 L -30,36 Z" fill={shade(shoe, k)} stroke={INK} strokeWidth={9} strokeLinejoin="round" />
+          <path d="M -36,30 Q -44,-8 -8,-16 L 20,-14 Q 58,-8 68,20 Q 72,38 54,38 L -30,38 Q -38,38 -36,30 Z" fill={shade(shoe, k)} stroke={INK} strokeWidth={9} strokeLinejoin="round" />
           <path d="M -34,28 L 62,28" stroke="#c9ced8" strokeWidth={10} strokeLinecap="round" opacity={k} /><path d="M 4,-8 Q 22,-4 32,10" stroke={INK} strokeWidth={4} fill="none" opacity={0.5} strokeLinecap="round" />
           <path d="M -34,38 L 62,38" stroke={INK} strokeWidth={9} strokeLinecap="round" />
         </g>
@@ -85,7 +86,7 @@ export const SideHero: React.FC<SideProps> = ({fat = 0, muscle = 0, top = 'tee',
     <g transform={`translate(${x} ${y}) scale(${flip ? -scale : scale} ${scale})`}>
       {leg(P.footF, true)}
       {arm(P.handF, P.handKindF ?? 'relaxed', P.heldF, P.elbowF ?? -1, true)}
-      <rect x={neck[0] - 28} y={neck[1] - 30} width={56} height={60} fill={skin} stroke={INK} strokeWidth={9} transform={`rotate(${P.torso} ${neck[0]} ${neck[1]})`} />
+      <rect x={neck[0] - 28} y={neck[1] - 30} width={56} height={60} rx={22} fill={skin} stroke={INK} strokeWidth={9} transform={`rotate(${P.torso} ${neck[0]} ${neck[1]})`} />
       <path d={torso} fill={fabric} stroke={INK} strokeWidth={11} strokeLinejoin="round" />
       <clipPath id={`sc${id}`}><path d={torso} /></clipPath>
       <g clipPath={`url(#sc${id})`}>

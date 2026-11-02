@@ -1,5 +1,6 @@
 import React from 'react';
 import {BubbleHead} from './Bubble';
+import {Limb, limbAt} from './limb';
 
 // ============================================================================================
 // WINTER ARC cast (new character, from the happy/sad reference): one round head with a hair cap, big white eyes with a detailed iris,
@@ -109,14 +110,14 @@ export const Hand: React.FC<{p: V; ang: number; kind: HandKind; r: number; skin:
   return (
     <g transform={`translate(${p[0]} ${p[1]}) rotate(${ang - 90}) scale(${r / 26})`}>
       {kind === 'fist'
-        ? <g><rect x={-27} y={-4} width={54} height={50} rx={22} fill={skin} stroke={INK} strokeWidth={8} /><path d="M -14,14 L -14,40 M 0,14 L 0,42 M 14,14 L 14,40" stroke={INK} strokeWidth={4} opacity={0.5} strokeLinecap="round" /><path d="M -26,6 Q -40,22 -26,34" stroke={INK} strokeWidth={13} fill="none" strokeLinecap="round" /><path d="M -26,6 Q -38,22 -26,34" stroke={skin} strokeWidth={6} fill="none" strokeLinecap="round" /></g>
+        ? <g><ellipse cx={0} cy={22} rx={28} ry={27} fill={skin} stroke={INK} strokeWidth={8} /><path d="M -14,14 L -14,40 M 0,14 L 0,42 M 14,14 L 14,40" stroke={INK} strokeWidth={4} opacity={0.5} strokeLinecap="round" /><path d="M -26,6 Q -40,22 -26,34" stroke={INK} strokeWidth={13} fill="none" strokeLinecap="round" /><path d="M -26,6 Q -38,22 -26,34" stroke={skin} strokeWidth={6} fill="none" strokeLinecap="round" /></g>
         : <g>
           {fingers.map((f, i) => <path key={'o' + i} d={`M ${f.x},22 L ${f.x + f.a * 0.4},${22 + f.l}`} stroke={INK} strokeWidth={fw + 7} strokeLinecap="round" />)}
           <path d="M -30,6 Q -52,22 -42,40" stroke={INK} strokeWidth={fw + 8} strokeLinecap="round" fill="none" />
           {fingers.map((f, i) => <path key={'f' + i} d={`M ${f.x},22 L ${f.x + f.a * 0.4},${22 + f.l}`} stroke={skin} strokeWidth={fw} strokeLinecap="round" />)}
           <path d="M -30,6 Q -52,22 -42,40" stroke={skin} strokeWidth={fw + 1} strokeLinecap="round" fill="none" />
-          <rect x={-30} y={-6} width={60} height={46} rx={20} fill={skin} stroke={INK} strokeWidth={8} />
-          <rect x={-26} y={-2} width={52} height={20} rx={10} fill={skin} />
+          <ellipse cx={0} cy={17} rx={30} ry={25} fill={skin} stroke={INK} strokeWidth={8} />
+          <ellipse cx={0} cy={8} rx={25} ry={14} fill={skin} />
         </g>}
     </g>
   );
@@ -141,39 +142,35 @@ export const Body: React.FC<BodyProps> = ({fat = 0, muscle = 0, top = 'tee', top
     const t = (s === -1 ? P.armL : P.armR) ?? P.arm ?? [5, 233];
     const sh: V = [s * (sw - 8), NECK_Y + 50];
     const tgt: V = [sh[0] + s * t[0], sh[1] + t[1]];
-    const L1 = 122, L2 = 116, {el, wr} = ik(sh, tgt, L1, L2, P.elbowIn ? (-s as 1 | -1) : s);
+    const {el, wr} = ik(sh, tgt, 122, 116, P.elbowIn ? (-s as 1 | -1) : s);
     const kind = (s === -1 ? P.handL : P.handR) ?? P.hand ?? 'relaxed';
     const ang = Math.atan2(wr[1] - el[1], wr[0] - el[0]) * 180 / Math.PI;
-    const mid = (a: V, b: V, k: number): V => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
-    const bi = mid(sh, el, 0.5), bulge = armW * (0.5 + muscle * 0.34 + fat * 0.1);
-    const sleeve = top === 'tee' ? mid(sh, el, 0.42) : longSleeve ? wr : top === 'tank' ? sh : sh;
+    const bare = top === 'bare' || top === 'tank';
+    const geom = {pts: [sh, el, wr] as [V, V, V], w: [armW * 1.06, armW * 0.9, foreW * 0.84] as [number, number, number], bump: [{t: 0.26, amt: armW * (0.08 + muscle * 0.5 + fat * 0.14), sigma: 0.14}, {t: 0.72, amt: armW * (0.04 + muscle * 0.16), sigma: 0.16}]};
+    const bi = limbAt(geom.pts, 0.26);
     return (
       <g key={s}>
-        <Seg a={el} b={wr} w1={foreW} w2={foreW * 0.78} fill={skin} ink /><Seg a={sh} b={el} w1={armW} w2={armW * 0.86} fill={skin} ink />
-        {muscle > 0.2 && <ellipse cx={bi[0]} cy={bi[1]} rx={bulge} ry={bulge * 0.9} fill={INK} />}
-        <Seg a={el} b={wr} w1={foreW} w2={foreW * 0.78} fill={longSleeve ? fabric : skin} />
-        <Seg a={sh} b={el} w1={armW} w2={armW * 0.86} fill={top === 'bare' || top === 'tank' ? skin : fabric} />
-        {muscle > 0.2 && top !== 'tee' && top !== 'hoodie' && <ellipse cx={bi[0]} cy={bi[1]} rx={bulge - 5} ry={bulge * 0.9 - 5} fill={skin} />}
-        {muscle > 0.2 && top !== 'tee' && top !== 'hoodie' && <ellipse cx={bi[0] - s * 4} cy={bi[1] - 6} rx={bulge * 0.4} ry={bulge * 0.3} fill="#fff" opacity={0.22} />}
-        {top === 'tee' && <g><Seg a={sh} b={sleeve} w1={armW + 12} w2={armW + 8} fill={INK} /><Seg a={sh} b={sleeve} w1={armW + 2} w2={armW} fill={fabric} /><Seg a={sh} b={sleeve} w1={armW} w2={armW - 2} fill={shade(fabric, 1.12)} /></g>}
-        {longSleeve && <Seg a={mid(el, wr, 0.78)} b={wr} w1={foreW + 6} w2={foreW * 0.78 + 6} fill={shade(fabric, 0.85)} />}
-        <circle cx={sh[0]} cy={sh[1]} r={armW * 0.58} fill={top === 'bare' || top === 'tank' ? skin : fabric} />
+        <Limb {...geom} fill={skin} />
+        {top === 'tee' && <Limb {...geom} t1={0.4} extra={8} flat fill={fabric} stroke={8} />}
+        {longSleeve && <g><Limb {...geom} t1={0.92} extra={5} flat fill={fabric} stroke={8} /><Limb {...geom} t0={0.84} t1={0.92} extra={8} flat fill={shade(fabric, 0.8)} stroke={7} /></g>}
+        {muscle > 0.2 && bare && <ellipse cx={bi[0] - s * 4} cy={bi[1] - 8} rx={armW * 0.26} ry={armW * 0.17} fill="#fff" opacity={0.3} />}
+        <circle cx={sh[0]} cy={sh[1]} r={armW * 0.52 + 2} fill={bare ? skin : fabric} />
         <Hand p={wr} ang={ang} kind={kind} r={armW * 0.66 + 4} skin={skin} />
       </g>
     );
   };
-  const torso = `M ${-sw * 0.46},${NECK_Y + 4} Q 0,${NECK_Y - 16} ${sw * 0.46},${NECK_Y + 4} L ${sw},${NECK_Y + 40} C ${sw + 4},${NECK_Y + 110} ${sw * 0.9},${NECK_Y + 170} ${bw + belly},${NECK_Y + 246} C ${bw + belly + 16},${NECK_Y + 292} ${hw},${NECK_Y + 310} ${hw},${NECK_Y + TORSO_H} L ${-hw},${NECK_Y + TORSO_H} C ${-hw},${NECK_Y + 310} ${-bw - belly - 16},${NECK_Y + 292} ${-bw - belly},${NECK_Y + 246} C ${-sw * 0.9},${NECK_Y + 170} ${-sw - 4},${NECK_Y + 110} ${-sw},${NECK_Y + 40} Z`;
+  const torso = `M ${-sw * 0.46},${NECK_Y + 4} Q 0,${NECK_Y - 16} ${sw * 0.46},${NECK_Y + 4} Q ${sw * 0.92},${NECK_Y + 8} ${sw},${NECK_Y + 48} C ${sw + 6},${NECK_Y + 112} ${sw * 0.9},${NECK_Y + 170} ${bw + belly},${NECK_Y + 246} C ${bw + belly + 16},${NECK_Y + 292} ${hw},${NECK_Y + 306} ${hw},${NECK_Y + TORSO_H - 12} Q ${hw},${NECK_Y + TORSO_H + 4} ${hw - 22},${NECK_Y + TORSO_H + 4} L ${-hw + 22},${NECK_Y + TORSO_H + 4} Q ${-hw},${NECK_Y + TORSO_H + 4} ${-hw},${NECK_Y + TORSO_H - 12} C ${-hw},${NECK_Y + 306} ${-bw - belly - 16},${NECK_Y + 292} ${-bw - belly},${NECK_Y + 246} C ${-sw * 0.9},${NECK_Y + 170} ${-sw - 6},${NECK_Y + 112} ${-sw},${NECK_Y + 48} Q ${-sw * 0.92},${NECK_Y + 8} ${-sw * 0.46},${NECK_Y + 4} Z`;
   const leg = (s: 1 | -1) => {
     const t = (s === -1 ? P.footL : P.footR) ?? P.foot ?? [10, 0];
     const hip: V = [s * (hw * 0.5), NECK_Y + TORSO_H - 10], ank: V = [s * (hw * 0.5 + 12 + t[0]), -30 + t[1]];
     const {el: kn} = ik(hip, ank, 124, 124, s);
+    const geom = {pts: [hip, kn, ank] as [V, V, V], w: [legW * 1.04, calfW * 1.02, calfW * 0.6] as [number, number, number], bump: [{t: 0.3, amt: legW * (0.04 + muscle * 0.18 + fat * 0.1), sigma: 0.16}, {t: 0.72, amt: calfW * (0.08 + muscle * 0.28), sigma: 0.14}]};
     return (
       <g key={s}>
-        <Seg a={kn} b={ank} w1={calfW} w2={calfW * 0.62} fill={pants} ink /><Seg a={hip} b={kn} w1={legW} w2={calfW} fill={pants} ink />
-        <Seg a={kn} b={ank} w1={calfW} w2={calfW * 0.62} fill={pants} /><Seg a={hip} b={kn} w1={legW} w2={calfW} fill={pants} />
-        {shorts && <Seg a={hip} b={[hip[0] + (kn[0] - hip[0]) * 0.55, hip[1] + (kn[1] - hip[1]) * 0.55]} w1={legW + 6} w2={legW - 2} fill={shade(pants, 1.15)} />}
+        <Limb {...geom} fill={pants} />
+        {shorts && <Limb {...geom} t1={0.5} extra={6} flat fill={shade(pants, 1.18)} stroke={8} />}
         <g transform={`translate(${ank[0]} ${ank[1]}) rotate(${s * 8})`}>
-          <path d="M -34,28 Q -40,-6 -6,-14 Q 30,-18 44,16 Q 48,32 36,34 L -30,34 Z" fill={shoe} stroke={INK} strokeWidth={9} strokeLinejoin="round" />
+          <path d="M -36,30 Q -44,-8 -6,-16 Q 34,-22 48,14 Q 56,34 36,36 L -30,36 Q -38,36 -36,30 Z" fill={shoe} stroke={INK} strokeWidth={9} strokeLinejoin="round" />
           <path d="M -34,26 L 40,26" stroke="#c9ced8" strokeWidth={10} strokeLinecap="round" /><path d="M -2,-6 Q 12,-2 20,8" stroke={INK} strokeWidth={4} fill="none" opacity={0.5} strokeLinecap="round" />
           <path d="M -36,36 L 40,36" stroke={INK} strokeWidth={9} strokeLinecap="round" />
         </g>
@@ -183,7 +180,7 @@ export const Body: React.FC<BodyProps> = ({fat = 0, muscle = 0, top = 'tee', top
   return (
     <g transform={lean ? `rotate(${lean} 0 0)` : undefined}>
       {leg(-1)}{leg(1)}
-      <rect x={-34} y={NECK_Y - 40} width={68} height={80} fill={skin} stroke={INK} strokeWidth={9} /><path d={`M -26,${NECK_Y + 14} Q 0,${NECK_Y + 40} 26,${NECK_Y + 14}`} fill={SK_D} opacity={0.5} />
+      <rect x={-34} y={NECK_Y - 40} width={68} height={80} rx={26} fill={skin} stroke={INK} strokeWidth={9} /><path d={`M -26,${NECK_Y + 14} Q 0,${NECK_Y + 40} 26,${NECK_Y + 14}`} fill={SK_D} opacity={0.5} />
       {side(-1)}
       <path d={torso} fill={fabric} stroke={INK} strokeWidth={11} strokeLinejoin="round" />
       <clipPath id={`tc${top}${Math.round(fat * 10)}${Math.round(muscle * 10)}`}><path d={torso} /></clipPath>
