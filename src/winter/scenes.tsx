@@ -10,7 +10,7 @@ import {T, TE} from './timeline';
 // WINTER ARC scenes (first minute). All are plain SVG, drawn from the Hero / SideHero rigs. `t` is always the ABSOLUTE video time, so every beat can sit on T('a phrase').
 // ============================================================================================
 export const SAM = {top: 'tee' as const, topColor: '#e9962c'};
-export const JAKE = {top: 'hoodie' as const, topColor: '#6b4fc4'};
+export const JAKE = {top: 'hoodie' as const, topColor: '#6b4fc4', cast: 'colleague' as const};
 const hex = (c: string) => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)];
 const mix = (a: string, b: string, k: number) => { const x = hex(a), y = hex(b); return `rgb(${x.map((v, i) => Math.round(v + (y[i] - v) * k)).join(',')})`; };
 
@@ -49,7 +49,7 @@ export const RoomArt: React.FC<{t: number; dawn?: number}> = ({t, dawn = 0}) => 
 );
 
 // ---------------- a bed with a man in it (drawn on the left; the right one is mirrored) ----------------
-const lieHead = (extra: Partial<SidePose> = {}): SidePose => ({...SIDE.lie, head: -150, ...extra});
+const lieHead = (extra: Partial<SidePose> = {}): SidePose => ({...SIDE.lie, head: -66, turn: 0.15, ...extra});
 const BedMan: React.FC<{t: number; who: 'sam' | 'jake'; eyes: 'closed' | 'open'; phone?: boolean; jolt?: number; id: string; mood?: any; z?: boolean}> = ({t, who, eyes, phone, jolt = 0, id, mood = 'tired', z}) => {
   const cfg = who === 'sam' ? SAM : JAKE, blanket = who === 'sam' ? '#2f7a96' : '#5a3fb0';
   const pose = lieHead(phone ? {handN: [236, -214], handF: [220, -206], heldN: 'phone', handKindN: 'relaxed'} : {});
@@ -61,7 +61,7 @@ const BedMan: React.FC<{t: number; who: 'sam' | 'jake'; eyes: 'closed' | 'open';
       <rect x={100} y={778} width={660} height={52} rx={20} fill="#3d4180" stroke={INK} strokeWidth={7} />
       <ellipse cx={690} cy={752} rx={84} ry={34} fill="#e2e6ff" stroke={INK} strokeWidth={7} />
       <g transform={`translate(0 ${-up})`}>
-        <SideHero x={486} y={742} scale={0.78} id={id} mood={eyes === 'open' ? mood : 'tired'} blink={eyes === 'closed' ? 1 : 0} fat={0.5} pose={pose} {...cfg} />
+        <SideHero x={486} y={742} scale={0.78} t={t} id={id} mood={eyes === 'open' ? mood : 'tired'} blink={eyes === 'closed' ? 1 : 0} fat={0.5} pose={pose} {...cfg} />
       </g>
       <path d={`M 118,788 C 118,716 160,702 220,708 C 320,690 420,700 520,712 C 560,716 566,760 560,792 L 118,792 Z`} fill={blanket} stroke={INK} strokeWidth={8} strokeLinejoin="round" />
       <path d="M 140,730 C 220,722 320,716 440,726" stroke="#fff" strokeWidth={10} opacity={0.16} fill="none" strokeLinecap="round" />
@@ -101,8 +101,8 @@ export const Pill: React.FC<{x: number; y: number; text: string; c: string; o?: 
 export const TwoMen: React.FC<{t: number; sam?: Man; jake?: Man; dawn?: number; children?: React.ReactNode; bg?: boolean}> = ({t, sam = {}, jake = {}, dawn = 0, children, bg = true}) => (
   <Frame>
     {bg && <RoomArt t={t} dawn={dawn} />}
-    <Hero x={sam.x ?? 560} y={sam.y ?? 1040} scale={sam.scale ?? 1.02} id="fs" mood={sam.mood ?? 'tired'} fat={sam.fat ?? 0.5} muscle={sam.muscle ?? 0} top={sam.top ?? 'hoodie'} topColor={SAM.topColor} pose={sam.pose ?? 'idle'} />
-    <Hero x={jake.x ?? 1360} y={jake.y ?? 1040} scale={jake.scale ?? 1.02} id="fj" mood={jake.mood ?? 'tired'} fat={jake.fat ?? 0.5} muscle={jake.muscle ?? 0} top={jake.top ?? 'hoodie'} topColor={JAKE.topColor} pose={jake.pose ?? 'idle'} />
+    <Hero t={t} x={sam.x ?? 560} y={sam.y ?? 1040} scale={sam.scale ?? 1.02} id="fs" mood={sam.mood ?? 'tired'} fat={sam.fat ?? 0.5} muscle={sam.muscle ?? 0} top={sam.top ?? 'hoodie'} topColor={SAM.topColor} pose={sam.pose ?? 'idle'} />
+    <Hero t={t} cast="colleague" x={jake.x ?? 1360} y={jake.y ?? 1040} scale={jake.scale ?? 1.02} id="fj" mood={jake.mood ?? 'tired'} fat={jake.fat ?? 0.5} muscle={jake.muscle ?? 0} top={jake.top ?? 'hoodie'} topColor={JAKE.topColor} pose={jake.pose ?? 'idle'} />
     {children}
   </Frame>
 );

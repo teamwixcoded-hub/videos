@@ -10,7 +10,7 @@ export const WinterSheet: React.FC = () => (
   <AbsoluteFill style={{background: 'radial-gradient(ellipse at 30% 30%, #1b2140, #090b16)'}}>
     <svg width={1920} height={1080} viewBox="0 0 1920 1080">
       {MOODS.map((m, i) => (
-        <g key={m} transform={`translate(${160 + i * 320} 135) scale(0.55)`}>
+        <g key={m} transform={`translate(${160 + i * 320} 135) scale(0.74)`}>
           <Head mood={m} id={'m' + i} look={m === 'determined' ? [0.3, -0.1] : [0, 0]} />
         </g>
       ))}
