@@ -9,10 +9,11 @@ import {FPS, T, TE, VOICE_FILE, END, speakOpen} from './timeline';
 import {Room, TwoMen, Pill, DayCard, PromiseCards, MarchCal, Cards, PhoneTrend, Others, Quiet, TrainShot, SleepShot, FoodShot, ReadShot, Counter90, SpringDoor, Frame, RoomArt, Txt} from './scenes';
 import {Beats, Beat, RingG, BedSolo, Thermo, SnoozeShot, GetUp, GymBG, GymWalk, LostShot, StrainShot, Timer20, SoreMorning, PhoneAcross, ReadPages, LightsOut} from './scenes2';
 import {SideHero, SIDE} from './SideHero';
+import {SHOTS4, POPS4, BUBBLES4, CUES4} from './act4';
 import {DIGI} from '../same2d/theme';
 
 // ============================================================================================
-// WINTER ARC, built so far: 0 to 165 s ("December 1st" to "...the wrecked body becomes a habit."). Every shot sits on the narration with T('phrase').
+// WINTER ARC, built so far: 0 to 272 s ("December 1st" to "...the wrecked body becomes a habit."). Every shot sits on the narration with T('phrase').
 // The narrator's words are not lip-synced; the men's own lines are (speakOpen): "This time, I'll change.", "Five more minutes.", "I'm doing this."
 // ============================================================================================
 export const WINTER_FRAMES = Math.round(END * FPS);
@@ -71,7 +72,7 @@ const B_NIGHT: Beat[] = [
 ];
 const BEAT_SETS = [B_VOTE, B_DEC, B_WEEK, B_QUIT, B_PROOF, B_EASY, B_NIGHT];
 
-const SHOTS: Shot[] = [
+const SHOTS1: Shot[] = [
   {at: 0, cam: [700, 500, 1.1], node: (t) => <DayCard t={t} />},
   {at: T('same cold'), cam: [960, 760, 1.3], node: (t) => <Room t={t} zzz />},
   {at: T('same dark'), node: (t) => <Frame><g transform="translate(-1344 -295) scale(2.4)"><RoomArt t={t} /></g></Frame>},
@@ -149,8 +150,9 @@ const SHOTS: Shot[] = [
   {at: T('and turns'), cam: [960, 700, 1.1], node: (t) => <LightsOut t={t} />},
   {at: T('hes not asleep'), cam: [960, 540, 1.05], node: (t) => <Beats t={t} beats={B_NIGHT} glow="#3ddc84" />},
 ];
+const SHOTS: Shot[] = [...SHOTS1, ...SHOTS4];
 
-const POPS: TW[] = [
+const POPS1: TW[] = [
   {at: T('same cold'), dur: 1.5, text: 'SAME COLD ROOM.', accent: 1, mode: 'pop'},
   {at: T('same alarm'), dur: 1.3, text: 'SAME ALARM.', accent: 1, mode: 'pop'},
   {at: T('winter arc'), dur: 1.7, text: 'THE WINTER ARC', accent: 1, mode: 'title'},
@@ -163,14 +165,17 @@ const POPS: TW[] = [
   {at: T('new year new me'), dur: 1.9, text: 'NEW YEAR. NEW ME.', accent: 2, mode: 'pop'},
   {at: T('sore'), dur: 1.9, text: 'SORE. SLOW.', accent: 1, mode: 'pop'},
 ];
-const BUBBLES = [
+const POPS: TW[] = [...POPS1, ...POPS4];
+const BUBBLES1 = [
   {from: T('this time'), to: TE('change') + 0.5, text: "This time, I'll change.", x: 560, y: 130},
   {from: T('im doing'), to: T('im doing') + 1.7, text: "I'M DOING THIS.", x: 470, y: 520},
   {from: T('im doing') + 0.12, to: T('im doing') + 1.8, text: "I'M DOING THIS.", x: 1130, y: 520},
   {from: T('five more minutes') - 0.1, to: TE('five more minutes') + 0.6, text: 'Five more minutes.', x: 520, y: 430},
 ];
+const BUBBLES = [...BUBBLES1, ...BUBBLES4];
 
 const CUES: Cue3[] = [
+  ...CUES4,
   ...SHOTS.slice(1).map((s): Cue3 => ({file: 'whoosh_soft', at: s.at - 0.03, vol: 0.16})),
   {file: 'clock_tick', at: 0.2, dur: 3, vol: 0.14, loop: true},
   {file: 'alarm_beep', at: T('alarm'), dur: 1.1, vol: 0.2}, {file: 'alarm_beep', at: T('the alarm') + 0.1, dur: 1.5, vol: 0.26},
