@@ -10,7 +10,7 @@ import {Limb, limbAt, smoothClosed} from './limb';
 // ============================================================================================
 export const INK = '#1b1a3a';
 export type Mood = 'happy' | 'sad' | 'neutral' | 'tired' | 'determined' | 'shock';
-export type HeadProps = {mood?: Mood; skin?: string; hair?: string; look?: [number, number]; blink?: number; id?: string; turn?: number; kind?: 'same' | 'bubble' | 'adult'; t?: number; cast?: Look};   // cast = which person of the Same Man family (hair): 'man' is Sam, 'colleague' is Jake
+export type HeadProps = {mood?: Mood; skin?: string; hair?: string; look?: [number, number]; blink?: number; id?: string; turn?: number; kind?: 'same' | 'bubble' | 'adult'; t?: number; cast?: Look; open?: number};   // cast = which person of the Same Man family (hair): 'man' is Sam, 'colleague' is Jake
 const SK = '#f1eefb', SK_D = '#c9bfe3';   // default skin = the glossy pale bubble white; the adult head passes its own warm skin
 // the head is a face-and-jaw shape, not a ball: about 28 years old (cheekbones, a square chin, small eyes, a nose, ears, a little stubble, a short cut)
 const HEAD_D = 'M -176,-56 C -184,-168 -100,-208 0,-208 C 100,-208 184,-168 176,-56 C 174,44 150,150 92,198 Q 0,238 -92,198 C -150,150 -174,44 -176,-56 Z';
@@ -92,7 +92,7 @@ export const Head: React.FC<HeadProps> = ({kind = 'same', ...p}) => {
   if (kind === 'adult') return <AdultHead {...p} />;
   if (kind === 'bubble') return <BubbleHead {...p} />;
   const f = FACE[p.mood ?? 'neutral'];
-  return <SameHead face={{...f, lids: Math.max(f.lids, p.blink ?? 0), gaze: p.look ?? [0, 0]}} turn={p.turn ?? 0} t={p.t ?? 0} seed={seedOf(p.id)} idle={p.t ? 1 : 0} look={p.cast ?? 'man'} />;
+  return <SameHead face={{...f, open: p.open ?? f.open, lids: Math.max(f.lids, p.blink ?? 0), gaze: p.look ?? [0, 0]}} turn={p.turn ?? 0} t={p.t ?? 0} seed={seedOf(p.id)} idle={p.t ? 1 : 0} look={p.cast ?? 'man'} />;
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -234,9 +234,9 @@ export const Body: React.FC<BodyProps> = ({fat = 0, muscle = 0, top = 'tee', top
 };
 
 export type HeroProps = BodyProps & HeadProps & {x?: number; y?: number; scale?: number; flip?: boolean; headScale?: number; slump?: number};
-export const Hero: React.FC<HeroProps> = ({x = 0, y = 0, scale = 1, flip, headScale, slump = 0, mood, skin, hair, look, blink, id, turn, kind, t, cast, ...b}) => (
+export const Hero: React.FC<HeroProps> = ({x = 0, y = 0, scale = 1, flip, headScale, slump = 0, mood, skin, hair, look, blink, id, turn, kind, t, cast, open, ...b}) => (
   <g transform={`translate(${x} ${y}) scale(${flip ? -scale : scale} ${scale})`}>
     <Body skin={skin} {...b} />
-    <g transform={`translate(${slump * 8} ${NECK_Y - 14 - chinOf(kind) * (headScale ?? defaultHeadScale(kind)) + slump * 22}) scale(${headScale ?? defaultHeadScale(kind)}) rotate(${slump * 7})`}><Head mood={mood} skin={skin} hair={hair} look={look} blink={blink} id={id} turn={turn} kind={kind} t={t} cast={cast} /></g>
+    <g transform={`translate(${slump * 8} ${NECK_Y - 14 - chinOf(kind) * (headScale ?? defaultHeadScale(kind)) + slump * 22}) scale(${headScale ?? defaultHeadScale(kind)}) rotate(${slump * 7})`}><Head mood={mood} skin={skin} hair={hair} look={look} blink={blink} id={id} turn={turn} kind={kind} t={t} cast={cast} open={open} /></g>
   </g>
 );

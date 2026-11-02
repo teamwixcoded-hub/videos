@@ -17,7 +17,7 @@ const mix = (a: string, b: string, k: number) => { const x = hex(a), y = hex(b);
 export const Frame: React.FC<{children: React.ReactNode; bg?: string}> = ({children, bg = '#0b0e22'}) => (
   <div style={{position: 'absolute', inset: 0, background: bg, overflow: 'hidden'}}><svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{position: 'absolute', inset: 0}}>{children}</svg></div>
 );
-const Txt: React.FC<{x: number; y: number; s: number; c?: string; o?: number; w?: number; anchor?: 'middle' | 'start'; font?: string; children: React.ReactNode; ls?: number}> = ({x, y, s, c = '#fff', o = 1, anchor = 'middle', font = MONT, children, ls = 0}) => (
+export const Txt: React.FC<{x: number; y: number; s: number; c?: string; o?: number; w?: number; anchor?: 'middle' | 'start'; font?: string; children: React.ReactNode; ls?: number}> = ({x, y, s, c = '#fff', o = 1, anchor = 'middle', font = MONT, children, ls = 0}) => (
   <text x={x} y={y} textAnchor={anchor} fontFamily={font} fontWeight={800} fontSize={s} fill={c} opacity={o} letterSpacing={ls} stroke={INK} strokeWidth={s * 0.1} paintOrder="stroke" strokeLinejoin="round">{children}</text>
 );
 
@@ -49,10 +49,10 @@ export const RoomArt: React.FC<{t: number; dawn?: number}> = ({t, dawn = 0}) => 
 );
 
 // ---------------- a bed with a man in it (drawn on the left; the right one is mirrored) ----------------
-const lieHead = (extra: Partial<SidePose> = {}): SidePose => ({...SIDE.lie, head: -66, turn: 0.15, ...extra});
-const BedMan: React.FC<{t: number; who: 'sam' | 'jake'; eyes: 'closed' | 'open'; phone?: boolean; jolt?: number; id: string; mood?: any; z?: boolean}> = ({t, who, eyes, phone, jolt = 0, id, mood = 'tired', z}) => {
+export const lieHead = (extra: Partial<SidePose> = {}): SidePose => ({...SIDE.lie, head: -66, turn: 0.15, ...extra});
+export const BedMan: React.FC<{t: number; who: 'sam' | 'jake'; eyes: 'closed' | 'open'; phone?: boolean; jolt?: number; id: string; mood?: any; z?: boolean; open?: number}> = ({t, who, eyes, phone, jolt = 0, id, mood = 'tired', z, open}) => {
   const cfg = who === 'sam' ? SAM : JAKE, blanket = who === 'sam' ? '#2f7a96' : '#5a3fb0';
-  const pose = lieHead(phone ? {handN: [236, -214], handF: [220, -206], heldN: 'phone', handKindN: 'relaxed'} : {});
+  const pose = lieHead(phone ? {handN: [70, -196], handF: [52, -186], heldN: 'phone', handKindN: 'relaxed'} : {});
   const up = jolt * 10;
   return (
     <g>
@@ -61,7 +61,7 @@ const BedMan: React.FC<{t: number; who: 'sam' | 'jake'; eyes: 'closed' | 'open';
       <rect x={100} y={778} width={660} height={52} rx={20} fill="#3d4180" stroke={INK} strokeWidth={7} />
       <ellipse cx={690} cy={752} rx={84} ry={34} fill="#e2e6ff" stroke={INK} strokeWidth={7} />
       <g transform={`translate(0 ${-up})`}>
-        <SideHero x={486} y={742} scale={0.78} t={t} id={id} mood={eyes === 'open' ? mood : 'tired'} blink={eyes === 'closed' ? 1 : 0} fat={0.5} pose={pose} {...cfg} />
+        <SideHero x={486} y={742} scale={0.78} t={t} open={open} cast={who === 'jake' ? 'colleague' : undefined} id={id} mood={eyes === 'open' ? mood : 'tired'} blink={eyes === 'closed' ? 1 : 0} fat={0.5} pose={pose} {...cfg} />
       </g>
       <path d={`M 118,788 C 118,716 160,702 220,708 C 320,690 420,700 520,712 C 560,716 566,760 560,792 L 118,792 Z`} fill={blanket} stroke={INK} strokeWidth={8} strokeLinejoin="round" />
       <path d="M 140,730 C 220,722 320,716 440,726" stroke="#fff" strokeWidth={10} opacity={0.16} fill="none" strokeLinecap="round" />
@@ -71,7 +71,7 @@ const BedMan: React.FC<{t: number; who: 'sam' | 'jake'; eyes: 'closed' | 'open';
     </g>
   );
 };
-const Clock: React.FC<{t: number; ring: number; label?: string}> = ({t, ring, label = '6:00'}) => {
+export const Clock: React.FC<{t: number; ring: number; label?: string}> = ({t, ring, label = '6:00'}) => {
   const sh = ring * Math.sin(t * 70) * 4;
   return (
     <g transform={`translate(${960 + sh} 702) rotate(${ring * Math.sin(t * 60) * 3})`}>
@@ -84,40 +84,40 @@ const Clock: React.FC<{t: number; ring: number; label?: string}> = ({t, ring, la
     </g>
   );
 };
-export const Room: React.FC<{t: number; dawn?: number; sam?: 'closed' | 'open'; jake?: 'closed' | 'open'; ring?: number; phones?: boolean; jolt?: number; zzz?: boolean; mood?: any}> = ({t, dawn = 0, sam = 'closed', jake = 'closed', ring = 0, phones, jolt = 0, zzz, mood}) => (
+export const Room: React.FC<{t: number; dawn?: number; sam?: 'closed' | 'open'; jake?: 'closed' | 'open'; ring?: number; phones?: boolean; jolt?: number; zzz?: boolean; mood?: any; samOpen?: number; jakeOpen?: number}> = ({t, dawn = 0, sam = 'closed', jake = 'closed', ring = 0, phones, jolt = 0, zzz, mood, samOpen, jakeOpen}) => (
   <Frame>
     <RoomArt t={t} dawn={dawn} />
     <Clock t={t} ring={ring} />
-    <BedMan t={t} who="sam" eyes={sam} phone={phones} jolt={jolt} id="bs" mood={mood} z={zzz} />
-    <g transform="translate(1920 0) scale(-1 1)"><BedMan t={t} who="jake" eyes={jake} phone={phones} jolt={jolt} id="bj" mood={mood} z={zzz} /></g>
+    <BedMan t={t} who="sam" eyes={sam} phone={phones} jolt={jolt} id="bs" mood={mood} z={zzz} open={samOpen} />
+    <g transform="translate(1920 0) scale(-1 1)"><BedMan t={t} who="jake" eyes={jake} phone={phones} jolt={jolt} id="bj" mood={mood} z={zzz} open={jakeOpen} /></g>
   </Frame>
 );
 
 // ---------------- the two men standing, front view ----------------
-export type Man = {fat?: number; muscle?: number; top?: 'tee' | 'hoodie' | 'tank' | 'bare'; mood?: any; pose?: any; y?: number; x?: number; scale?: number};
+export type Man = {fat?: number; muscle?: number; top?: 'tee' | 'hoodie' | 'tank' | 'bare'; mood?: any; pose?: any; y?: number; x?: number; scale?: number; open?: number};
 export const Pill: React.FC<{x: number; y: number; text: string; c: string; o?: number}> = ({x, y, text, c, o = 1}) => (
   <g opacity={o} transform={`translate(${x} ${y - 8 * (1 - o)})`}><rect x={-96} y={-34} width={192} height={66} rx={33} fill={c} stroke={INK} strokeWidth={7} /><Txt x={0} y={14} s={38} ls={3}>{text}</Txt></g>
 );
 export const TwoMen: React.FC<{t: number; sam?: Man; jake?: Man; dawn?: number; children?: React.ReactNode; bg?: boolean}> = ({t, sam = {}, jake = {}, dawn = 0, children, bg = true}) => (
   <Frame>
     {bg && <RoomArt t={t} dawn={dawn} />}
-    <Hero t={t} x={sam.x ?? 560} y={sam.y ?? 1040} scale={sam.scale ?? 1.02} id="fs" mood={sam.mood ?? 'tired'} fat={sam.fat ?? 0.5} muscle={sam.muscle ?? 0} top={sam.top ?? 'hoodie'} topColor={SAM.topColor} pose={sam.pose ?? 'idle'} />
-    <Hero t={t} cast="colleague" x={jake.x ?? 1360} y={jake.y ?? 1040} scale={jake.scale ?? 1.02} id="fj" mood={jake.mood ?? 'tired'} fat={jake.fat ?? 0.5} muscle={jake.muscle ?? 0} top={jake.top ?? 'hoodie'} topColor={JAKE.topColor} pose={jake.pose ?? 'idle'} />
+    <Hero t={t} open={sam.open} x={sam.x ?? 560} y={sam.y ?? 1040} scale={sam.scale ?? 1.02} id="fs" mood={sam.mood ?? 'tired'} fat={sam.fat ?? 0.5} muscle={sam.muscle ?? 0} top={sam.top ?? 'hoodie'} topColor={SAM.topColor} pose={sam.pose ?? 'idle'} />
+    <Hero t={t} cast="colleague" open={jake.open} x={jake.x ?? 1360} y={jake.y ?? 1040} scale={jake.scale ?? 1.02} id="fj" mood={jake.mood ?? 'tired'} fat={jake.fat ?? 0.5} muscle={jake.muscle ?? 0} top={jake.top ?? 'hoodie'} topColor={JAKE.topColor} pose={jake.pose ?? 'idle'} />
     {children}
   </Frame>
 );
 
 // ---------------- inserts ----------------
-export const DayCard: React.FC<{t: number}> = ({t}) => {
+export const DayCard: React.FC<{t: number; month?: string; day?: string; clock?: boolean}> = ({t, month = 'DECEMBER', day = '1', clock = true}) => {
   const k = ramp(t, 0.1, 0.8);
   return (
     <InsertBG glow="#6fa0ff">
       <g transform={`translate(700 ${540 + (1 - k) * 80}) rotate(${-3 + (1 - k) * 8})`} opacity={k}>
         <rect x={-300} y={-330} width={600} height={660} rx={34} fill="#f4f6ff" stroke={INK} strokeWidth={10} /><path d="M -300,-330 L 300,-330 L 300,-190 L -300,-190 Z" fill="#3b6fd8" stroke={INK} strokeWidth={10} strokeLinejoin="round" />
-        <Txt x={0} y={-228} s={78} ls={8}>DECEMBER</Txt><text x={0} y={150} textAnchor="middle" fontFamily={MONT} fontWeight={800} fontSize={420} fill="#1b1a3a">1</text>
+        <Txt x={0} y={-228} s={78} ls={8}>{month}</Txt><text x={0} y={150} textAnchor="middle" fontFamily={MONT} fontWeight={800} fontSize={420} fill="#1b1a3a">{day}</text>
         {[-200, 200].map((x) => <rect key={x} x={x - 12} y={-366} width={24} height={64} rx={10} fill="#c9ced8" stroke={INK} strokeWidth={6} />)}
       </g>
-      <g transform="translate(1340 560)" opacity={ramp(t, 0.8, 1.4)}><g transform={`rotate(${Math.sin(t * 40) * (t > 2 ? 3 : 0)})`}>
+      <g transform="translate(1340 560)" opacity={clock ? ramp(t, 0.8, 1.4) : 0}><g transform={`rotate(${Math.sin(t * 40) * (t > 2 ? 3 : 0)})`}>
         <circle r={190} fill="#e8eafb" stroke={INK} strokeWidth={10} /><circle r={160} fill="#fff" stroke="#c9ced8" strokeWidth={5} />
         {Array.from({length: 12}, (_, i) => <path key={i} d={`M 0,-150 L 0,-132`} stroke={INK} strokeWidth={i % 3 ? 5 : 9} transform={`rotate(${i * 30})`} />)}
         <path d="M 0,0 L 0,-100" stroke={INK} strokeWidth={12} strokeLinecap="round" transform="rotate(180)" /><path d="M 0,0 L 0,-120" stroke="#ff4a4a" strokeWidth={8} strokeLinecap="round" />
@@ -127,7 +127,7 @@ export const DayCard: React.FC<{t: number}> = ({t}) => {
   );
 };
 export const PromiseCards: React.FC<{t: number}> = ({t}) => {
-  const t0 = T('every'), step = 0.5;
+  const t0 = T('every'), step = 0.36;
   return (
     <InsertBG glow="#9b7be4">
       {Array.from({length: 5}, (_, i) => {
