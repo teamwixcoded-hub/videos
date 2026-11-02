@@ -40,9 +40,9 @@ export const RingG: React.FC<{t: number; a: number; b: number; total: number; un
 };
 
 // ---------------- one man in his bed, big (the left bed, or mirrored for Jake) ----------------
-export const BedSolo: React.FC<{t: number; who?: 'sam' | 'jake'; eyes?: 'open' | 'closed'; phone?: boolean; mood?: any; open?: number; z?: boolean; lamp?: boolean; dark?: number; children?: React.ReactNode}> = ({t, who = 'sam', eyes = 'open', phone, mood = 'tired', open, z, lamp, dark = 0, children}) => (
+export const BedSolo: React.FC<{t: number; who?: 'sam' | 'jake'; eyes?: 'open' | 'closed'; phone?: boolean; mood?: any; open?: number; z?: boolean; lamp?: boolean; dark?: number; dawn?: number; children?: React.ReactNode}> = ({t, who = 'sam', eyes = 'open', phone, mood = 'tired', open, z, lamp, dark = 0, dawn = 0, children}) => (
   <Frame>
-    <RoomArt t={t} dawn={0} />
+    <RoomArt t={t} dawn={dawn} />
     {lamp && <g><ellipse cx={1600} cy={560} rx={380} ry={300} fill="#ffb25a" opacity={0.22} style={{filter: 'blur(30px)'}} /><path d="M 1560,470 L 1640,470 L 1670,540 L 1530,540 Z" fill="#ffd9a0" stroke={INK} strokeWidth={7} /><rect x={1590} y={540} width={20} height={90} fill="#3a2b54" stroke={INK} strokeWidth={6} /><rect x={1540} y={628} width={120} height={20} rx={8} fill="#3a2b54" stroke={INK} strokeWidth={6} /></g>}
     <g transform={who === 'sam' ? 'translate(300 -500) scale(1.5)' : 'translate(1620 -500) scale(-1.5 1.5)'}><BedMan t={t} who={who} eyes={eyes} phone={phone} id={'bs' + who} mood={mood} open={open} z={z} /></g>
     <rect width={1920} height={1080} fill="#02030a" opacity={dark} />

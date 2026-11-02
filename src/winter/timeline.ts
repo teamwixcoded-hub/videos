@@ -4,7 +4,7 @@ import {WORDS_W} from './data/words';
 // so a new recording only means a new word list. Video time = recording time.
 export const FPS = 30;
 export const VOICE_FILE: string | null = 'audio/winter-arc.mp3';   // the voice-over (10:12); the video plays the first 68 s of it
-export const END = 272.0;                         // how much of the video is built so far (the cut ends just before "The fitness app Strava...")
+export const END = 398.0;                         // how much of the video is built so far (the cut ends just before "Somewhere in February...")
 const WORDS = WORDS_W.map(([w, a, b]) => ({w, a, b}));
 const norm = (p: string) => p.toLowerCase().split(/\s+/).map((x) => x.replace(/[^a-z0-9]/g, '')).filter(Boolean);
 const find = (phrase: string, nth: number): number => {
