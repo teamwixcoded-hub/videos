@@ -34,6 +34,7 @@ import {Same3D, SAME3D_FRAMES} from './three/Same3D';
 import {Same2D, SAME2D_TOTAL} from './same2d/Same2D';
 import {Same7, SAME7_FRAMES} from './same7/Same7';
 import {ThumbSame7A, ThumbFathersA, ThumbFathersB} from './thumbs/Thumbs';
+import {ThumbVecA, ThumbVecB, ThumbVecC} from './thumbs/ThumbsVector';
 import {TwoFathers, FATHERS_FRAMES} from './fathers/Fathers';
 import {StickSheet} from './same/StickSheet';
 import {FrameSeqTest} from './same/FrameSeqTest';
@@ -60,6 +61,9 @@ export const Root: React.FC = () => {
       <Composition id="ThumbSame7A" component={ThumbSame7A} durationInFrames={1} fps={30} width={1280} height={720} />
       <Composition id="ThumbFathersA" component={ThumbFathersA} durationInFrames={1} fps={30} width={1280} height={720} />
 
+      <Composition id="ThumbVecA" component={ThumbVecA} durationInFrames={1} fps={30} width={1920} height={1080} />
+      <Composition id="ThumbVecB" component={ThumbVecB} durationInFrames={1} fps={30} width={1920} height={1080} />
+      <Composition id="ThumbVecC" component={ThumbVecC} durationInFrames={1} fps={30} width={1920} height={1080} />
       <Composition id="ThumbFathersB" component={ThumbFathersB} durationInFrames={1} fps={30} width={1280} height={720} />
       <Composition id="TwoFathers" component={TwoFathers} durationInFrames={FATHERS_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="Same3D" component={Same3D} durationInFrames={SAME3D_FRAMES} fps={FPS} width={W} height={H} />
