@@ -9,54 +9,65 @@ export const INK = '#16121c';
 export type Mood = 'happy' | 'sad' | 'neutral' | 'tired' | 'determined' | 'shock';
 export type HeadProps = {mood?: Mood; skin?: string; hair?: string; look?: [number, number]; blink?: number; id?: string; turn?: number};
 const SK = '#fbe3a6', SK_D = '#e8c77d';
+// the head is a face-and-jaw shape, not a ball: about 28 years old (cheekbones, a square chin, small eyes, a nose, ears, a little stubble, a short cut)
+const HEAD_D = 'M -176,-56 C -184,-168 -100,-208 0,-208 C 100,-208 184,-168 176,-56 C 174,44 150,150 92,198 Q 0,238 -92,198 C -150,150 -174,44 -176,-56 Z';
 
 const Eye: React.FC<{x: number; mood: Mood; look: [number, number]; blink: number; skin: string; id: string; side: 1 | -1}> = ({x, mood, look, blink, skin, id, side}) => {
-  const lid = {happy: 0.0, neutral: 0.12, determined: 0.2, shock: -0.1, tired: 0.5, sad: 0.46}[mood] + blink * 0.5;
-  const ry = 66, rx = 60, cy = 8, ix = x + look[0] * 14, iy = cy + look[1] * 14;
+  const lid = {happy: 0.0, neutral: 0.1, determined: 0.2, shock: -0.1, tired: 0.5, sad: 0.44}[mood] + blink * 0.5;
+  const ry = 38, rx = 46, cy = 0, ix = x + look[0] * 8, iy = cy + look[1] * 8;
   const lidY = cy - ry + ry * 2 * Math.min(0.95, Math.max(0, lid));
-  const tiltY = mood === 'sad' ? side * 8 : 0;
+  const tiltY = mood === 'sad' ? side * 6 : 0;
   return (
     <g>
       <defs>
-        <radialGradient id={`ir${id}${side}`} cx="50%" cy="50%" r="50%"><stop offset="0" stopColor="#2a1608" /><stop offset="0.38" stopColor="#6b4420" /><stop offset="0.8" stopColor="#a67a3e" /><stop offset="1" stopColor="#4a2e12" /></radialGradient>
+        <radialGradient id={`ir${id}${side}`} cx="50%" cy="50%" r="50%"><stop offset="0" stopColor="#2a1608" /><stop offset="0.4" stopColor="#6b4420" /><stop offset="0.82" stopColor="#a67a3e" /><stop offset="1" stopColor="#4a2e12" /></radialGradient>
         <clipPath id={`ec${id}${side}`}><ellipse cx={x} cy={cy} rx={rx} ry={ry} /></clipPath>
       </defs>
-      <ellipse cx={x} cy={cy} rx={rx} ry={ry} fill="#fff" stroke={INK} strokeWidth={9} />
+      <ellipse cx={x} cy={cy} rx={rx} ry={ry} fill="#fff" stroke={INK} strokeWidth={8} />
       <g clipPath={`url(#ec${id}${side})`}>
-        <circle cx={ix} cy={iy} r={38} fill={`url(#ir${id}${side})`} /><circle cx={ix} cy={iy} r={38} fill="none" stroke={INK} strokeWidth={4} />
-        <circle cx={ix} cy={iy} r={17} fill="#0a0610" />
-        <circle cx={ix - 13} cy={iy - 14} r={9} fill="#fff" opacity={0.95} /><circle cx={ix + 14} cy={iy + 13} r={4.5} fill="#fff" opacity={0.85} />
-        {lid > 0 && <path d={`M ${x - rx - 6},${cy - ry - 8} L ${x + rx + 6},${cy - ry - 8} L ${x + rx + 6},${lidY - tiltY} Q ${x},${lidY + 10} ${x - rx - 6},${lidY + tiltY} Z`} fill={skin} stroke={INK} strokeWidth={6} />}
+        <circle cx={ix} cy={iy} r={25} fill={`url(#ir${id}${side})`} /><circle cx={ix} cy={iy} r={25} fill="none" stroke={INK} strokeWidth={3} />
+        <circle cx={ix} cy={iy} r={11} fill="#0a0610" />
+        <circle cx={ix - 8} cy={iy - 9} r={6} fill="#fff" opacity={0.95} /><circle cx={ix + 9} cy={iy + 8} r={3} fill="#fff" opacity={0.85} />
+        {lid > 0 && <path d={`M ${x - rx - 6},${cy - ry - 8} L ${x + rx + 6},${cy - ry - 8} L ${x + rx + 6},${lidY - tiltY} Q ${x},${lidY + 8} ${x - rx - 6},${lidY + tiltY} Z`} fill={skin} stroke={INK} strokeWidth={5} />}
       </g>
-      <ellipse cx={x} cy={cy} rx={rx} ry={ry} fill="none" stroke={INK} strokeWidth={9} />
-      {(mood === 'tired' || mood === 'sad') && <path d={`M ${x - 52},${cy + ry - 4} Q ${x},${cy + ry + 26} ${x + 52},${cy + ry - 4}`} stroke="#8a6a9c" strokeWidth={9} fill="none" strokeLinecap="round" opacity={0.75} />}
+      <ellipse cx={x} cy={cy} rx={rx} ry={ry} fill="none" stroke={INK} strokeWidth={8} />
+      {(mood === 'tired' || mood === 'sad') && <path d={`M ${x - 40},${cy + ry - 2} Q ${x},${cy + ry + 20} ${x + 40},${cy + ry - 2}`} stroke="#8a6a9c" strokeWidth={8} fill="none" strokeLinecap="round" opacity={0.75} />}
     </g>
   );
 };
 
-export const Head: React.FC<HeadProps> = ({mood = 'neutral', skin = SK, hair = '#6b3f1e', look = [0, 0], blink = 0, id = 'h', turn = 0}) => {
+export const Head: React.FC<HeadProps> = ({mood = 'neutral', skin = SK, hair = '#4a2a14', look = [0, 0], blink = 0, id = 'h', turn = 0}) => {
   const smile = {happy: 1, neutral: 0.15, determined: 0.05, shock: 0, tired: -0.1, sad: -0.4}[mood];
-  const browY = {happy: -92, neutral: -86, determined: -80, shock: -112, tired: -84, sad: -88}[mood];
-  const tilt = {happy: -4, neutral: 0, determined: 10, shock: -6, tired: -8, sad: -14}[mood];
+  const browY = {happy: -62, neutral: -56, determined: -50, shock: -80, tired: -54, sad: -58}[mood];
+  const tilt = {happy: -3, neutral: 0, determined: 9, shock: -5, tired: -7, sad: -12}[mood];
+  const side = Math.abs(turn) > 0.4, sg = Math.sign(turn) || 1;
   return (
     <g>
-      <defs><radialGradient id={`sk${id}`} cx="38%" cy="30%" r="80%"><stop offset="0" stopColor="#fff" stopOpacity="0.38" /><stop offset="0.45" stopColor="#fff" stopOpacity="0" /><stop offset="1" stopColor="#000" stopOpacity="0.16" /></radialGradient></defs>
-      <circle cx={0} cy={0} r={200} fill={skin} stroke={INK} strokeWidth={11} /><circle cx={0} cy={0} r={200} fill={`url(#sk${id})`} />
-      <ellipse cx={-120} cy={-40} rx={22} ry={36} fill="#fff" opacity={0.2} transform="rotate(20 -120 -40)" />
-      <path d="M -150,120 Q 0,230 150,120 Q 0,196 -150,120 Z" fill={SK_D} opacity={0.35} />
-      <path d="M -196,-40 C -200,-140 -120,-205 -10,-200 C 90,-196 190,-150 198,-30 C 150,-98 70,-120 -20,-112 C -100,-104 -170,-80 -196,-40 Z" fill={hair} stroke={INK} strokeWidth={10} strokeLinejoin="round" />
-      <path d="M -150,-130 C -100,-168 -20,-176 50,-166" stroke="#a5683a" strokeWidth={9} fill="none" strokeLinecap="round" opacity={0.8} />
-      <clipPath id={`hc${id}`}><circle cx={0} cy={0} r={198} /></clipPath>
-      <g clipPath={`url(#hc${id})`}><g transform={`translate(${turn * 96} ${Math.abs(turn) * 6}) scale(${1 - 0.3 * Math.abs(turn)} 1)`}>
-      <Eye x={-86} mood={mood} look={look} blink={blink} skin={skin} id={id} side={-1} /><Eye x={86} mood={mood} look={look} blink={blink} skin={skin} id={id} side={1} />
-      <path d={`M -140,${browY + 4 + tilt} Q -86,${browY - 22} -34,${browY + 2 - tilt}`} stroke={hair} strokeWidth={17} strokeLinecap="round" fill="none" />
-      <path d={`M 34,${browY + 2 - tilt} Q 86,${browY - 22} 140,${browY + 4 + tilt}`} stroke={hair} strokeWidth={17} strokeLinecap="round" fill="none" />
-      {mood === 'happy' && <><ellipse cx={-128} cy={92} rx={26} ry={15} fill="#f08a6a" opacity={0.4} /><ellipse cx={128} cy={92} rx={26} ry={15} fill="#f08a6a" opacity={0.4} /></>}
-      {mood === 'happy'
-        ? <g><path d="M -88,96 Q 0,200 88,96 Q 0,118 -88,96 Z" fill="#5a1620" stroke={INK} strokeWidth={9} strokeLinejoin="round" /><path d="M -80,99 Q 0,122 80,99 Q 0,134 -80,99 Z" fill="#fff" /><path d="M -46,152 Q 0,128 46,152 Q 0,184 -46,152 Z" fill="#e9707a" /></g>
-        : mood === 'shock'
-          ? <ellipse cx={0} cy={128} rx={30} ry={38} fill="#5a1620" stroke={INK} strokeWidth={9} />
-          : <path d={`M -52,${128 + smile * -8} Q 0,${128 + smile * 40} 52,${128 + smile * -8}`} stroke={INK} strokeWidth={12} strokeLinecap="round" fill="none" />}
+      <defs>
+        <radialGradient id={`sk${id}`} cx="38%" cy="28%" r="80%"><stop offset="0" stopColor="#fff" stopOpacity="0.34" /><stop offset="0.45" stopColor="#fff" stopOpacity="0" /><stop offset="1" stopColor="#000" stopOpacity="0.16" /></radialGradient>
+        <clipPath id={`hc${id}`}><path d={HEAD_D} /></clipPath>
+      </defs>
+      {!side && [-1, 1].map((s) => <g key={s}><ellipse cx={s * 180} cy={14} rx={20} ry={36} fill={skin} stroke={INK} strokeWidth={9} /><path d={`M ${s * 178},-4 Q ${s * 190},14 ${s * 178},32`} stroke={INK} strokeWidth={5} fill="none" opacity={0.5} /></g>)}
+      <path d={HEAD_D} fill={skin} stroke={INK} strokeWidth={11} strokeLinejoin="round" /><path d={HEAD_D} fill={`url(#sk${id})`} />
+      <g clipPath={`url(#hc${id})`}>
+        <path d="M -176,40 Q 0,120 176,40 L 176,250 L -176,250 Z" fill="#3a2a1a" opacity={0.09} />
+        <ellipse cx={-118} cy={-40} rx={20} ry={34} fill="#fff" opacity={0.2} transform="rotate(20 -118 -40)" />
+      </g>
+      {side && <g><ellipse cx={-50 * sg} cy={18} rx={22} ry={38} fill={skin} stroke={INK} strokeWidth={9} /><path d={`M ${-50 * sg},0 Q ${-50 * sg + 10 * sg},20 ${-50 * sg},40`} stroke={INK} strokeWidth={5} fill="none" opacity={0.5} /></g>}
+      <path d="M -184,-48 C -198,-150 -112,-214 0,-214 C 112,-214 198,-150 184,-48 C 176,-92 150,-120 94,-132 C 52,-104 -22,-96 -92,-112 C -142,-106 -172,-84 -184,-48 Z" fill={hair} stroke={INK} strokeWidth={10} strokeLinejoin="round" />
+      <path d="M -180,-46 L -174,32 L -154,6 L -156,-58 Z" fill={hair} stroke={INK} strokeWidth={6} strokeLinejoin="round" /><path d="M 180,-46 L 174,32 L 154,6 L 156,-58 Z" fill={hair} stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+      <path d="M -140,-150 C -90,-190 -10,-198 60,-186" stroke="#8a5a30" strokeWidth={8} fill="none" strokeLinecap="round" opacity={0.8} />
+      <g clipPath={`url(#hc${id})`}><g transform={`translate(${turn * 92} ${Math.abs(turn) * 6}) scale(${1 - 0.3 * Math.abs(turn)} 1)`}>
+        <Eye x={-76} mood={mood} look={look} blink={blink} skin={skin} id={id} side={-1} /><Eye x={76} mood={mood} look={look} blink={blink} skin={skin} id={id} side={1} />
+        <path d={`M -122,${browY + 6 + tilt} Q -78,${browY - 12} -30,${browY + 3 - tilt}`} stroke={hair} strokeWidth={17} strokeLinecap="round" fill="none" />
+        <path d={`M 30,${browY + 3 - tilt} Q 78,${browY - 12} 122,${browY + 6 + tilt}`} stroke={hair} strokeWidth={17} strokeLinecap="round" fill="none" />
+        <path d="M 6,18 Q 26,52 6,64 Q -8,68 -22,60" stroke={INK} strokeWidth={7} fill="none" strokeLinecap="round" opacity={0.7} />
+        {mood === 'happy' && <><ellipse cx={-112} cy={74} rx={22} ry={12} fill="#f08a6a" opacity={0.3} /><ellipse cx={112} cy={74} rx={22} ry={12} fill="#f08a6a" opacity={0.3} /></>}
+        {mood === 'happy'
+          ? <g transform="translate(0 30) scale(0.72)"><path d="M -88,96 Q 0,200 88,96 Q 0,118 -88,96 Z" fill="#5a1620" stroke={INK} strokeWidth={10} strokeLinejoin="round" /><path d="M -80,99 Q 0,122 80,99 Q 0,134 -80,99 Z" fill="#fff" /><path d="M -46,152 Q 0,128 46,152 Q 0,184 -46,152 Z" fill="#e9707a" /></g>
+          : mood === 'shock'
+            ? <ellipse cx={0} cy={124} rx={22} ry={30} fill="#5a1620" stroke={INK} strokeWidth={8} />
+            : <path d={`M -40,${124 - smile * 6} Q 0,${124 + smile * 26} 40,${124 - smile * 6}`} stroke={INK} strokeWidth={10} strokeLinecap="round" fill="none" />}
       </g></g>
     </g>
   );
@@ -167,7 +178,7 @@ export const Body: React.FC<BodyProps> = ({fat = 0, muscle = 0, top = 'tee', top
   return (
     <g transform={lean ? `rotate(${lean} 0 0)` : undefined}>
       {leg(-1)}{leg(1)}
-      <rect x={-30} y={NECK_Y - 26} width={60} height={62} fill={skin} stroke={INK} strokeWidth={9} /><path d={`M -26,${NECK_Y + 14} Q 0,${NECK_Y + 40} 26,${NECK_Y + 14}`} fill={SK_D} opacity={0.5} />
+      <rect x={-34} y={NECK_Y - 40} width={68} height={80} fill={skin} stroke={INK} strokeWidth={9} /><path d={`M -26,${NECK_Y + 14} Q 0,${NECK_Y + 40} 26,${NECK_Y + 14}`} fill={SK_D} opacity={0.5} />
       {side(-1)}
       <path d={torso} fill={fabric} stroke={INK} strokeWidth={11} strokeLinejoin="round" />
       <clipPath id={`tc${top}${Math.round(fat * 10)}${Math.round(muscle * 10)}`}><path d={torso} /></clipPath>
@@ -200,9 +211,9 @@ export const Body: React.FC<BodyProps> = ({fat = 0, muscle = 0, top = 'tee', top
 };
 
 export type HeroProps = BodyProps & HeadProps & {x?: number; y?: number; scale?: number; flip?: boolean; headScale?: number; slump?: number};
-export const Hero: React.FC<HeroProps> = ({x = 0, y = 0, scale = 1, flip, headScale = 0.8, slump = 0, mood, skin, hair, look, blink, id, turn, ...b}) => (
+export const Hero: React.FC<HeroProps> = ({x = 0, y = 0, scale = 1, flip, headScale = 0.46, slump = 0, mood, skin, hair, look, blink, id, turn, ...b}) => (
   <g transform={`translate(${x} ${y}) scale(${flip ? -scale : scale} ${scale})`}>
     <Body skin={skin} {...b} />
-    <g transform={`translate(${slump * 24} ${NECK_Y - (200 * headScale - 34) + slump * 22}) scale(${headScale}) rotate(${slump * 7})`}><Head mood={mood} skin={skin} hair={hair} look={look} blink={blink} id={id} turn={turn} /></g>
+    <g transform={`translate(${slump * 8} ${NECK_Y - 18 - 236 * headScale + slump * 22}) scale(${headScale}) rotate(${slump * 7})`}><Head mood={mood} skin={skin} hair={hair} look={look} blink={blink} id={id} turn={turn} /></g>
   </g>
 );

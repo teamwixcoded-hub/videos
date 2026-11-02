@@ -10,11 +10,11 @@ export const WinterSheet: React.FC = () => (
   <AbsoluteFill style={{background: 'radial-gradient(ellipse at 30% 30%, #1b2140, #090b16)'}}>
     <svg width={1920} height={1080} viewBox="0 0 1920 1080">
       {MOODS.map((m, i) => (
-        <g key={m} transform={`translate(${160 + i * 320} 135) scale(0.4)`}>
+        <g key={m} transform={`translate(${160 + i * 320} 135) scale(0.62)`}>
           <Head mood={m} id={'m' + i} skin={m === 'sad' ? '#9db8f0' : undefined} hair={m === 'sad' ? '#2d3d6e' : undefined} look={m === 'determined' ? [0.3, -0.1] : [0, 0]} />
         </g>
       ))}
-      {MOODS.map((m, i) => <text key={m} x={160 + i * 320} y={250} textAnchor="middle" style={LBL} fontSize={20} fill="#8c96c8" letterSpacing={3}>{m.toUpperCase()}</text>)}
+      {MOODS.map((m, i) => <text key={m} x={160 + i * 320} y={300} textAnchor="middle" style={LBL} fontSize={20} fill="#8c96c8" letterSpacing={3}>{m.toUpperCase()}</text>)}
       <Hero x={190} y={1030} scale={0.78} id="s1" mood="determined" muscle={0.45} top="tee" pose="idle" />
       <Hero x={540} y={1030} scale={0.78} id="s2" mood="happy" muscle={0.9} top="bare" pose="flex" />
       <Hero x={890} y={1030} scale={0.78} id="s3" mood="determined" muscle={0.6} top="tank" topColor="#35c0a6" shorts pose="hips" />
