@@ -69,16 +69,16 @@ export const PizzaKitchen: React.FC<{t: number}> = ({t}) => {
 };
 
 // ---------------- the mirror: the same man looks back ----------------
-export const MirrorShot: React.FC<{t: number; count?: boolean; leave?: number; mood?: any; open?: number}> = ({t, count, leave = 0, mood = 'neutral', open}) => {
+export const MirrorShot: React.FC<{t: number; count?: boolean; leave?: number; mood?: any; open?: number; label?: string; man?: {fat: number; muscle: number; topColor: string; cast?: any}}> = ({t, count, leave = 0, mood = 'neutral', open, label, man = {fat: 0.4, muscle: 0.12, topColor: SAM.topColor}}) => {
   const n = count ? Math.round(45 * ramp(t, T('45 mornings') - 0.2, T('45 mornings') + 1.0)) : 45, sx = 560 + leave * 1100, fade = 1 - leave;
   return (
     <Frame>
       <rect width={1920} height={1080} fill="#17223f" />{Array.from({length: 12}, (_, i) => <path key={i} d={`M ${i * 160},0 L ${i * 160},1080`} stroke="#101a33" strokeWidth={4} />)}
       <defs><clipPath id="mir"><rect x={1060} y={150} width={640} height={720} rx={30} /></clipPath></defs>
       <rect x={1040} y={130} width={680} height={760} rx={40} fill="#3a2b54" stroke={INK} strokeWidth={10} /><rect x={1060} y={150} width={640} height={720} rx={30} fill="#5d7fb8" />
-      <g clipPath="url(#mir)"><rect x={1060} y={150} width={640} height={720} fill="#a9c4ee" opacity={0.25} /><g opacity={0.85 * fade}><Hero x={1380} y={1000} scale={0.95} flip t={t} id="mr" mood={mood} fat={0.4} muscle={0.12} top="tee" topColor={SAM.topColor} pose="idle" /></g><path d="M 1060,300 L 1400,150 L 1520,150 L 1060,420 Z" fill="#fff" opacity={0.1} /></g>
-      <Hero x={sx} y={1060} scale={1.1} t={t} id="ms" mood={mood} open={open} fat={0.4} muscle={0.12} top="tee" topColor={SAM.topColor} pose="idle" />
-      <g transform="translate(560 130)"><rect x={-190} y={-44} width={380} height={88} rx={44} fill="#3ddc84" stroke={INK} strokeWidth={7} /><Txt x={0} y={20} s={52} ls={2}>MORNING {n}</Txt></g>
+      <g clipPath="url(#mir)"><rect x={1060} y={150} width={640} height={720} fill="#a9c4ee" opacity={0.25} /><g opacity={0.85 * fade}><Hero x={1380} y={1000} scale={0.95} flip t={t} id="mr" mood={mood} fat={man.fat} muscle={man.muscle} cast={man.cast} top="tee" topColor={man.topColor} pose="idle" /></g><path d="M 1060,300 L 1400,150 L 1520,150 L 1060,420 Z" fill="#fff" opacity={0.1} /></g>
+      <Hero x={sx} y={1060} scale={1.1} t={t} id="ms" mood={mood} open={open} fat={man.fat} muscle={man.muscle} cast={man.cast} top="tee" topColor={man.topColor} pose="idle" />
+      <g transform="translate(560 130)"><rect x={-190} y={-44} width={380} height={88} rx={44} fill="#3ddc84" stroke={INK} strokeWidth={7} /><Txt x={0} y={20} s={52} ls={2}>{label ?? 'MORNING ' + n}</Txt></g>
     </Frame>
   );
 };

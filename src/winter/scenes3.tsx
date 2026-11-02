@@ -11,8 +11,8 @@ import {GymBG} from './scenes2';
 // ============================================================================================
 // WINTER ARC scenes, third part (Jake's great week, week three and the party, midnight, January 2nd). `t` is the ABSOLUTE video time.
 // ============================================================================================
-type Who = 'sam' | 'jake' | 'friend';
-const LOOK: Record<Who, {topColor: string; cast?: any}> = {sam: {topColor: SAM.topColor}, jake: {topColor: JAKE.topColor, cast: 'colleague'}, friend: {topColor: '#3b8d6b', cast: 'friend'}};
+type Who = 'sam' | 'jake' | 'friend' | 'colleague' | 'mom' | 'coworker';
+export const LOOK: Record<Who, {topColor: string; cast?: any}> = {sam: {topColor: SAM.topColor}, jake: {topColor: JAKE.topColor, cast: 'colleague'}, friend: {topColor: '#3b8d6b', cast: 'friend'}, colleague: {topColor: '#3b6fd8', cast: 'manager'}, mom: {topColor: '#d84f8a', cast: 'mom'}, coworker: {topColor: '#3b8d6b', cast: 'manager'}};
 
 // ---------------- party background: string lights, balloons, a table ----------------
 export const PartyBG: React.FC<{t: number}> = ({t}) => (
@@ -31,7 +31,7 @@ export const PartyBG: React.FC<{t: number}> = ({t}) => (
 export const Solo: React.FC<{t: number; who?: Who; mood?: any; open?: number; look?: [number, number]; top?: 'tee' | 'hoodie' | 'tank'; pose?: any; fat?: number; muscle?: number; x?: number; y?: number; scale?: number; bg?: 'room' | 'party' | 'gym' | 'none'; dawn?: number; children?: React.ReactNode}> = ({t, who = 'sam', mood = 'neutral', open, look, top = 'hoodie', pose = 'idle', fat = 0.5, muscle = 0, x = 960, y = 1040, scale = 1.1, bg = 'room', dawn = 0, children}) => (
   <Frame>
     {bg === 'room' && <RoomArt t={t} dawn={dawn} />}{bg === 'party' && <PartyBG t={t} />}{bg === 'gym' && <GymBG t={t} />}
-    <Hero x={x} y={y} scale={scale} t={t} id={'so' + who} mood={mood} open={open} look={look} fat={who === 'friend' ? 0.2 : fat} muscle={muscle} top={top} topColor={LOOK[who].topColor} cast={LOOK[who].cast} pose={pose} />
+    <Hero x={x} y={y} scale={scale} t={t} id={'so' + who} mood={mood} open={open} look={look} fat={who === 'sam' || who === 'jake' ? fat : 0.2} muscle={muscle} top={top} topColor={LOOK[who].topColor} cast={LOOK[who].cast} pose={pose} />
     {children}
   </Frame>
 );

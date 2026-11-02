@@ -12,7 +12,7 @@ import type {Shot4} from './act4';
 // ============================================================================================
 // WINTER ARC, act 5 (272 to 398 s): Quitter's Day, Jake's nine days and quiet restarts, Sam's worst-day plan ("never zero"), week seven and the mirror, progress that shows up elsewhere, the unused membership.
 // ============================================================================================
-const BeatsG: React.FC<{t: number; beats: Beat[]}> = ({t, beats}) => (
+export const BeatsG: React.FC<{t: number; beats: Beat[]}> = ({t, beats}) => (
   <g>{beats.map((b, i) => {
     const a = ramp(t, b.at, b.at + 0.25), o = a * (b.to ? 1 - ramp(t, b.to - 0.2, b.to) : 1), s = b.s ?? 120, y = b.y ?? 540, w = b.text.length * s * 0.6;
     return <g key={i} opacity={o} transform={`translate(960 ${y + (1 - a) * 24})`}><Txt x={0} y={0} s={s} c={b.c ?? '#eef1ff'}>{b.text}</Txt>{b.strike !== undefined && <path d={`M ${-w / 2},${-s * 0.32} L ${w / 2},${-s * 0.32}`} stroke="#ff4a5e" strokeWidth={s * 0.12} strokeLinecap="round" strokeDasharray={w} strokeDashoffset={w * (1 - ramp(t, b.strike, b.strike + 0.25))} />}</g>;

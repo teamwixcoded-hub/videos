@@ -11,10 +11,11 @@ import {Beats, Beat, RingG, BedSolo, Thermo, SnoozeShot, GetUp, GymBG, GymWalk, 
 import {SideHero, SIDE} from './SideHero';
 import {SHOTS4, POPS4, BUBBLES4, CUES4} from './act4';
 import {SHOTS5, BUBBLES5, CUES5} from './act5';
+import {SHOTS6, POPS6, BUBBLES6, CUES6} from './act6';
 import {DIGI} from '../same2d/theme';
 
 // ============================================================================================
-// WINTER ARC, built so far: 0 to 398 s ("December 1st" to "...the wrecked body becomes a habit."). Every shot sits on the narration with T('phrase').
+// WINTER ARC, the whole video: 0 to 614 s ("December 1st" to "...the wrecked body becomes a habit."). Every shot sits on the narration with T('phrase').
 // The narrator's words are not lip-synced; the men's own lines are (speakOpen): "This time, I'll change.", "Five more minutes.", "I'm doing this."
 // ============================================================================================
 export const WINTER_FRAMES = Math.round(END * FPS);
@@ -151,7 +152,7 @@ const SHOTS1: Shot[] = [
   {at: T('and turns'), cam: [960, 700, 1.1], node: (t) => <LightsOut t={t} />},
   {at: T('hes not asleep'), cam: [960, 540, 1.05], node: (t) => <Beats t={t} beats={B_NIGHT} glow="#3ddc84" />},
 ];
-const SHOTS: Shot[] = [...SHOTS1, ...SHOTS4, ...SHOTS5];
+const SHOTS: Shot[] = [...SHOTS1, ...SHOTS4, ...SHOTS5, ...SHOTS6];
 
 const POPS1: TW[] = [
   {at: T('same cold'), dur: 1.5, text: 'SAME COLD ROOM.', accent: 1, mode: 'pop'},
@@ -166,18 +167,19 @@ const POPS1: TW[] = [
   {at: T('new year new me'), dur: 1.9, text: 'NEW YEAR. NEW ME.', accent: 2, mode: 'pop'},
   {at: T('sore'), dur: 1.9, text: 'SORE. SLOW.', accent: 1, mode: 'pop'},
 ];
-const POPS: TW[] = [...POPS1, ...POPS4];
+const POPS: TW[] = [...POPS1, ...POPS4, ...POPS6];
 const BUBBLES1 = [
   {from: T('this time'), to: TE('change') + 0.5, text: "This time, I'll change.", x: 560, y: 130},
   {from: T('im doing'), to: T('im doing') + 1.7, text: "I'M DOING THIS.", x: 470, y: 520},
   {from: T('im doing') + 0.12, to: T('im doing') + 1.8, text: "I'M DOING THIS.", x: 1130, y: 520},
   {from: T('five more minutes') - 0.1, to: TE('five more minutes') + 0.6, text: 'Five more minutes.', x: 520, y: 430},
 ];
-const BUBBLES = [...BUBBLES1, ...BUBBLES4, ...BUBBLES5];
+const BUBBLES = [...BUBBLES1, ...BUBBLES4, ...BUBBLES5, ...BUBBLES6];
 
 const CUES: Cue3[] = [
   ...CUES4,
   ...CUES5,
+  ...CUES6,
   ...SHOTS.slice(1).map((s): Cue3 => ({file: 'whoosh_soft', at: s.at - 0.03, vol: 0.16})),
   {file: 'clock_tick', at: 0.2, dur: 3, vol: 0.14, loop: true},
   {file: 'alarm_beep', at: T('alarm'), dur: 1.1, vol: 0.2}, {file: 'alarm_beep', at: T('the alarm') + 0.1, dur: 1.5, vol: 0.26},
@@ -221,7 +223,8 @@ export const Winter: React.FC = () => {
       {VOICE_FILE && <Sequence from={0} durationInFrames={WINTER_FRAMES}><Audio src={staticFile(VOICE_FILE)} /></Sequence>}
       <Sfx3 cues={CUES.map(mixCue)} gain={1} minVol={0} />
       <Sequence from={0} durationInFrames={Math.round(110 * FPS)}><Audio src={staticFile('music/low.mp3')} volume={musicEnv(0, 110)} /></Sequence>
-      <Sequence from={Math.round(106 * FPS)} durationInFrames={WINTER_FRAMES - Math.round(106 * FPS)}><Audio src={staticFile('music/routine.mp3')} volume={musicEnv(106, END)} /></Sequence>
+      <Sequence from={Math.round(106 * FPS)} durationInFrames={Math.round(480 * FPS)}><Audio src={staticFile('music/routine.mp3')} volume={musicEnv(106, 586)} /></Sequence>
+      <Sequence from={Math.round(580 * FPS)} durationInFrames={WINTER_FRAMES - Math.round(580 * FPS)}><Audio src={staticFile('music/resolve.mp3')} volume={musicEnv(580, END)} /></Sequence>
     </AbsoluteFill>
   );
 };
