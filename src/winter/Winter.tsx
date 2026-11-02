@@ -75,7 +75,7 @@ const B_NIGHT: Beat[] = [
 const BEAT_SETS = [B_VOTE, B_DEC, B_WEEK, B_QUIT, B_PROOF, B_EASY, B_NIGHT];
 
 const SHOTS1: Shot[] = [
-  {at: 0, cam: [700, 500, 1.1], node: (t) => <DayCard t={t} />},
+  {at: 0, cam: [700, 500, 1.1], node: (t) => <DayCard t={t + 0.8} />},
   {at: T('same cold'), cam: [960, 760, 1.3], node: (t) => <Room t={t} zzz />},
   {at: T('same dark'), node: (t) => <Frame><g transform="translate(-1344 -295) scale(2.4)"><RoomArt t={t} /></g></Frame>},
   {at: T('two men'), cam: [960, 760, 1.28], node: (t) => <Room t={t} zzz={t < T('wake')} sam={t > T('wake') ? 'open' : 'closed'} jake={t > T('wake') + 0.15 ? 'open' : 'closed'} ring={t > T('alarm') - 0.1 ? 1 : 0} jolt={t > T('alarm') ? Math.max(0, Math.sin((t - T('alarm')) * 30)) * 0.5 : 0} />},
@@ -208,7 +208,7 @@ export const Winter: React.FC = () => {
   const i = Math.max(0, SHOTS.reduce((n, s, k) => (t >= s.at ? k : n), 0)), shot = SHOTS[i], to = SHOTS[i + 1]?.at ?? END;
   const p = Math.min(1, Math.max(0, (t - shot.at) / (to - shot.at))), cam = shot.cam ?? [960, 540, 1];
   const zoom = 1 + (cam[2] - 1) * p, cold = t < T('90 days from') || (t > T('both men') - 0.1 && t < T('sam walks into')) || t > T('sam walks into') + 30;
-  const fadeIn = 1 - ramp(t, 0, 0.7), fadeOut = ramp(t, END - 0.4, END);
+  const fadeIn = 0, fadeOut = ramp(t, END - 0.4, END);
   const musicEnv = (from: number, to2: number) => (f: number) => Math.min(1, 0.22 * Math.min(1, f / 60) * Math.min(1, Math.max(0, ((to2 - from) * FPS - f) / 75)));
   return (
     <AbsoluteFill style={{background: '#05060b'}}>
