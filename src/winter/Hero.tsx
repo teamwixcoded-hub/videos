@@ -1,6 +1,6 @@
 import React from 'react';
 import {BubbleHead} from './Bubble';
-import {Limb, limbAt} from './limb';
+import {Limb, limbAt, smoothClosed} from './limb';
 
 // ============================================================================================
 // WINTER ARC cast (new character, from the happy/sad reference): one round head with a hair cap, big white eyes with a detailed iris,
@@ -134,7 +134,7 @@ export const shade = (c: string, k: number) => { const n = parseInt(c.slice(1), 
 
 export const Body: React.FC<BodyProps> = ({fat = 0, muscle = 0, top = 'tee', topColor = '#e9962c', pants = '#2b3350', shoe = '#f2f2f2', skin = SK, pose = 'idle', shorts}) => {
   const P: Pose = typeof pose === 'string' ? POSES[pose] : pose;
-  const sw = 112 + muscle * 44 - fat * 8, bw = 92 + fat * 78 - muscle * 8, hw = 96 + fat * 34, belly = fat * 44;
+  const sw = 114 + muscle * 38 - fat * 4, chestW = sw * 0.92 + muscle * 6 + fat * 14, waistW = 90 + fat * 24 - muscle * 12, bw = waistW + fat * 62 + muscle * 4, hw = Math.max(98 + fat * 16, bw * 0.9), belly = 0;
   const armW = 40 + muscle * 18 + fat * 8, foreW = armW * 0.8, legW = 66 + fat * 24 + muscle * 8, calfW = legW * 0.74;
   const fabric = top === 'bare' ? skin : topColor, longSleeve = top === 'hoodie';
   const lean = P.lean ?? 0;
@@ -159,7 +159,12 @@ export const Body: React.FC<BodyProps> = ({fat = 0, muscle = 0, top = 'tee', top
       </g>
     );
   };
-  const torso = `M ${-sw * 0.46},${NECK_Y + 4} Q 0,${NECK_Y - 16} ${sw * 0.46},${NECK_Y + 4} Q ${sw * 0.92},${NECK_Y + 8} ${sw},${NECK_Y + 48} C ${sw + 6},${NECK_Y + 112} ${sw * 0.9},${NECK_Y + 170} ${bw + belly},${NECK_Y + 246} C ${bw + belly + 16},${NECK_Y + 292} ${hw},${NECK_Y + 306} ${hw},${NECK_Y + TORSO_H - 12} Q ${hw},${NECK_Y + TORSO_H + 4} ${hw - 22},${NECK_Y + TORSO_H + 4} L ${-hw + 22},${NECK_Y + TORSO_H + 4} Q ${-hw},${NECK_Y + TORSO_H + 4} ${-hw},${NECK_Y + TORSO_H - 12} C ${-hw},${NECK_Y + 306} ${-bw - belly - 16},${NECK_Y + 292} ${-bw - belly},${NECK_Y + 246} C ${-sw * 0.9},${NECK_Y + 170} ${-sw - 6},${NECK_Y + 112} ${-sw},${NECK_Y + 48} Q ${-sw * 0.92},${NECK_Y + 8} ${-sw * 0.46},${NECK_Y + 4} Z`;
+  const torso = smoothClosed([
+    [-sw * 0.46, NECK_Y + 4], [0, NECK_Y - 8], [sw * 0.46, NECK_Y + 4], [sw * 0.9, NECK_Y + 22], [sw, NECK_Y + 54],
+    [chestW, NECK_Y + 112], [(chestW + waistW) / 2 + 4, NECK_Y + 160], [waistW + 4, NECK_Y + 200], [bw, NECK_Y + 248], [(bw + hw) / 2 + 2, NECK_Y + 276], [hw, NECK_Y + TORSO_H - 14], [hw - 14, NECK_Y + TORSO_H + 3],
+    [0, NECK_Y + TORSO_H + 6],
+    [-hw + 14, NECK_Y + TORSO_H + 3], [-hw, NECK_Y + TORSO_H - 14], [-(bw + hw) / 2 - 2, NECK_Y + 276], [-bw, NECK_Y + 248], [-waistW - 4, NECK_Y + 200], [-(chestW + waistW) / 2 - 4, NECK_Y + 160], [-chestW, NECK_Y + 112], [-sw, NECK_Y + 54], [-sw * 0.9, NECK_Y + 22],
+  ]);
   const leg = (s: 1 | -1) => {
     const t = (s === -1 ? P.footL : P.footR) ?? P.foot ?? [10, 0];
     const hip: V = [s * (hw * 0.5), NECK_Y + TORSO_H - 10], ank: V = [s * (hw * 0.5 + 12 + t[0]), -30 + t[1]];

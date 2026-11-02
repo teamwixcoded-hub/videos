@@ -41,7 +41,7 @@ export const SideHero: React.FC<SideProps> = ({fat = 0, muscle = 0, top = 'tee',
   const at = (t: number, f: number): V => [hip[0] + u[0] * t + n[0] * f, hip[1] + u[1] * t + n[1] * f];
   const fabric = top === 'bare' ? skin : topColor, longSleeve = top === 'hoodie';
   const armW = 42 + muscle * 18 + fat * 8, foreW = armW * 0.8, legW = 70 + fat * 24 + muscle * 8, calfW = legW * 0.72;
-  const front = [[0, 82 + fat * 22], [60, 86 + fat * 62], [120, 86 + fat * 118], [180, 88 + muscle * 10 + fat * 54], [240, 92 + muscle * 22 + fat * 18], [284, 46]];
+  const front = [[0, 82 + fat * 14], [60, 86 + fat * 46], [120, 88 + fat * 84], [180, 88 + muscle * 12 + fat * 50], [240, 92 + muscle * 24 + fat * 16], [284, 46]];
   const back = [[284, -48], [230, -86 - muscle * 8], [160, -86 - fat * 8], [90, -82 - fat * 14], [0, -82 - fat * 14]];
   const torso = smooth([...front, ...back].map(([t, f]) => at(t, f)));
   const sh = at(250, -4), neck = at(300, 0);

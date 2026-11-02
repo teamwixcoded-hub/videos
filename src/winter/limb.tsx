@@ -64,3 +64,14 @@ export const limbPath = (g: LimbGeom, t0 = 0, t1 = 1, extra = 0, flat = false): 
 export const Limb: React.FC<LimbGeom & {fill: string; t0?: number; t1?: number; extra?: number; flat?: boolean; stroke?: number; opacity?: number}> = ({fill, t0 = 0, t1 = 1, extra = 0, flat = false, stroke = 9, opacity, ...g}) => (
   <path d={limbPath(g, t0, t1, extra, flat)} fill={fill} stroke={NAVY} strokeWidth={stroke} strokeLinejoin="round" opacity={opacity} />
 );
+
+// a closed smooth outline through the points (Catmull-Rom as cubic segments)
+export const smoothClosed = (pts: V[]): string => {
+  const n = pts.length;
+  let d = `M ${pts[0][0]},${pts[0][1]}`;
+  for (let i = 0; i < n; i++) {
+    const p0 = pts[(i - 1 + n) % n], p1 = pts[i], p2 = pts[(i + 1) % n], p3 = pts[(i + 2) % n];
+    d += ` C ${p1[0] + (p2[0] - p0[0]) / 6},${p1[1] + (p2[1] - p0[1]) / 6} ${p2[0] - (p3[0] - p1[0]) / 6},${p2[1] - (p3[1] - p1[1]) / 6} ${p2[0]},${p2[1]}`;
+  }
+  return d + ' Z';
+};
