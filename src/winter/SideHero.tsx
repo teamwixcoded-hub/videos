@@ -1,5 +1,5 @@
 import React from 'react';
-import {Head, HeadProps, Hand, Seg, ik, shade, INK, V, HandKind} from './Hero';
+import {Head, HeadProps, Hand, Seg, ik, shade, INK, V, HandKind, chinOf, defaultHeadScale} from './Hero';
 
 // ============================================================================================
 // WINTER ARC side view: the same man facing +x (flip for -x). Origin = the floor under the start of the pose, y up is negative.
@@ -34,7 +34,7 @@ const PropArt: React.FC<{k: Prop; p: V; ang: number}> = ({k, p, ang}) => {
   return <g transform={`translate(${p[0]} ${p[1]}) rotate(${ang - 90 + 20})`}><rect x={-26} y={-8} width={52} height={92} rx={10} fill="#12151f" stroke={INK} strokeWidth={7} /><rect x={-20} y={0} width={40} height={74} rx={6} fill="#4aa8ff" opacity={0.85} /></g>;
 };
 
-export const SideHero: React.FC<SideProps> = ({fat = 0, muscle = 0, top = 'tee', topColor = '#e9962c', pants = '#2b3350', shoe = '#f2f2f2', skin = '#fbe3a6', shorts, pose = 'stand', x = 0, y = 0, scale = 1, flip, headScale = 0.46, mood = 'neutral', hair, look, blink, id = 'sd', turn}) => {
+export const SideHero: React.FC<SideProps> = ({fat = 0, muscle = 0, top = 'tee', topColor = '#e9962c', pants = '#2b3350', shoe = '#f2f2f2', skin = '#e8eafb', shorts, pose = 'stand', x = 0, y = 0, scale = 1, flip, headScale: hs, kind, mood = 'neutral', hair, look, blink, id = 'sd', turn}) => {
   const P: SidePose = typeof pose === 'string' ? SIDE[pose] : pose;
   const a = P.torso * Math.PI / 180, u: V = [Math.sin(a), -Math.cos(a)], n: V = [Math.cos(a), Math.sin(a)], hip = P.hip;
   const at = (t: number, f: number): V => [hip[0] + u[0] * t + n[0] * f, hip[1] + u[1] * t + n[1] * f];
@@ -79,7 +79,7 @@ export const SideHero: React.FC<SideProps> = ({fat = 0, muscle = 0, top = 'tee',
       </g>
     );
   };
-  const headC = at(318 + 236 * headScale, 10);
+  const headScale = hs ?? defaultHeadScale(kind), headC = at(314 + chinOf(kind) * headScale, 10);
   const rot = P.torso * 0.75 + (P.head ?? 0);
   return (
     <g transform={`translate(${x} ${y}) scale(${flip ? -scale : scale} ${scale})`}>
@@ -97,7 +97,7 @@ export const SideHero: React.FC<SideProps> = ({fat = 0, muscle = 0, top = 'tee',
       {longSleeve && <path d={smooth([[262, -46], [286, -40], [300, -10], [286, 30], [262, 22], [240, -20]].map(([t, f]) => at(t, f)))} fill={shade(fabric, 0.78)} stroke={INK} strokeWidth={8} strokeLinejoin="round" />}
       {longSleeve && <path d={smooth([[60, 62], [60, 14], [118, 8], [118, 66 + fat * 80]].map(([t, f]) => at(t, f)))} fill="rgba(0,0,0,.14)" stroke={INK} strokeWidth={6} strokeLinejoin="round" />}
       {leg(P.footN, false)}
-      <g transform={`translate(${headC[0]} ${headC[1]}) rotate(${rot}) scale(${headScale})`}><Head mood={mood} skin={skin} hair={hair} look={look} blink={blink} id={id} turn={turn ?? P.turn ?? 0.9} /></g>
+      <g transform={`translate(${headC[0]} ${headC[1]}) rotate(${rot}) scale(${headScale})`}><Head mood={mood} skin={skin} hair={hair} look={look} blink={blink} id={id} turn={turn ?? P.turn ?? 0.9} kind={kind} /></g>
       {arm(P.handN, P.handKindN ?? 'relaxed', P.heldN, P.elbowN ?? -1, false)}
     </g>
   );

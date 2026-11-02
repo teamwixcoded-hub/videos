@@ -18,9 +18,9 @@ export const WinterSide: React.FC = () => (
       <T x={130} y={510} t="STAND" /><T x={420} y={510} t="SQUAT" /><T x={740} y={510} t="CURL" /><T x={1130} y={510} t="PUSH-UP" /><T x={1660} y={510} t="RUN" />
       {/* row 2: Jake */}
       <rect x={90} y={930} width={420} height={40} rx={10} fill="#4b3f78" stroke="#16121c" strokeWidth={6} /><rect x={90} y={970} width={420} height={30} fill="#2b2547" />
-      <SideHero x={250} y={1000} scale={0.52} id="j1" mood="tired" fat={0.85} top="hoodie" topColor="#59607a" pose="sit" />
+      <SideHero x={250} y={1000} scale={0.52} id="j1" mood="tired" fat={0.85} top="hoodie" topColor="#6b4fc4" pose="sit" />
       <SideHero x={700} y={1000} scale={0.52} id="j2" mood="sad" fat={0.8} top="tee" topColor="#8a6fb8" pose="stand" />
-      <SideHero x={1100} y={1000} scale={0.52} id="j3" mood="tired" fat={0.6} top="hoodie" topColor="#59607a" pose="run" />
+      <SideHero x={1100} y={1000} scale={0.52} id="j3" mood="tired" fat={0.6} top="hoodie" topColor="#6b4fc4" pose="run" />
       <T x={300} y={1050} t="JAKE ON THE BED" /><T x={700} y={1050} t="JAKE, SOFT" /><T x={1130} y={1050} t="JAKE TRIES TO RUN" />
       <SideHero x={1500} y={1000} scale={0.52} id="s2" mood="happy" muscle={0.9} top="bare" pose="stand" />
       <T x={1540} y={1050} t="SAM, DAY 90" />

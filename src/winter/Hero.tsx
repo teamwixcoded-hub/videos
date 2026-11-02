@@ -1,14 +1,15 @@
 import React from 'react';
+import {BubbleHead} from './Bubble';
 
 // ============================================================================================
 // WINTER ARC cast (new character, from the happy/sad reference): one round head with a hair cap, big white eyes with a detailed iris,
 // thick brows, a wide grin or a flat tired mouth. The BODY is a parameter: fat 0..1 (soft belly, rounder hips), muscle 0..1 (broad shoulders, thick arms).
 // <Hero> origin (0,0) = the floor between the feet; everything is drawn upward. Vector only, no images.
 // ============================================================================================
-export const INK = '#16121c';
+export const INK = '#1b1a3a';
 export type Mood = 'happy' | 'sad' | 'neutral' | 'tired' | 'determined' | 'shock';
-export type HeadProps = {mood?: Mood; skin?: string; hair?: string; look?: [number, number]; blink?: number; id?: string; turn?: number};
-const SK = '#fbe3a6', SK_D = '#e8c77d';
+export type HeadProps = {mood?: Mood; skin?: string; hair?: string; look?: [number, number]; blink?: number; id?: string; turn?: number; kind?: 'bubble' | 'adult'};
+const SK = '#e8eafb', SK_D = '#b9bfe0';   // default skin = the glossy pale bubble white; the adult head passes its own warm skin
 // the head is a face-and-jaw shape, not a ball: about 28 years old (cheekbones, a square chin, small eyes, a nose, ears, a little stubble, a short cut)
 const HEAD_D = 'M -176,-56 C -184,-168 -100,-208 0,-208 C 100,-208 184,-168 176,-56 C 174,44 150,150 92,198 Q 0,238 -92,198 C -150,150 -174,44 -176,-56 Z';
 
@@ -36,7 +37,7 @@ const Eye: React.FC<{x: number; mood: Mood; look: [number, number]; blink: numbe
   );
 };
 
-export const Head: React.FC<HeadProps> = ({mood = 'neutral', skin = SK, hair = '#4a2a14', look = [0, 0], blink = 0, id = 'h', turn = 0}) => {
+const AdultHead: React.FC<HeadProps> = ({mood = 'neutral', skin = '#fbe3a6', hair = '#4a2a14', look = [0, 0], blink = 0, id = 'h', turn = 0}) => {
   const smile = {happy: 1, neutral: 0.15, determined: 0.05, shock: 0, tired: -0.1, sad: -0.4}[mood];
   const browY = {happy: -62, neutral: -56, determined: -50, shock: -80, tired: -54, sad: -58}[mood];
   const tilt = {happy: -3, neutral: 0, determined: 9, shock: -5, tired: -7, sad: -12}[mood];
@@ -72,6 +73,10 @@ export const Head: React.FC<HeadProps> = ({mood = 'neutral', skin = SK, hair = '
     </g>
   );
 };
+
+export const chinOf = (kind?: 'bubble' | 'adult') => (kind === 'adult' ? 236 : 200);
+export const defaultHeadScale = (kind?: 'bubble' | 'adult') => (kind === 'adult' ? 0.46 : 0.6);
+export const Head: React.FC<HeadProps> = ({kind = 'bubble', ...p}) => (kind === 'adult' ? <AdultHead {...p} /> : <BubbleHead {...p} />);
 
 // ---------------------------------------------------------------------------------------------
 // BODY v2: two-bone IK arms and legs (so any pose is a pair of targets), tapered limbs, a bicep bulge that grows with `muscle`, hands with fingers (open / relaxed / fist), shaded clothes.
@@ -211,9 +216,9 @@ export const Body: React.FC<BodyProps> = ({fat = 0, muscle = 0, top = 'tee', top
 };
 
 export type HeroProps = BodyProps & HeadProps & {x?: number; y?: number; scale?: number; flip?: boolean; headScale?: number; slump?: number};
-export const Hero: React.FC<HeroProps> = ({x = 0, y = 0, scale = 1, flip, headScale = 0.46, slump = 0, mood, skin, hair, look, blink, id, turn, ...b}) => (
+export const Hero: React.FC<HeroProps> = ({x = 0, y = 0, scale = 1, flip, headScale, slump = 0, mood, skin, hair, look, blink, id, turn, kind, ...b}) => (
   <g transform={`translate(${x} ${y}) scale(${flip ? -scale : scale} ${scale})`}>
     <Body skin={skin} {...b} />
-    <g transform={`translate(${slump * 8} ${NECK_Y - 18 - 236 * headScale + slump * 22}) scale(${headScale}) rotate(${slump * 7})`}><Head mood={mood} skin={skin} hair={hair} look={look} blink={blink} id={id} turn={turn} /></g>
+    <g transform={`translate(${slump * 8} ${NECK_Y - 14 - chinOf(kind) * (headScale ?? defaultHeadScale(kind)) + slump * 22}) scale(${headScale ?? defaultHeadScale(kind)}) rotate(${slump * 7})`}><Head mood={mood} skin={skin} hair={hair} look={look} blink={blink} id={id} turn={turn} kind={kind} /></g>
   </g>
 );
