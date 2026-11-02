@@ -1,0 +1,18 @@
+import {WORDS_W} from './data/words';
+
+// Winter Arc timing. Every shot and every on-screen word is placed with T('a phrase of the narration') (start of the phrase, nth occurrence) or TE() (end of its last word),
+// so a new recording only means a new word list. Video time = recording time.
+export const FPS = 30;
+export const VOICE_FILE: string | null = null;   // set to 'audio/winter-arc.mp3' when the voice-over is uploaded
+export const FIRST_END = 68.0;                    // the first minute and a half ends on "The alarm rings."
+const WORDS = WORDS_W.map(([w, a, b]) => ({w, a, b}));
+const norm = (p: string) => p.toLowerCase().split(/\s+/).map((x) => x.replace(/[^a-z0-9]/g, '')).filter(Boolean);
+const find = (phrase: string, nth: number): number => {
+  const q = norm(phrase); let hit = 0;
+  for (let i = 0; i + q.length <= WORDS.length; i++) {
+    if (q.every((w, k) => WORDS[i + k].w === w)) { if (hit === nth) return i; hit++; }
+  }
+  throw new Error('phrase not in the narration: "' + phrase + '" #' + nth);
+};
+export const T = (phrase: string, nth = 0): number => WORDS[find(phrase, nth)].a;
+export const TE = (phrase: string, nth = 0): number => { const i = find(phrase, nth); return WORDS[i + norm(phrase).length - 1].b; };
