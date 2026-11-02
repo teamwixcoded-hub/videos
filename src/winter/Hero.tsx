@@ -7,7 +7,7 @@ import React from 'react';
 // ============================================================================================
 export const INK = '#16121c';
 export type Mood = 'happy' | 'sad' | 'neutral' | 'tired' | 'determined' | 'shock';
-export type HeadProps = {mood?: Mood; skin?: string; hair?: string; look?: [number, number]; blink?: number; id?: string};
+export type HeadProps = {mood?: Mood; skin?: string; hair?: string; look?: [number, number]; blink?: number; id?: string; turn?: number};
 const SK = '#fbe3a6', SK_D = '#e8c77d';
 
 const Eye: React.FC<{x: number; mood: Mood; look: [number, number]; blink: number; skin: string; id: string; side: 1 | -1}> = ({x, mood, look, blink, skin, id, side}) => {
@@ -34,7 +34,7 @@ const Eye: React.FC<{x: number; mood: Mood; look: [number, number]; blink: numbe
   );
 };
 
-export const Head: React.FC<HeadProps> = ({mood = 'neutral', skin = SK, hair = '#6b3f1e', look = [0, 0], blink = 0, id = 'h'}) => {
+export const Head: React.FC<HeadProps> = ({mood = 'neutral', skin = SK, hair = '#6b3f1e', look = [0, 0], blink = 0, id = 'h', turn = 0}) => {
   const smile = {happy: 1, neutral: 0.15, determined: 0.05, shock: 0, tired: -0.1, sad: -0.4}[mood];
   const browY = {happy: -92, neutral: -86, determined: -80, shock: -112, tired: -84, sad: -88}[mood];
   const tilt = {happy: -4, neutral: 0, determined: 10, shock: -6, tired: -8, sad: -14}[mood];
@@ -46,6 +46,8 @@ export const Head: React.FC<HeadProps> = ({mood = 'neutral', skin = SK, hair = '
       <path d="M -150,120 Q 0,230 150,120 Q 0,196 -150,120 Z" fill={SK_D} opacity={0.35} />
       <path d="M -196,-40 C -200,-140 -120,-205 -10,-200 C 90,-196 190,-150 198,-30 C 150,-98 70,-120 -20,-112 C -100,-104 -170,-80 -196,-40 Z" fill={hair} stroke={INK} strokeWidth={10} strokeLinejoin="round" />
       <path d="M -150,-130 C -100,-168 -20,-176 50,-166" stroke="#a5683a" strokeWidth={9} fill="none" strokeLinecap="round" opacity={0.8} />
+      <clipPath id={`hc${id}`}><circle cx={0} cy={0} r={198} /></clipPath>
+      <g clipPath={`url(#hc${id})`}><g transform={`translate(${turn * 96} ${Math.abs(turn) * 6}) scale(${1 - 0.3 * Math.abs(turn)} 1)`}>
       <Eye x={-86} mood={mood} look={look} blink={blink} skin={skin} id={id} side={-1} /><Eye x={86} mood={mood} look={look} blink={blink} skin={skin} id={id} side={1} />
       <path d={`M -140,${browY + 4 + tilt} Q -86,${browY - 22} -34,${browY + 2 - tilt}`} stroke={hair} strokeWidth={17} strokeLinecap="round" fill="none" />
       <path d={`M 34,${browY + 2 - tilt} Q 86,${browY - 22} 140,${browY + 4 + tilt}`} stroke={hair} strokeWidth={17} strokeLinecap="round" fill="none" />
@@ -55,6 +57,7 @@ export const Head: React.FC<HeadProps> = ({mood = 'neutral', skin = SK, hair = '
         : mood === 'shock'
           ? <ellipse cx={0} cy={128} rx={30} ry={38} fill="#5a1620" stroke={INK} strokeWidth={9} />
           : <path d={`M -52,${128 + smile * -8} Q 0,${128 + smile * 40} 52,${128 + smile * -8}`} stroke={INK} strokeWidth={12} strokeLinecap="round" fill="none" />}
+      </g></g>
     </g>
   );
 };
@@ -75,8 +78,8 @@ export const POSES: Record<string, Pose> = {
   slump: {arm: [6, 230], hand: 'relaxed', lean: 5},
   wide: {arm: [120, 150], hand: 'open', foot: [74, 0]},
 };
-type V = [number, number];
-const ik = (a: V, t: V, l1: number, l2: number, outward: 1 | -1): {el: V; wr: V} => {
+export type V = [number, number];
+export const ik = (a: V, t: V, l1: number, l2: number, outward: 1 | -1): {el: V; wr: V} => {
   const dx = t[0] - a[0], dy = t[1] - a[1];
   const d = Math.min(Math.max(Math.hypot(dx, dy), Math.abs(l1 - l2) + 2), l1 + l2 - 0.5), base = Math.atan2(dy, dx);
   const ang = Math.acos(Math.min(1, Math.max(-1, (l1 * l1 + d * d - l2 * l2) / (2 * l1 * d))));
@@ -84,7 +87,7 @@ const ik = (a: V, t: V, l1: number, l2: number, outward: 1 | -1): {el: V; wr: V}
   const el = (cand[0][0] * outward > cand[1][0] * outward) ? cand[0] : cand[1];
   return {el, wr: [a[0] + Math.cos(base) * d, a[1] + Math.sin(base) * d]};
 };
-const Hand: React.FC<{p: V; ang: number; kind: HandKind; r: number; skin: string}> = ({p, ang, kind, r, skin}) => {
+export const Hand: React.FC<{p: V; ang: number; kind: HandKind; r: number; skin: string}> = ({p, ang, kind, r, skin}) => {
   const fingers = kind === 'fist' ? [] : kind === 'open' ? [-24, -8, 8, 24].map((x, i) => ({x, a: x * 1.1, l: 34 + (i === 1 || i === 2 ? 6 : 0)})) : [-22, -7, 8, 23].map((x, i) => ({x, a: x * 0.25, l: 26 + (i === 1 || i === 2 ? 4 : 0)}));
   const fw = 15;
   return (
@@ -102,7 +105,7 @@ const Hand: React.FC<{p: V; ang: number; kind: HandKind; r: number; skin: string
     </g>
   );
 };
-const Seg: React.FC<{a: V; b: V; w1: number; w2: number; fill: string; ink?: boolean}> = ({a, b, w1, w2, fill, ink}) => {
+export const Seg: React.FC<{a: V; b: V; w1: number; w2: number; fill: string; ink?: boolean}> = ({a, b, w1, w2, fill, ink}) => {
   const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L, pad = ink ? 6 : 0;
   const p = [[a[0] + nx * (w1 / 2 + pad), a[1] + ny * (w1 / 2 + pad)], [b[0] + nx * (w2 / 2 + pad), b[1] + ny * (w2 / 2 + pad)], [b[0] - nx * (w2 / 2 + pad), b[1] - ny * (w2 / 2 + pad)], [a[0] - nx * (w1 / 2 + pad), a[1] - ny * (w1 / 2 + pad)]];
   return <g><path d={`M ${p.map((q) => q.join(',')).join(' L ')} Z`} fill={ink ? INK : fill} /><circle cx={a[0]} cy={a[1]} r={w1 / 2 + pad} fill={ink ? INK : fill} /><circle cx={b[0]} cy={b[1]} r={w2 / 2 + pad} fill={ink ? INK : fill} /></g>;
@@ -110,7 +113,7 @@ const Seg: React.FC<{a: V; b: V; w1: number; w2: number; fill: string; ink?: boo
 
 export type BodyProps = {fat?: number; muscle?: number; top?: 'tee' | 'hoodie' | 'tank' | 'bare'; topColor?: string; pants?: string; shoe?: string; skin?: string; pose?: Pose | keyof typeof POSES; shorts?: boolean};
 const LEG_H = 260, TORSO_H = 300, NECK_Y = -(LEG_H + TORSO_H);
-const shade = (c: string, k: number) => { const n = parseInt(c.slice(1), 16); const f = (v: number) => Math.max(0, Math.min(255, Math.round(v * k))); return '#' + [f(n >> 16), f((n >> 8) & 255), f(n & 255)].map((v) => v.toString(16).padStart(2, '0')).join(''); };
+export const shade = (c: string, k: number) => { const n = parseInt(c.slice(1), 16); const f = (v: number) => Math.max(0, Math.min(255, Math.round(v * k))); return '#' + [f(n >> 16), f((n >> 8) & 255), f(n & 255)].map((v) => v.toString(16).padStart(2, '0')).join(''); };
 
 export const Body: React.FC<BodyProps> = ({fat = 0, muscle = 0, top = 'tee', topColor = '#e9962c', pants = '#2b3350', shoe = '#f2f2f2', skin = SK, pose = 'idle', shorts}) => {
   const P: Pose = typeof pose === 'string' ? POSES[pose] : pose;
@@ -197,9 +200,9 @@ export const Body: React.FC<BodyProps> = ({fat = 0, muscle = 0, top = 'tee', top
 };
 
 export type HeroProps = BodyProps & HeadProps & {x?: number; y?: number; scale?: number; flip?: boolean; headScale?: number; slump?: number};
-export const Hero: React.FC<HeroProps> = ({x = 0, y = 0, scale = 1, flip, headScale = 0.8, slump = 0, mood, skin, hair, look, blink, id, ...b}) => (
+export const Hero: React.FC<HeroProps> = ({x = 0, y = 0, scale = 1, flip, headScale = 0.8, slump = 0, mood, skin, hair, look, blink, id, turn, ...b}) => (
   <g transform={`translate(${x} ${y}) scale(${flip ? -scale : scale} ${scale})`}>
     <Body skin={skin} {...b} />
-    <g transform={`translate(${slump * 24} ${NECK_Y - (200 * headScale - 34) + slump * 22}) scale(${headScale}) rotate(${slump * 7})`}><Head mood={mood} skin={skin} hair={hair} look={look} blink={blink} id={id} /></g>
+    <g transform={`translate(${slump * 24} ${NECK_Y - (200 * headScale - 34) + slump * 22}) scale(${headScale}) rotate(${slump * 7})`}><Head mood={mood} skin={skin} hair={hair} look={look} blink={blink} id={id} turn={turn} /></g>
   </g>
 );
