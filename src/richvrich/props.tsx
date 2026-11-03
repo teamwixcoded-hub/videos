@@ -214,7 +214,7 @@ export const Jar: React.FC<{x?: number; y?: number; scale?: number; fill?: numbe
       <path d="M -130,-200 L 130,-200 C 160,-170 170,-120 170,-60 L 170,150 C 170,190 140,210 100,210 L -100,210 C -140,210 -170,190 -170,150 L -170,-60 C -170,-120 -160,-170 -130,-200 Z" fill={`url(#jg${id})`} stroke={INK} strokeWidth={8} strokeLinejoin="round" />
       <path d="M -130,-150 C -142,-110 -144,-40 -144,60" stroke="#fff" strokeWidth={12} fill="none" strokeLinecap="round" opacity={0.6} />
       <rect x={-140} y={-240} width={280} height={52} rx={14} fill="#c9602e" stroke={INK} strokeWidth={7} /><path d="M -140,-214 L 140,-214" stroke="#8a3d18" strokeWidth={4} />
-      <rect x={-96} y={-40} width={192} height={74} rx={12} fill="#f6f7ff" stroke={INK} strokeWidth={5} /><text x={0} y={10} textAnchor="middle" fontFamily={MONT} fontWeight={800} fontSize={34} fill="#2a2f6a" letterSpacing={2}>{label}</text>
+      <rect x={-96} y={-40} width={192} height={74} rx={12} fill="#f6f7ff" stroke={INK} strokeWidth={5} /><text x={0} y={10} textAnchor="middle" fontFamily={MONT} fontWeight={800} fontSize={Math.min(34, 168 / (label.length * 0.72))} fill="#2a2f6a" letterSpacing={1}>{label}</text>
     </g>
   );
 };
