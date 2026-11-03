@@ -23,8 +23,8 @@ export const Fig: React.FC<{t: number; m: ManP; x: number}> = ({t, m, x}) => {
   const w = m.who ?? 'sam';
   return <Hero x={m.x ?? x} y={m.y ?? 1050} scale={m.scale ?? 1.05} t={t} id={m.id ?? 'o' + w + Math.round(x)} mood={m.mood ?? 'neutral'} open={m.open} look={m.look} fat={m.fat ?? (w === 'sam' || w === 'jake' ? 0.35 : 0.2)} muscle={m.muscle ?? 0} top={m.top ?? 'tee'} topColor={OLOOK[w].topColor} cast={OLOOK[w].cast} pose={m.pose ?? 'idle'} />;
 };
-export const OSolo: React.FC<{t: number; m: ManP; bg?: 'room' | 'office' | 'none'; dawn?: number; children?: React.ReactNode}> = ({t, m, bg = 'room', dawn = 0, children}) => (
-  <Frame>{bg === 'room' && <RoomArt t={t} dawn={dawn} />}{bg === 'office' && <OfficeBG />}<Fig t={t} m={m} x={960} />{children}</Frame>
+export const OSolo: React.FC<{t: number; m: ManP; bg?: 'room' | 'office' | 'dinner' | 'cafe' | 'none'; dawn?: number; children?: React.ReactNode}> = ({t, m, bg = 'room', dawn = 0, children}) => (
+  <Frame>{bg === 'room' && <RoomArt t={t} dawn={dawn} />}{bg === 'office' && <OfficeBG />}{bg === 'dinner' && <DinnerBG t={t} />}{bg === 'cafe' && <CafeBG t={t} />}<Fig t={t} m={m} x={960} />{children}</Frame>
 );
 export const OPair: React.FC<{t: number; left: ManP; right: ManP; bg?: 'room' | 'office' | 'cafe' | 'dinner' | 'none'; dawn?: number; children?: React.ReactNode}> = ({t, left, right, bg = 'room', dawn = 0, children}) => (
   <Frame>
@@ -44,7 +44,7 @@ export const OfficeBG: React.FC = () => (
 export const CafeBG: React.FC<{t: number}> = ({t}) => (
   <g>
     <rect width={1920} height={1080} fill="#3a2a3e" /><rect y={800} width={1920} height={280} fill="#2a1f2e" /><rect y={786} width={1920} height={16} fill="#5a3f4a" stroke={INK} strokeWidth={4} />
-    <rect x={160} y={110} width={420} height={330} rx={14} fill="#f0d6a0" stroke={INK} strokeWidth={8} opacity={0.9} /><Txt x={370} y={300} s={96} c="#6a3a2a">COFFEE</Txt>
+    <rect x={90} y={40} width={380} height={140} rx={14} fill="#f0d6a0" stroke={INK} strokeWidth={8} opacity={0.9} /><Txt x={280} y={134} s={74} c="#6a3a2a">COFFEE</Txt>
     {[0, 1, 2, 3, 4, 5].map((i) => <g key={i} transform={`translate(${760 + i * 190} ${210 + (i % 2) * 40})`}><path d="M -40,-50 L 40,-50 L 28,40 L -28,40 Z" fill="#f4f4ff" stroke={INK} strokeWidth={6} /><path d={`M -10,-70 q -12,-24 0,-48 M 14,-70 q 12,-24 0,-48`} stroke="#fff" strokeWidth={6} fill="none" strokeLinecap="round" opacity={0.5 + 0.3 * Math.sin(t * 3 + i)} /></g>)}
     <rect x={720} y={760} width={480} height={50} rx={10} fill="#6a4a3a" stroke={INK} strokeWidth={8} /><rect x={950} y={810} width={24} height={150} fill="#3a2b24" />
   </g>
