@@ -18,7 +18,7 @@ const mix = (a: string, b: string, k: number) => { const x = hex(a), y = hex(b);
 export const Frame: React.FC<{children: React.ReactNode; bg?: string}> = ({children, bg = '#0b0e22'}) => (
   <div style={{position: 'absolute', inset: 0, background: bg, overflow: 'hidden'}}><svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{position: 'absolute', inset: 0}}>{children}</svg></div>
 );
-export const Txt: React.FC<{x: number; y: number; s: number; c?: string; o?: number; w?: number; anchor?: 'middle' | 'start'; font?: string; children: React.ReactNode; ls?: number}> = ({x, y, s, c = '#fff', o = 1, anchor = 'middle', font = MONT, children, ls = 0}) => (
+export const Txt: React.FC<{x: number; y: number; s: number; c?: string; o?: number; w?: number; anchor?: 'middle' | 'start' | 'end'; font?: string; children: React.ReactNode; ls?: number}> = ({x, y, s, c = '#fff', o = 1, anchor = 'middle', font = MONT, children, ls = 0}) => (
   <text x={x} y={y} textAnchor={anchor} fontFamily={font} fontWeight={800} fontSize={s} fill={c} opacity={o} letterSpacing={ls} stroke={INK} strokeWidth={s * 0.1} paintOrder="stroke" strokeLinejoin="round">{children}</text>
 );
 
@@ -146,7 +146,7 @@ export const PromiseCards: React.FC<{t: number}> = ({t}) => {
   );
 };
 export const MarchCal: React.FC<{t: number}> = ({t}) => {
-  const months = [['DEC', T('90')], ['JAN', T('from')], ['FEB', T('now')], ['MARCH', T('march')]];
+  const months: [string, number][] = [['DEC', T('90')], ['JAN', T('from')], ['FEB', T('now')], ['MARCH', T('march')]];
   const cur = months.reduce((n, m, i) => (t >= m[1] - 0.05 ? i : n), 0), k = ramp(t, months[cur][1] - 0.05, months[cur][1] + 0.2), isM = cur === 3;
   const days = Math.round(90 * ramp(t, T('90'), T('march')));
   return (

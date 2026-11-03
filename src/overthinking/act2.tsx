@@ -10,7 +10,7 @@ import {Beats, Beat, RingG, BedSolo} from '../winter/scenes2';
 import {BeatsG} from '../winter/act5';
 import {DayCard} from '../winter/scenes';
 import type {Shot4} from '../winter/act4';
-import {OSolo, OPair, Fig, ManP, CardRow, ThoughtCloud, Ceiling, Chip, Pill, Txt, Frame, OfficeBG, DinnerBG, CafeBG, Thought} from './scenes';
+import {OSolo, OPair, Fig, ManP, CardRow, ThoughtCloud, Ceiling, Chip, Pill, Txt, Frame, OfficeBG, DinnerBG, CafeBG} from './scenes';
 
 // ============================================================================================
 // OVERTHINKING, act 2 (134 to 286 s): Sam's interview and promotion, Jake watching, the second chance (Sarah at the birthday dinner), three days later, "ready comes from doing".
@@ -174,4 +174,4 @@ export const CUES_2: Cue3[] = [
   ...BEATS2.flat().map((b): Cue3 => ({file: 'text_pop', at: b.at, vol: 0.12})),
   ...BEATS2.flat().filter((b) => b.strike !== undefined).map((b): Cue3 => ({file: 'stamp_hit', at: b.strike as number, vol: 0.16})),
 ];
-void [Hero, Thought, SAMV];
+void [Hero, SAMV];
