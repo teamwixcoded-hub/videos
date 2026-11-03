@@ -6,7 +6,7 @@ import {TypeLayer, TW} from '../fathers/type';
 import {GRAIN} from '../fathers/fx';
 import {LEVELS} from '../same7/data/levels';
 import {FPS, T, TE, VOICE_FILE, END, speakOpen} from './timeline';
-import {Room, TwoMen, Pill, DayCard, PromiseCards, MarchCal, Cards, PhoneTrend, Others, Quiet, TrainShot, SleepShot, FoodShot, ReadShot, Counter90, SpringDoor, Frame, RoomArt, Txt} from './scenes';
+import {Room, TwoMen, Pill, DayCard, PromiseCards, MarchCal, Cards, PhoneTrend, Others, Quiet, TrainShot, SleepShot, FoodShot, ReadShot, Counter90, SpringDoor, Frame, RoomArt, Txt, ROOM} from './scenes';
 import {Beats, Beat, RingG, BedSolo, Thermo, SnoozeShot, GetUp, GymBG, GymWalk, LostShot, StrainShot, Timer20, SoreMorning, PhoneAcross, ReadPages, LightsOut} from './scenes2';
 import {SideHero, SIDE} from './SideHero';
 import {SHOTS4, POPS4, BUBBLES4, CUES4} from './act4';
@@ -204,6 +204,7 @@ const mixCue = (c: Cue3): Cue3 => {
 };
 
 export const Winter: React.FC = () => {
+  ROOM.snow = true;
   const frame = useCurrentFrame(), t = frame / FPS;
   const i = Math.max(0, SHOTS.reduce((n, s, k) => (t >= s.at ? k : n), 0)), shot = SHOTS[i], to = SHOTS[i + 1]?.at ?? END;
   const p = Math.min(1, Math.max(0, (t - shot.at) / (to - shot.at))), cam = shot.cam ?? [960, 540, 1];

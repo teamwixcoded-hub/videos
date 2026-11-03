@@ -9,6 +9,7 @@ import {T, TE} from './timeline';
 // ============================================================================================
 // WINTER ARC scenes (first minute). All are plain SVG, drawn from the Hero / SideHero rigs. `t` is always the ABSOLUTE video time, so every beat can sit on T('a phrase').
 // ============================================================================================
+export const ROOM = {snow: true};   // the Overthinking video sets this to false: no snow outside the window
 export const SAM = {top: 'tee' as const, topColor: '#e9962c'};
 export const JAKE = {top: 'hoodie' as const, topColor: '#6b4fc4', cast: 'colleague' as const};
 const hex = (c: string) => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)];
@@ -38,7 +39,7 @@ export const RoomArt: React.FC<{t: number; dawn?: number}> = ({t, dawn = 0}) => 
     <rect x={776} y={146} width={368} height={404} fill="url(#sky)" />
     <g clipPath="url(#win)">
       <circle cx={1060} cy={236} r={36} fill="#e9efff" opacity={0.85 - dawn * 0.6} /><circle cx={1046} cy={226} r={30} fill="#aab6dc" opacity={0.25} />
-      <g fill="#cfdcff">
+      <g fill="#cfdcff" opacity={ROOM.snow ? 1 : 0}>
         {Array.from({length: 46}, (_, i) => { const sp = 34 + (i % 5) * 16, y = 146 + ((i * 59 + t * sp) % 404), x = 776 + ((i * 83) % 368) + Math.sin(t * 1.3 + i) * 8; return <circle key={i} cx={x} cy={y} r={2 + (i % 3)} opacity={0.5 + (i % 4) * 0.12} />; })}
       </g>
       <path d="M 776,550 L 776,470 Q 840,500 900,550 Z M 1144,146 L 1144,224 Q 1080,190 1030,146 Z" fill="#fff" opacity={0.25} />

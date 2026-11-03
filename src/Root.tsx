@@ -38,6 +38,7 @@ import {ThumbVecA, ThumbVecB, ThumbVecC} from './thumbs/ThumbsVector';
 import {WinterSheet} from './winter/Sheet';
 import {WinterSide} from './winter/SideSheet';
 import {Winter, WINTER_FRAMES} from './winter/Winter';
+import {Overthink, OVERTHINK_FRAMES} from './overthinking/Overthink';
 import {TwoFathers, FATHERS_FRAMES} from './fathers/Fathers';
 import {StickSheet} from './same/StickSheet';
 import {FrameSeqTest} from './same/FrameSeqTest';
@@ -66,6 +67,7 @@ export const Root: React.FC = () => {
 
       <Composition id="WinterSheet" component={WinterSheet} durationInFrames={1} fps={30} width={1920} height={1080} />
       <Composition id="Winter" component={Winter} durationInFrames={WINTER_FRAMES} fps={30} width={1920} height={1080} />
+      <Composition id="Overthink" component={Overthink} durationInFrames={OVERTHINK_FRAMES} fps={30} width={1920} height={1080} />
       <Composition id="WinterSide" component={WinterSide} durationInFrames={1} fps={30} width={1920} height={1080} />
       <Composition id="ThumbVecA" component={ThumbVecA} durationInFrames={1} fps={30} width={1920} height={1080} />
       <Composition id="ThumbVecB" component={ThumbVecB} durationInFrames={1} fps={30} width={1920} height={1080} />
