@@ -64,7 +64,7 @@ export const Ceiling: React.FC<{t: number; clock?: string; words?: string[]; cal
     <defs><radialGradient id="cl" cx="50%" cy="30%" r="80%"><stop offset="0" stopColor="#1a2250" /><stop offset="1" stopColor="#05060f" /></radialGradient></defs>
     <rect width={1920} height={1080} fill="url(#cl)" />
     <path d="M 640,0 L 700,120 L 650,210 L 760,330 L 720,430 L 840,560 M 700,120 L 800,170 M 760,330 L 880,300" stroke="#0a0c1c" strokeWidth={14} fill="none" strokeLinecap="round" strokeLinejoin="round" /><path d="M 640,0 L 700,120 L 650,210 L 760,330 L 720,430 L 840,560" stroke="#3a4278" strokeWidth={4} fill="none" strokeLinecap="round" strokeLinejoin="round" opacity={0.7} />
-    {!calm && words.map((w, i) => { const a = t * (0.6 + i * 0.13) + i * 1.7, r = 360 + 80 * Math.sin(t * 0.8 + i), x = 1180 + Math.cos(a) * r * 1.0, y = 480 + Math.sin(a) * r * 0.55; return <g key={i} opacity={0.35 + 0.3 * Math.sin(t + i)} transform={`translate(${x} ${y}) rotate(${Math.sin(a) * 10})`}><Txt x={0} y={0} s={54 + (i % 3) * 14} c="#9aa6e0" o={0.9}>{w}</Txt></g>; })}
+    {!calm && words.map((w, i) => { const a = t * (0.6 + i * 0.13) + i * 1.7, r = 300 + 60 * Math.sin(t * 0.8 + i), x = 1000 + Math.cos(a) * r * 1.0, y = 480 + Math.sin(a) * r * 0.55; return <g key={i} opacity={0.35 + 0.3 * Math.sin(t + i)} transform={`translate(${x} ${y}) rotate(${Math.sin(a) * 10})`}><Txt x={0} y={0} s={w.length > 14 ? 38 : 54 + (i % 3) * 12} c="#9aa6e0" o={0.9}>{w}</Txt></g>; })}
     <g transform="translate(1560 190) scale(0.8)"><rect x={-230} y={-80} width={460} height={160} rx={20} fill="#12080c" stroke={INK} strokeWidth={9} /><text x={0} y={36} textAnchor="middle" fontFamily={DIGI} fontWeight={700} fontSize={104} fill="#ff4a4a" style={{filter: 'drop-shadow(0 0 8px #ff2a2a)'}}>{clock}</text></g>
   </Frame>
 );
@@ -96,7 +96,7 @@ export const CardRow: React.FC<{t: number; cards: Card[]; glow?: string; y?: num
           <g key={c.label + i} transform={`translate(${x} ${y + (1 - k) * 60}) scale(${sc})`} opacity={k}>
             <rect x={-230} y={-270} width={460} height={540} rx={40} fill="#1d2248" stroke={INK} strokeWidth={9} />
             <g transform="translate(0 -40)"><Icon k={c.icon} t={t} /></g>
-            <Txt x={0} y={200} s={c.label.length > 12 ? 44 : 56} c={c.c ?? '#fff'} ls={2}>{c.label}</Txt>
+            {(() => { const w = c.label.split(' '), two = c.label.length > 12 && w.length > 1, m = Math.ceil(w.length / 2), ls2 = two ? [w.slice(0, m).join(' '), w.slice(m).join(' ')] : [c.label]; return ls2.map((ln, j) => <Txt key={j} x={0} y={(two ? 168 : 200) + j * 52} s={two ? 44 : 56} c={c.c ?? '#fff'} ls={2}>{ln}</Txt>); })()}
           </g>
         );
       })}

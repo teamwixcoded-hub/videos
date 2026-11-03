@@ -4,7 +4,7 @@ import {WORDS_W} from './data/words';
 // so a new recording only means a new word list. Video time = recording time.
 export const FPS = 30;
 export const VOICE_FILE: string | null = 'audio/overthinking.mp3';   // the voice-over (10:51)
-export const END = 286.0;                         // built so far: up to "...it gets bigger." (the voice-over is 651.4 s)
+export const END = 435.0;                         // built so far: up to "...still perfect, still safe." (the voice-over is 651.4 s)
 const WORDS = WORDS_W.map(([w, a, b]) => ({w, a, b}));
 const norm = (p: string) => p.toLowerCase().split(/\s+/).map((x) => x.replace(/[^a-z0-9]/g, '')).filter(Boolean);
 const find = (phrase: string, nth: number): number => {
