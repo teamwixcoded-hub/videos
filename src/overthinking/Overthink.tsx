@@ -12,6 +12,7 @@ import {SHOTS_1, POPS_1, BUBBLES_1, CUES_1} from './act1';
 import {SHOTS_2, POPS_2, BUBBLES_2, CUES_2} from './act2';
 import {SHOTS_3, POPS_3, BUBBLES_3, CUES_3} from './act3';
 import {SHOTS_4, POPS_4, BUBBLES_4, CUES_4} from './act4';
+import {SHOTS_5, POPS_5, BUBBLES_5, CUES_5} from './act5';
 
 // ============================================================================================
 // OVERTHINKING (Sam and Jake, three chances). The voice-over is Overthinking/Overthinking.mp3 (10:51); every shot sits on the narration with T('phrase').
@@ -19,11 +20,11 @@ import {SHOTS_4, POPS_4, BUBBLES_4, CUES_4} from './act4';
 // ============================================================================================
 export const OVERTHINK_FRAMES = Math.round(END * FPS);
 
-const SHOTS: Shot4[] = [...SHOTS_1, ...SHOTS_2, ...SHOTS_3, ...SHOTS_4];
+const SHOTS: Shot4[] = [...SHOTS_1, ...SHOTS_2, ...SHOTS_3, ...SHOTS_4, ...SHOTS_5];
 for (let i = 1; i < SHOTS.length; i++) if (SHOTS[i].at <= SHOTS[i - 1].at) throw new Error('shots out of order at ' + SHOTS[i].at.toFixed(1) + ' s (shot ' + i + ')');
-const POPS: TW[] = [...POPS_1, ...POPS_2, ...POPS_3, ...POPS_4];
-const BUBBLES = [...BUBBLES_1, ...BUBBLES_2, ...BUBBLES_3, ...BUBBLES_4];
-const CUES: Cue3[] = [...CUES_1, ...CUES_2, ...CUES_3, ...CUES_4, ...SHOTS.slice(1).map((s): Cue3 => ({file: 'whoosh_soft', at: s.at - 0.03, vol: 0.14})), ...POPS.map((w): Cue3 => (w.mode === 'slam' ? {file: 'text_slam', at: w.at, vol: 0.26} : {file: 'text_pop', at: w.at, vol: 0.14}))];
+const POPS: TW[] = [...POPS_1, ...POPS_2, ...POPS_3, ...POPS_4, ...POPS_5];
+const BUBBLES = [...BUBBLES_1, ...BUBBLES_2, ...BUBBLES_3, ...BUBBLES_4, ...BUBBLES_5];
+const CUES: Cue3[] = [...CUES_1, ...CUES_2, ...CUES_3, ...CUES_4, ...CUES_5, ...SHOTS.slice(1).map((s): Cue3 => ({file: 'whoosh_soft', at: s.at - 0.03, vol: 0.14})), ...POPS.map((w): Cue3 => (w.mode === 'slam' ? {file: 'text_slam', at: w.at, vol: 0.26} : {file: 'text_pop', at: w.at, vol: 0.14}))];
 
 const mixCue = (c: Cue3): Cue3 => {
   if (c.loop) return {...c, vol: Math.min(1, (c.vol ?? 0.1) * 2.5)};
@@ -50,7 +51,9 @@ export const Overthink: React.FC = () => {
       <AbsoluteFill style={{background: '#000', opacity: fadeOut}} />
       {VOICE_FILE && <Sequence from={0} durationInFrames={OVERTHINK_FRAMES}><Audio src={staticFile(VOICE_FILE)} /></Sequence>}
       <Sfx3 cues={CUES.map(mixCue)} gain={1} minVol={0} />
-      <Sequence from={0} durationInFrames={Math.min(OVERTHINK_FRAMES, Math.round(330 * FPS))}><Audio src={staticFile('music/low.mp3')} volume={musicEnv(0, Math.min(END, 330))} /></Sequence>
+      <Sequence from={0} durationInFrames={Math.round(335 * FPS)}><Audio src={staticFile('music/low.mp3')} volume={musicEnv(0, 335)} /></Sequence>
+      <Sequence from={Math.round(325 * FPS)} durationInFrames={Math.round(235 * FPS)}><Audio src={staticFile('music/routine.mp3')} volume={musicEnv(325, 560)} /></Sequence>
+      <Sequence from={Math.round(548 * FPS)} durationInFrames={OVERTHINK_FRAMES - Math.round(548 * FPS)}><Audio src={staticFile('music/resolve.mp3')} volume={musicEnv(548, END)} /></Sequence>
     </AbsoluteFill>
   );
 };
